@@ -7,7 +7,7 @@
 	      </li>
 	    </ul>
 	    <ul class="left-menu">
-	    	<router-link :tag="li" v-for="(route,index) in routes" :to="route.path" :key="index" >{{route.name}}</router-link>
+	    	<router-link tag="li" v-for="(route,index) in routes" :to="route.path" :key="index" >{{route.name}}</router-link>
 	    </ul>
 	</div>
 </template>
@@ -27,8 +27,8 @@ export default {
 			    ],
 			    routes:[
 			    {
-			    	name:"test",
-			    	path:"/test"
+			    	name:"关于老徐",
+			    	path:"/about"
 			    },
 			    ]
 		}
@@ -85,34 +85,38 @@ export default {
 	}
 
   	.left-menu {
-    // 上面总的高度为 290px，下面 QQ 群的 margin + 高度为 240px
-    height: calc(100% - 290px - 240px);
-    min-height: 150px;
-    list-style: none;
-    color: #4b595f;
-    margin-bottom:100px;
-    .a-player {
-      margin-left:auto;
-      margin-right:auto;
-      margin-bottom:20px;
-    }
-
-    li {
-      width: 249px;
-      height: 60px;
-      line-height: 60px;
-      margin-top:20px;
-      cursor: pointer;
-      font-size: 16px;
-      &:before {
-        width: 4px;
-        height: 100%;
-        content: '';
-        margin-right: 69px;
-        float: left;
-        display: table;
-      }
-    }
-  }
+    	// 上面总的高度为 290px，下面 QQ 群的 margin + 高度为 240px
+	    height: calc(100% - 290px - 240px);
+	    min-height: 150px;
+	    list-style: none;
+	    color: #4b595f;
+	    margin-bottom:100px;
+	    margin-top:40px;
+	    padding: 0;
+	    li {
+	    	margin-left:49px;
+	    	padding-right: 40px;
+	    	text-align: right;
+	    	box-sizing: border-box;
+			width: 200px;
+			height: 60px;
+			line-height: 60px;
+			margin-top:20px;
+			cursor: pointer;
+			font-size: 16px;
+	      &:hover{
+	      	color:black;
+	      	background-color:#eeeeee;
+	      }
+	      &:before {
+	        width: 4px;
+	        height: 100%;
+	        content: '';
+	        margin-right: 69px;
+	        float: left;
+	        display: table;
+	      }
+    	}
+	}
 
 </style>

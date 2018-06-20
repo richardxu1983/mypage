@@ -14,8 +14,8 @@ export default new Router({
       component: resolve => require(['@/components/pc_root'], resolve),
       children:[
           {
-            path: '/test',
-            component: resolve => require(['@/views/test'], resolve)
+            path: '/about',
+            component: resolve => require(['@/views/about'], resolve)
           }
       ]
     },
