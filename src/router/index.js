@@ -16,6 +16,14 @@ export default new Router({
           {
             path: '/about',
             component: resolve => require(['@/views/about'], resolve)
+          },
+          {
+            path: '/magicLand',
+            component: resolve => require(['@/views/magicLand'], resolve)
+          },
+          {
+            path: '/frontPage',
+            component: resolve => require(['@/views/frontPage'], resolve)
           }
       ]
     },

@@ -11,9 +11,14 @@ import LeftLayout from './LeftLayout.vue'
 
 export default {
 	name:"pc_root",
-	components: {
+	components: 
+  {
       LeftLayout
-    },
+  },
+  mounted:function()
+  {
+    this.$router.push("/frontPage")
+  }
 }
 
 document.title = 'pc端首页'
