@@ -7,30 +7,23 @@ export default new Router({
   routes: [
     {
       path: '',
-      redirect: '/pc_index'
+      name:"home",
+      redirect: '/frontPage'
     },
     {
-      path: "/pc_index", // pc端首页
-      component: resolve => require(['@/components/pc_root'], resolve),
-      children:[
-          {
-            path: '/about',
-            component: resolve => require(['@/views/about'], resolve)
-          },
-          {
-            path: '/magicLand',
-            component: resolve => require(['@/views/magicLand'], resolve)
-          },
-          {
-            path: '/frontPage',
-            component: resolve => require(['@/views/frontPage'], resolve)
-          }
-      ]
+      path: '/about',
+      name:"about",
+      component: resolve => require(['@/views/about'], resolve)
     },
     {
-      path: '/m_index', // 手机端首页
-      component: resolve => require(['@/components/m_root'], resolve)
+      path: '/magicLand',
+      name:"magicLand",
+      component: resolve => require(['@/views/magicLand'], resolve)
     },
-
+    {
+      path: '/frontPage',
+      name:"frontPage",
+      component: resolve => require(['@/views/frontPage'], resolve)
+    },
   ]
 })

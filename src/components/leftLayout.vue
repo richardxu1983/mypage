@@ -1,6 +1,6 @@
 <template>
 	<div class="left-layout-container">
-		<img class="siteLogo" src="/static/img/siteLogo.png">
+		<img @click="home" class="siteLogo" src="/static/img/siteLogo.png">
 		<div class="siteTitle"> 
 			<div class="siteTitleCell">
 				<b>小站</b>
@@ -64,6 +64,10 @@ export default {
 	{
 		openThirdPartySite (url) {
         	window.open(url)
+      	},
+      	home () 
+      	{
+        	this.$router.push('/')
       	},
 	}
 }
