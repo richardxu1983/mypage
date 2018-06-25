@@ -1,5 +1,5 @@
 
-import {extend} from './utils/utils.js'
+import {extend} from '../../utils/utils.js'
 
 //unit 类
 function Unit(attr)
@@ -55,7 +55,7 @@ var Player = {
             'max':1000000
         },
         'def' : {
-            'name' : "防御",
+            'name' : "防御力",
             'value':0,
             'init' : 0,
             'visual' : true,
@@ -76,23 +76,23 @@ var Player = {
         },
     },
 
-    name:"冒险者";
+    name:"冒险者",
 
     //
     getAttr : function(attr)
     {
-        var ret = $SM.get('fighter.'+attr);
+        var ret = $SM.get('player.'+attr);
         if(ret == undefined)
         {
             //alert(attr);
             var val = this.attr[attr];
             if(val!=undefined)
-                $SM.set('fighter.'+attr , val.init);
+                $SM.set('player.'+attr , val.init);
             else
-                $SM.set('fighter.'+attr , 0);
+                $SM.set('player.'+attr , 0);
         }
         //alert(attr + ' : ' + $SM.get('fighter.'+attr));
-        return $SM.get('fighter.'+attr);
+        return $SM.get('player.'+attr);
     },
 
     //
@@ -131,7 +131,7 @@ var Player = {
             if(newVal > maxVal) newVal = maxVal;
         }
         Player.attr[attr].value = newVal;
-        $SM.set('fighter.'+attr , newVal);
+        $SM.set('player.'+attr , newVal);
         Player.onAttrChange(attr, newVal);
     },
 
@@ -176,3 +176,5 @@ var Player = {
 };
 
 extend(Player,Unit);
+
+export default { Player , Unit }; 

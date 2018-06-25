@@ -70,7 +70,13 @@ var $SM = StateManager;
 
 var State = {};
 
-var Engine = {
+var Engine = 
+{
+    data:
+    {
+        newGame:true,
+        ready:false
+    },
 
     saveGame: function() 
     {
@@ -91,11 +97,16 @@ var Engine = {
         try 
         {
             var savedState = JSON.parse(localStorage.gameState);
-            if(savedState) {
+            if(savedState) 
+            {
                 State = savedState;
+                Engine.newGame = false;
             }
-        } catch(e) {
+        } 
+        catch(e) 
+        {
             State = {};
+            Engine.newGame = true;
             $SM.set('version', Engine.VERSION);
         }
     },

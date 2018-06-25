@@ -4,15 +4,21 @@
 			<h2>{{ gametitle }}</h2>
 			<p>{{ gamedesc }}</p>
 		</div>
-		<div class="mlBoard">
+		<div>
+			<gameView></gameView>
 		</div>
 	</div>
 </template>
 
 <script>
 
+import gameView from '../mlGame/view/gameview.vue'
+
 export default {
 	name:"magicLand",
+	components:{
+		gameView
+	},
 	data:function()
 	{
 		return {
@@ -31,12 +37,5 @@ export default {
 
 <style lang="scss" scoped>
 	
-	.mlBoard{
-		width: 600px;
-		height: 700px;
-		margin: 0 45px 45px 45px;
-		background-color: #FFFFE0;
-		border: solid 2px #CDCDB4;
-	}
 
 </style>
