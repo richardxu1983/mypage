@@ -1,4 +1,6 @@
 
+import UB from '../../mlGame/core/unit.js'
+
 var StateManager = {
 
     MAX_STORE: 99999999999999,
@@ -72,11 +74,8 @@ var State = {};
 
 var Engine = 
 {
-    data:
-    {
-        newGame:true,
-        ready:false
-    },
+
+    ready:false,
 
     saveGame: function() 
     {
@@ -100,14 +99,23 @@ var Engine =
             if(savedState) 
             {
                 State = savedState;
-                Engine.newGame = false;
             }
         } 
         catch(e) 
         {
             State = {};
-            Engine.newGame = true;
             $SM.set('version', Engine.VERSION);
         }
+        
+        UB.Player.initAttr();
     },
+
+    newGame:function()
+    {
+        State = {};
+        $SM.set('version', Engine.VERSION);
+        UB.Player.initAttr();
+    }
 };
+
+export default { Engine , StateManager }; 

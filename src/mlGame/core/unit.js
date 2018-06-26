@@ -1,5 +1,8 @@
 
 import {extend} from '../../utils/utils.js'
+import EB from '../../mlGame/core/engine.js'
+
+var $SM = EB.StateManager;
 
 //unit 类
 function Unit(attr)
@@ -33,6 +36,9 @@ function Unit(attr)
 var Player = {
 
     attr : {
+
+        name:"冒险者",
+
         'hp' : {
             'name' : "生命值",
             'value':0,
@@ -76,7 +82,17 @@ var Player = {
         },
     },
 
-    name:"冒险者",
+    
+
+    initAttr:function()
+    {
+        var v;
+        for(v in Player.attr)
+        {
+            if(typeof(Player.attr[v])!="string")
+                Player.attr[v].value = Player.getAttr(v);
+        }
+    },
 
     //
     getAttr : function(attr)
@@ -87,9 +103,13 @@ var Player = {
             //alert(attr);
             var val = this.attr[attr];
             if(val!=undefined)
+            {
                 $SM.set('player.'+attr , val.init);
+            }
             else
+            {
                 $SM.set('player.'+attr , 0);
+            }
         }
         //alert(attr + ' : ' + $SM.get('fighter.'+attr));
         return $SM.get('player.'+attr);
