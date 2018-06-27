@@ -8,6 +8,7 @@
 			<p><label>{{ player['atk'].name }}：</label>{{ player['atk'].value }}</p>
 			<p><label>{{ player['def'].name }}：</label>{{ player['def'].value }}</p>
 		</div>
+		<textarea name="" id="infoBox" class="infoBox" readonly>{{info}}</textarea>
 		<div class="bottomBar">
 			<button class="btnBottom" @click="playerAttrShow=!playerAttrShow">{{ btnShowPlayerattr }}</button>
 			<button class="btnBottom" @click="playerAttrTest">测试</button>
@@ -30,7 +31,8 @@ export default {
 		return {
 			btnShowPlayerattr:"属性",
 			playerAttrShow:false,
-			player:UnitBundle.Player.attr
+			player:UnitBundle.Player.attr,
+			info:"",
 		}
 	},
 	created:function()
@@ -51,6 +53,16 @@ export default {
 		newGame:function()
 		{
 			EB.Engine.newGame();
+			this.addInfo("重新开始了游戏...");
+		},
+		addInfo:function(v)
+		{
+			this.info=this.info+v+"\n";
+			document.getElementById("infoBox").scrollTop = document.getElementById("infoBox").scrollHeight;
+			if(this.info.length>1000)
+			{
+				this.info.slice(-500);
+			}
 		}
 	}
 }
@@ -59,6 +71,19 @@ export default {
 
 <style lang="scss" scoped>
 	
+	.infoBox{
+		position: absolute;
+		width: 500px;
+		height: 200px;
+		top: 25px;
+		left: 25px;
+		background-color: white;
+		border: solid 1px #dddddd;
+		padding: 5px;
+		resize: none;
+
+	}
+
 	.unitTxt{
 		margin-left: 10px;
 	}
@@ -79,6 +104,7 @@ export default {
 		background-color: #FFFFFA;
 		border: solid 1px #CDCDB4;
 		position: relative;
+		font-size: 80%;
 	}
 
 
@@ -90,6 +116,7 @@ export default {
 		background-color: #FFFFE0;
 		width: 200px;
 		height: 300px;
+		z-index:100;
 	}
 
 </style>
