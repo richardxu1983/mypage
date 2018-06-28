@@ -1,6 +1,9 @@
 
 import {extend} from '../../utils/utils.js'
 import EB from '../../mlGame/core/engine.js'
+import MpB from '../../mlGame/core/gameMap.js'
+
+var $map = MpB.Gmap;
 
 var $SM = EB.StateManager;
 
@@ -41,21 +44,21 @@ var Player = {
 
         'hp' : {
             'name' : "生命值",
-            'value':0,
+            'value':20,
             'init' : 20,
             'visual' : true,
             'max':100
         },
         'mp' : {
             'name' : "魔法值",
-            'value':0,
+            'value': 20,
             'init' : 20,
             'visual' : true,
             'max':100
         },
         'atk' : {
             'name' : "攻击力",
-            'value':0,
+            'value':1,
             'init' : 1,
             'visual' : true,
             'max':1000000
@@ -69,7 +72,7 @@ var Player = {
         },
         'aspd' : {
             'name' : "攻击速度",
-            'value':0,
+            'value':3,
             'init' : 3,
             'visual' : false,
             'max':1
@@ -80,9 +83,22 @@ var Player = {
             'init' : 10,
             'max' : 1000000,
         },
+        'pos':{
+            'name':"位置",
+            'value':0,
+            'init':0,
+            'max' : 1000000,
+        },
     },
 
+    format:{
+        'posTxt':"1",
+    },
     
+    posFormat:function()
+    {
+        Player.format.posTxt = $map.mapName(Player.attr['pos'].value);
+    },
 
     initAttr:function()
     {
@@ -92,6 +108,7 @@ var Player = {
             if(typeof(Player.attr[v])!="string")
                 Player.attr[v].value = Player.getAttr(v);
         }
+        Player.posFormat();
     },
 
     //
@@ -156,6 +173,13 @@ var Player = {
     },
 
     //
+    arriveAt:function(i)
+    {
+        Player.setAttr('pos',i);
+        Player.posFormat();
+    },
+
+    //
     onAttrChange : function(attr,val)
     {
         if(Player.attr[attr]!=undefined)
@@ -195,6 +219,6 @@ var Player = {
     },
 };
 
-extend(Player,Unit);
+//extend(Player,Unit);
 
 export default { Player , Unit }; 

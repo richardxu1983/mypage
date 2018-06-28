@@ -113,6 +113,7 @@ var Engine =
     newGame:function()
     {
         State = {};
+        localStorage.gameState = JSON.stringify(State);
         $SM.set('version', Engine.VERSION);
         UB.Player.initAttr();
     }

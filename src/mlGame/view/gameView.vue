@@ -9,6 +9,9 @@
 			<p><label>{{ player['def'].name }}：</label>{{ player['def'].value }}</p>
 		</div>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info}}</textarea>
+		<div class="mapPanel">
+			<h3>{{ playerTxt['posTxt'] }}</h3>
+		</div>
 		<div class="bottomBar">
 			<button class="btnBottom" @click="playerAttrShow=!playerAttrShow">{{ btnShowPlayerattr }}</button>
 			<button class="btnBottom" @click="playerAttrTest">测试</button>
@@ -21,8 +24,10 @@
 
 import UnitBundle from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
+import MpB from '../../mlGame/core/gameMap.js'
 
 var $ply = UnitBundle.Player;
+var $map = MpB.Gmap;
 
 export default {
 	name:"gameView",
@@ -31,7 +36,8 @@ export default {
 		return {
 			btnShowPlayerattr:"属性",
 			playerAttrShow:false,
-			player:UnitBundle.Player.attr,
+			player:$ply.attr,
+			playerTxt:$ply.format,
 			info:"",
 		}
 	},
@@ -41,7 +47,9 @@ export default {
 	},
 	mounted:function()
 	{
+		$map.loadMap();
 		EB.Engine.loadGame();
+		this.addInfo("加载完毕...");
 	},
 	methods:
 	{
@@ -49,6 +57,7 @@ export default {
 		{
 			//console.log($ply);
 			$ply.addAttr('gold',1);
+			//$ply.arriveAt(1);
 		},
 		newGame:function()
 		{
@@ -74,14 +83,28 @@ export default {
 	.infoBox{
 		position: absolute;
 		width: 500px;
-		height: 200px;
-		top: 25px;
+		height: 150px;
+		top: 235px;
 		left: 25px;
 		background-color: white;
 		border: solid 1px #dddddd;
 		padding: 5px;
 		resize: none;
 
+	}
+
+	.mapPanel{
+		position: absolute;
+		width: 525px;
+		height: 150px;
+		top: 55px;
+		left: 25px;
+		border: solid 1px #dddddd;
+		padding: 5px;
+		resize: none;
+		h3{
+			margin: 0 0 0 5px;
+		}
 	}
 
 	.unitTxt{
@@ -106,7 +129,6 @@ export default {
 		position: relative;
 		font-size: 80%;
 	}
-
 
 	.playerInfo{
 		position: absolute;
