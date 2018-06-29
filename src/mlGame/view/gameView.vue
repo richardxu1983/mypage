@@ -1,19 +1,16 @@
 <template>
 	<div class="mlBoard">
-		<div class="playerInfo" v-if="playerAttrShow">
-			<p>{{ player['name'] }}</p>
-			<p>{{ player['gold'].value }}<span class="unitTxt">金</span></p>
-			<p><label>{{ player['hp'].name }}：</label>{{ player['hp'].value }}</p>
-			<p><label>{{ player['mp'].name }}：</label>{{ player['mp'].value }}</p>
-			<p><label>{{ player['atk'].name }}：</label>{{ player['atk'].value }}</p>
-			<p><label>{{ player['def'].name }}：</label>{{ player['def'].value }}</p>
+		<div class="topBar" >
+			<div class="gtime">1000&nbsp;年&nbsp;1&nbsp;月&nbsp;1&nbsp;日&nbsp; 1&nbsp;时</div>
+			<div class="gold">{{ player['gold'].value }}<span class="unitTxt">金</span></div>
 		</div>
+		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl"></plyAttrPnl>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info}}</textarea>
 		<div class="mapPanel">
 			<h3>{{ playerTxt['posTxt'] }}</h3>
 		</div>
 		<div class="bottomBar">
-			<button class="btnBottom" @click="playerAttrShow=!playerAttrShow">{{ btnShowPlayerattr }}</button>
+			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="btnBottom" @click="playerAttrTest">测试</button>
 			<button class="btnBottom" @click="newGame">新游戏</button>
 		</div>
@@ -25,6 +22,7 @@
 import UnitBundle from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
+import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -34,12 +32,16 @@ export default {
 	data:function()
 	{
 		return {
-			btnShowPlayerattr:"属性",
-			playerAttrShow:false,
+			btnAttrTxt:"属性",
 			player:$ply.attr,
 			playerTxt:$ply.format,
+			plyAttrPnlShow:false,
 			info:"",
 		}
+	},
+	components: 
+	{
+	  plyAttrPnl
 	},
 	created:function()
 	{
@@ -53,11 +55,13 @@ export default {
 	},
 	methods:
 	{
+		oncloseplyAttrPnl:function()
+		{
+			this.plyAttrPnlShow = !this.plyAttrPnlShow;
+		},
 		playerAttrTest:function()
 		{
-			//console.log($ply);
 			$ply.addAttr('gold',1);
-			//$ply.arriveAt(1);
 		},
 		newGame:function()
 		{
@@ -80,9 +84,12 @@ export default {
 
 <style lang="scss" scoped>
 	
+	.unitTxt{
+		margin-left: 5px;
+	}
 	.infoBox{
 		position: absolute;
-		width: 500px;
+		width: 535px;
 		height: 150px;
 		top: 235px;
 		left: 25px;
@@ -90,14 +97,14 @@ export default {
 		border: solid 1px #dddddd;
 		padding: 5px;
 		resize: none;
-
+		overflow-y: scroll;
 	}
 
 	.mapPanel{
 		position: absolute;
-		width: 525px;
+		width: 535px;
 		height: 150px;
-		top: 55px;
+		top: 50px;
 		left: 25px;
 		border: solid 1px #dddddd;
 		padding: 5px;
@@ -106,9 +113,18 @@ export default {
 			margin: 0 0 0 5px;
 		}
 	}
-
-	.unitTxt{
-		margin-left: 10px;
+	
+	.topBar{
+		position: absolute;
+		padding: 15px 25px 0px 25px;
+		width: 525px;
+		.gtime{
+			float: left;
+		}
+		.gold{
+			position: absolute;
+			right: 0px;
+		}
 	}
 
 	.bottomBar{
@@ -128,17 +144,6 @@ export default {
 		border: solid 1px #CDCDB4;
 		position: relative;
 		font-size: 80%;
-	}
-
-	.playerInfo{
-		position: absolute;
-		left: 200px;
-		bottom: 200px;
-		border: solid 1px #CDCDB4;
-		background-color: #FFFFE0;
-		width: 200px;
-		height: 300px;
-		z-index:100;
 	}
 
 </style>
