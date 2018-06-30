@@ -5,7 +5,7 @@
 			<div class="gold">{{ player['gold'].value }}<span class="unitTxt">金</span></div>
 		</div>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl"></plyAttrPnl>
-		<textarea name="" id="infoBox" class="infoBox" readonly>{{info}}</textarea>
+		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
 		<div class="mapPanel">
 			<h3>{{ playerTxt['posTxt'] }}</h3>
 		</div>
@@ -26,6 +26,7 @@ import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
+var $addinfo = EB.info.addInfo;
 
 export default {
 	name:"gameView",
@@ -36,7 +37,7 @@ export default {
 			player:$ply.attr,
 			playerTxt:$ply.format,
 			plyAttrPnlShow:false,
-			info:"",
+			info:EB.info.txt,
 		}
 	},
 	components: 
@@ -51,7 +52,9 @@ export default {
 	{
 		$map.loadMap();
 		EB.Engine.loadGame();
-		this.addInfo("加载完毕...");
+		$addinfo("加载完毕...");
+		console.log(EB);
+		console.log(EB.info.txt);
 	},
 	methods:
 	{
@@ -62,21 +65,21 @@ export default {
 		playerAttrTest:function()
 		{
 			$ply.addAttr('gold',1);
+			$ply.fightUnit(new UnitBundle.Unit({
+				hp:20,
+				mp:0,
+				atk:2,
+				def:0,
+				aspd:5,
+				spd:4,
+				name:"测试对象",
+			}));
 		},
 		newGame:function()
 		{
 			EB.Engine.newGame();
-			this.addInfo("重新开始了游戏...");
+			$addinfo("重新开始了游戏...");
 		},
-		addInfo:function(v)
-		{
-			this.info=this.info+v+"\n";
-			document.getElementById("infoBox").scrollTop = document.getElementById("infoBox").scrollHeight;
-			if(this.info.length>1000)
-			{
-				this.info.slice(-500);
-			}
-		}
 	}
 }
 
@@ -106,7 +109,6 @@ export default {
 		height: 150px;
 		top: 50px;
 		left: 25px;
-		border: solid 1px #dddddd;
 		padding: 5px;
 		resize: none;
 		h3{

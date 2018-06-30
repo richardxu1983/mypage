@@ -119,4 +119,19 @@ var Engine =
     }
 };
 
-export default { Engine , StateManager }; 
+var info={
+    txt:{
+        v:"",
+    },
+    addInfo:function(v)
+    {
+        info.txt.v=info.txt.v+v+"\n";
+        document.getElementById("infoBox").scrollTop = document.getElementById("infoBox").scrollHeight+50;
+        if(info.txt.v.length>1000)
+        {
+            info.txt.v.slice(-500);
+        }
+    }
+};
+
+export default { Engine , StateManager , info }; 

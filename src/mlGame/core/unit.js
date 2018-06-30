@@ -1,10 +1,9 @@
 
-import {extend} from '../../utils/utils.js'
 import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
 
 var $map = MpB.Gmap;
-
+var $addinfo = EB.info.addInfo;
 var $SM = EB.StateManager;
 
 //unit 类
@@ -13,8 +12,11 @@ function Unit(attr)
 	this.hp = attr.hp || 0;
 	this.mp = attr.mp || 0;
 	this.atk = attr.atk || 0;
+    this.def = attr.def || 0;
+    this.aspd = attr.aspd || 0;
+    this.spd = attr.spd || 0;
 	this.name = attr.name || "";
-
+    this.aspdIndex=0;
 	this.damage = function(val)
     {
         var hp = this.hp;
@@ -34,6 +36,98 @@ function Unit(attr)
     {
     	return this.hp>0?true:false;
     }
+}
+
+var Fight = {
+
+    target:null,
+    playerPos:0,
+    targetPos:20,
+    fightTimer:0,
+
+    start:function(u)
+    {
+        Fight.target = u;
+        Fight.targetPos = 20;
+        Fight.playerPos = 0;
+        Fight.fightTimer = setInterval(Fight.step,500);
+        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+u.name+"]"+"发起了挑战，这将是一场你死我活的战斗，两者距离：" + (Fight.targetPos - Fight.playerPos));
+    },
+
+    step:function()
+    {   
+        if((Fight.targetPos - Fight.playerPos) >5)
+        {
+            Fight.playerPos = Fight.playerPos + Player.getAttr('spd');
+            $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
+        }
+        else
+        {
+            if(Player.aspdIndex>=Player.getAttr('aspd'))
+            {
+                if(Fight.playerTurn()==1)
+                {
+                    $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 胜利了");
+                    clearInterval(Fight.fightTimer);
+                }
+                else
+                {
+                    Player.aspdIndex = 0;
+                }
+            }
+            else
+            {
+                Player.aspdIndex = Player.aspdIndex + 1;
+            }
+        }
+
+        if((Fight.targetPos - Fight.playerPos) >5)
+        {
+            Fight.targetPos = Fight.targetPos - Fight.target.spd;
+            $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
+        }
+        else
+        {
+            if(Fight.target.aspdIndex>=Fight.target.aspd)
+            {
+               if( Fight.targetTurn()==1)
+               {
+                    $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+Fight.target.name+" 胜利了");
+                    clearInterval(Fight.fightTimer);
+               }
+               else
+               {
+                    Fight.target.aspdIndex = 0;
+               }
+            }
+            else
+            {
+                Fight.target.aspdIndex = Fight.target.aspdIndex + 1;
+            }
+        }
+    },
+
+    playerTurn:function()
+    {
+        var atk = Player.getAttr('atk');
+        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"发起进攻，造成了" + atk + "的伤害");
+        if(Fight.target.damage(atk)==-1)
+        {
+            return 1;
+        }
+        return 0;
+    },
+
+    targetTurn:function()
+    {
+        var atk = Fight.target.atk;
+        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"发起进攻，造成了" + atk + "的伤害");
+        if(Player.damage(atk)==-1)
+        {
+            return 1;
+        }
+        return 0;
+    },
 }
 
 var Player = {
@@ -75,7 +169,14 @@ var Player = {
             'value':3,
             'init' : 3,
             'visual' : false,
-            'max':1
+            'min':1
+        },
+        'spd' : {
+            'name' : "移动速度",
+            'value':5,
+            'init' :5,
+            'visual' : false,
+            'max':10
         },
         'gold' : {
             'name' : "金币",
@@ -95,6 +196,13 @@ var Player = {
         'posTxt':"1",
     },
     
+    aspdIndex:0,
+
+    fightUnit:function(u)
+    {
+        Fight.start(u);
+    },
+
     posFormat:function()
     {
         Player.format.posTxt = $map.mapName(Player.attr['pos'].value);
@@ -142,6 +250,15 @@ var Player = {
             return -1;
     },
 
+    getAttrMin : function(attr)
+    {
+        var val = Player.attr[attr];
+        if(val!=undefined)
+            return Player.attr[attr].min;
+        else
+            return -1;
+    },
+
     //
     getAttack : function()
     {
@@ -162,10 +279,15 @@ var Player = {
         //alert(attr + ' : ' + val);
         var newVal = val;
         var maxVal = Player.getAttrMax(attr);
+        var minVal = Player.getAttrMin(attr);
         if(newVal < 0) newVal = 0;
         if(maxVal>0)
         {
             if(newVal > maxVal) newVal = maxVal;
+        }
+        if(minVal>0)
+        {
+            if(newVal < maxVal) newVal = maxVal;
         }
         Player.attr[attr].value = newVal;
         $SM.set('player.'+attr , newVal);
@@ -204,6 +326,11 @@ var Player = {
     {
         var dmg = -1 * val;
         Player.addAttr('hp',dmg);
+        if(Player.hp()<=0)
+        {
+            return -1;
+        }
+        return 0;
     },
 
     //
