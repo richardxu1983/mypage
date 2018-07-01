@@ -10,6 +10,7 @@ var $SM = EB.StateManager;
 function Unit(attr)
 {
 	this.hp = attr.hp || 0;
+    this.maxhp = attr.hp || 0;
 	this.mp = attr.mp || 0;
 	this.atk = attr.atk || 0;
     this.def = attr.def || 0;
@@ -25,7 +26,7 @@ function Unit(attr)
         {
             hp = 0;
             this.hp = hp;
-            this.die();
+            //this.die();
             return -1;
         }
         this.hp = hp;
@@ -38,95 +39,157 @@ function Unit(attr)
     }
 }
 
+function unpdateFMsg()
+{
+    var el = document.getElementById('ftMsg');
+    if(el)
+    {
+        el.scrollTop = el.scrollHeight;
+    }
+}
+
 var Fight = {
 
     target:null,
     playerPos:0,
     targetPos:20,
     fightTimer:0,
+    info:{v:""},
+    over:0,
+    showClose:{v:false},
+    showPnl:{v:false},
+
+    addInfo:function(v)
+    {
+        Fight.info.v=Fight.info.v+v+"\n";
+        unpdateFMsg();
+        if(Fight.info.length>1000)
+        {
+            Fight.info.slice(-500);
+        }
+    },
+
+    close:function()
+    {
+        Fight.target = null;
+        Fight.info.v = "";
+        clearInterval(Fight.fightTimer);
+        Fight.showPnl.v=false;
+    },
 
     start:function(u)
     {
         Fight.target = u;
+        Fight.over=0;
+        Fight.info.v = "";
         Fight.targetPos = 20;
         Fight.playerPos = 0;
+        Fight.showClose.v = false;
+        Fight.showPnl.v=true;
         Fight.fightTimer = setInterval(Fight.step,500);
-        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+u.name+"]"+"发起了挑战，这将是一场你死我活的战斗，两者距离：" + (Fight.targetPos - Fight.playerPos));
+        Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+u.name+"]"+"发起了挑战，这将是一场你死我活的战斗，两者距离：" + (Fight.targetPos - Fight.playerPos));
     },
 
     step:function()
-    {   
-        if((Fight.targetPos - Fight.playerPos) >5)
+    {
+
+        if(Fight.over==1)
         {
-            Fight.playerPos = Fight.playerPos + Player.getAttr('spd');
-            $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
+            unpdateFMsg();
+            clearInterval(Fight.fightTimer);
+            Fight.showClose.v = true;
         }
         else
         {
-            if(Player.aspdIndex>=Player.getAttr('aspd'))
+            if((Fight.targetPos - Fight.playerPos) >5)
             {
-                if(Fight.playerTurn()==1)
+                Fight.playerPos = Fight.playerPos + Player.getAttr('spd');
+                Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
+            }
+            else
+            {
+                if(Player.aspdIndex>=Player.getAttr('aspd'))
                 {
-                    $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 胜利了");
-                    clearInterval(Fight.fightTimer);
+                    if(Fight.playerTurn()==1)
+                    {
+                        Fight.addInfo("["+Player.attr.name+"]"+" 胜利了");
+                        unpdateFMsg();
+                        Fight.over = 1;
+                    }
+                    else
+                    {
+                        Player.aspdIndex = 0;
+                    }
                 }
                 else
                 {
-                    Player.aspdIndex = 0;
+                    Player.aspdIndex = Player.aspdIndex + 1;
                 }
             }
-            else
-            {
-                Player.aspdIndex = Player.aspdIndex + 1;
-            }
-        }
 
-        if((Fight.targetPos - Fight.playerPos) >5)
-        {
-            Fight.targetPos = Fight.targetPos - Fight.target.spd;
-            $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
-        }
-        else
-        {
-            if(Fight.target.aspdIndex>=Fight.target.aspd)
+            if((Fight.targetPos - Fight.playerPos) >5)
             {
-               if( Fight.targetTurn()==1)
-               {
-                    $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+Fight.target.name+" 胜利了");
-                    clearInterval(Fight.fightTimer);
-               }
-               else
-               {
-                    Fight.target.aspdIndex = 0;
-               }
+                Fight.targetPos = Fight.targetPos - Fight.target.spd;
+                Fight.addInfo("["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
             }
             else
             {
-                Fight.target.aspdIndex = Fight.target.aspdIndex + 1;
-            }
+                if(Fight.target.aspdIndex>=Fight.target.aspd)
+                {
+                   if( Fight.targetTurn()==1)
+                   {
+                        Fight.addInfo(Fight.target.name+" 胜利了");
+                        unpdateFMsg();
+                        Fight.over = 1;
+                   }
+                   else
+                   {
+                        Fight.target.aspdIndex = 0;
+                   }
+                }
+                else
+                {
+                    Fight.target.aspdIndex = Fight.target.aspdIndex + 1;
+                }
+            } 
         }
+        unpdateFMsg();
     },
 
     playerTurn:function()
     {
-        var atk = Player.getAttr('atk');
-        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"发起进攻，造成了" + atk + "的伤害");
-        if(Fight.target.damage(atk)==-1)
+        if(Player.hp()>0)
         {
-            return 1;
+            var atk = Player.getAttr('atk');
+            Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"发起进攻，造成了" + atk + "的伤害");
+            if(Fight.target.damage(atk)==-1)
+            {
+                return 1;
+            }
+            return 0;
         }
-        return 0;
+        else
+        {
+            return -2;
+        }
     },
 
     targetTurn:function()
     {
-        var atk = Fight.target.atk;
-        $addinfo("["+Player.hp()+":"+Fight.target.hp+"] "+"["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"发起进攻，造成了" + atk + "的伤害");
-        if(Player.damage(atk)==-1)
+        if(Fight.target.hp>0)
         {
-            return 1;
+            var atk = Fight.target.atk;
+            Fight.addInfo("["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"发起进攻，造成了" + atk + "的伤害");
+            if(Player.damage(atk)==-1)
+            {
+                return 1;
+            }
+            return 0;            
         }
-        return 0;
+        else
+        {
+            return -2;
+        }
     },
 }
 
@@ -141,7 +204,7 @@ var Player = {
             'value':20,
             'init' : 20,
             'visual' : true,
-            'max':100
+            'max':20
         },
         'mp' : {
             'name' : "魔法值",
@@ -348,4 +411,4 @@ var Player = {
 
 //extend(Player,Unit);
 
-export default { Player , Unit }; 
+export default { Player , Unit , Fight }; 

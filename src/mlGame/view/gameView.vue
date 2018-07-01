@@ -5,6 +5,7 @@
 			<div class="gold">{{ player['gold'].value }}<span class="unitTxt">金</span></div>
 		</div>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl"></plyAttrPnl>
+		<fightPnl></fightPnl>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
 		<div class="mapPanel">
 			<h3>{{ playerTxt['posTxt'] }}</h3>
@@ -23,6 +24,7 @@ import UnitBundle from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
 import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
+import fightPnl from '../../mlGame/view/fightPnl.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -42,7 +44,8 @@ export default {
 	},
 	components: 
 	{
-	  plyAttrPnl
+	  plyAttrPnl,
+	  fightPnl
 	},
 	created:function()
 	{
@@ -94,10 +97,9 @@ export default {
 		position: absolute;
 		width: 535px;
 		height: 150px;
-		top: 235px;
+		top: 435px;
 		left: 25px;
-		background-color: white;
-		border: solid 1px #dddddd;
+		border: solid 1px #eeeeee;
 		padding: 5px;
 		resize: none;
 		overflow-y: scroll;
