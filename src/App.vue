@@ -43,7 +43,7 @@ export default {
 <style type="text/css">
 
   .main-container {
-    position: fixed;
+    position: relative;
     left: 250px;
     right: 0px;
     bottom: 0px;

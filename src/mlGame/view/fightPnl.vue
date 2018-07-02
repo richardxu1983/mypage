@@ -12,7 +12,7 @@
 			</div>
 		</div>
 		<div class="dis">距离：{{ dis }}</div>
-		<textarea name="" id = "ftMsg" class="msg" rows="21" readonly>{{info.v}}</textarea>
+		<textarea name="" id = "ftMsg" class="msg" rows="16" readonly>{{info.v}}</textarea>
 		<button class="close" v-if="showClose.v" @click="close" >关闭</button>
 	</div>
 </template>
@@ -100,7 +100,7 @@ export default {
 		border: solid 1px #CDCDB4;
 		background-color: #FFFFF0;
 		width: 500px;
-		height: 450px;
+		height: 380px;
 		z-index:100;
 
 		.top{

@@ -97,7 +97,7 @@ export default {
 		position: absolute;
 		width: 535px;
 		height: 150px;
-		top: 435px;
+		top: 335px;
 		left: 25px;
 		border: solid 1px #eeeeee;
 		padding: 5px;
@@ -142,7 +142,7 @@ export default {
 
 	.mlBoard{
 		width: 600px;
-		height: 700px;
+		height: 550px;
 		margin: 0 45px 45px 45px;
 		background-color: #FFFFFA;
 		border: solid 1px #CDCDB4;
