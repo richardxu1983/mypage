@@ -1,4 +1,4 @@
-# 002
+# Magic Land
 
 > A Vue.js project
 
