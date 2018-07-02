@@ -1,13 +1,16 @@
 
 import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
+import FT from '../../mlGame/core/fight.js'
+import WP from '../../mlGame/core/weapon.js'
 
 var $map = MpB.Gmap;
-var $addinfo = EB.info.addInfo;
 var $SM = EB.StateManager;
+var Fight = FT.Fight;
+var Weapon = WP.Weapon;
 
 //unit 类
-function Unit(attr)
+function Unit(attr,weapon)
 {
 	this.hp = attr.hp || 0;
     this.maxhp = attr.hp || 0;
@@ -17,7 +20,60 @@ function Unit(attr)
     this.aspd = attr.aspd || 0;
     this.spd = attr.spd || 0;
 	this.name = attr.name || "";
-    this.aspdIndex=0;
+    this.weapon = weapon || null;
+    this.idx=0;
+
+    this.getAtkIdx=function()
+    {
+        if(this.weapon==null)
+        {
+            return this.idx;
+        }
+        else {
+            return this.weapon.idx;
+        }
+    };
+
+    this.setAtkIdx=function(v)
+    {
+        if(this.weapon==null)
+        {
+            this.idx = v;
+        }
+        else {
+            this.weapon.idx = v;
+        }
+    };    
+    this.atkDis = function()
+    {
+        if(this.weapon==null)
+        {
+            return 2;
+        }
+        else {
+            return this.weapon.atkDis;
+        }
+    };
+    this.getAspd = function()
+    {
+        if(this.weapon==null)
+        {
+            return this.aspd;
+        }
+        else {
+            return this.weapon.aspd;
+        }        
+    };
+    this.getAtk = function()
+    {
+        if(this.weapon==null)
+        {
+            return this.atk;
+        }
+        else {
+            return this.weapon.atk;
+        }
+    };
 	this.damage = function(val)
     {
         var hp = this.hp;
@@ -36,161 +92,17 @@ function Unit(attr)
     this.alive = function()
     {
     	return this.hp>0?true:false;
+    };
+    this.atkWord=function()
+    {
+        if(this.weapon==null)
+        {
+            return "打出一拳";
+        }
+        else {
+            return this.weapon.atkWord;
+        }
     }
-}
-
-function unpdateFMsg()
-{
-    var el = document.getElementById('ftMsg');
-    if(el)
-    {
-        el.scrollTop = el.scrollHeight;
-    }
-}
-
-var Fight = {
-
-    target:null,
-    playerPos:0,
-    targetPos:20,
-    fightTimer:0,
-    info:{v:""},
-    over:0,
-    showClose:{v:false},
-    showPnl:{v:false},
-
-    addInfo:function(v)
-    {
-        Fight.info.v=Fight.info.v+v+"\n";
-        unpdateFMsg();
-        if(Fight.info.length>1000)
-        {
-            Fight.info.slice(-500);
-        }
-    },
-
-    close:function()
-    {
-        Fight.target = null;
-        Fight.info.v = "";
-        clearInterval(Fight.fightTimer);
-        Fight.showPnl.v=false;
-    },
-
-    start:function(u)
-    {
-        Fight.target = u;
-        Fight.over=0;
-        Fight.info.v = "";
-        Fight.targetPos = 20;
-        Fight.playerPos = 0;
-        Fight.showClose.v = false;
-        Fight.showPnl.v=true;
-        Fight.fightTimer = setInterval(Fight.step,500);
-        Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+u.name+"]"+"发起了挑战，这将是一场你死我活的战斗，两者距离：" + (Fight.targetPos - Fight.playerPos));
-    },
-
-    step:function()
-    {
-
-        if(Fight.over==1)
-        {
-            unpdateFMsg();
-            clearInterval(Fight.fightTimer);
-            Fight.showClose.v = true;
-        }
-        else
-        {
-            if((Fight.targetPos - Fight.playerPos) >5)
-            {
-                Fight.playerPos = Fight.playerPos + Player.getAttr('spd');
-                Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
-            }
-            else
-            {
-                if(Player.aspdIndex>=Player.getAttr('aspd'))
-                {
-                    if(Fight.playerTurn()==1)
-                    {
-                        Fight.addInfo("["+Player.attr.name+"]"+" 胜利了");
-                        unpdateFMsg();
-                        Fight.over = 1;
-                    }
-                    else
-                    {
-                        Player.aspdIndex = 0;
-                    }
-                }
-                else
-                {
-                    Player.aspdIndex = Player.aspdIndex + 1;
-                }
-            }
-
-            if((Fight.targetPos - Fight.playerPos) >5)
-            {
-                Fight.targetPos = Fight.targetPos - Fight.target.spd;
-                Fight.addInfo("["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"靠近，两者距离：" + (Fight.targetPos - Fight.playerPos));
-            }
-            else
-            {
-                if(Fight.target.aspdIndex>=Fight.target.aspd)
-                {
-                   if( Fight.targetTurn()==1)
-                   {
-                        Fight.addInfo(Fight.target.name+" 胜利了");
-                        unpdateFMsg();
-                        Fight.over = 1;
-                   }
-                   else
-                   {
-                        Fight.target.aspdIndex = 0;
-                   }
-                }
-                else
-                {
-                    Fight.target.aspdIndex = Fight.target.aspdIndex + 1;
-                }
-            } 
-        }
-        unpdateFMsg();
-    },
-
-    playerTurn:function()
-    {
-        if(Player.hp()>0)
-        {
-            var atk = Player.getAttr('atk');
-            Fight.addInfo("["+Player.attr.name+"]"+" 向 "+"["+Fight.target.name+"]"+"发起进攻，造成了" + atk + "的伤害");
-            if(Fight.target.damage(atk)==-1)
-            {
-                return 1;
-            }
-            return 0;
-        }
-        else
-        {
-            return -2;
-        }
-    },
-
-    targetTurn:function()
-    {
-        if(Fight.target.hp>0)
-        {
-            var atk = Fight.target.atk;
-            Fight.addInfo("["+Fight.target.name+"]"+" 向 "+"["+Player.attr.name+"]"+"发起进攻，造成了" + atk + "的伤害");
-            if(Player.damage(atk)==-1)
-            {
-                return 1;
-            }
-            return 0;            
-        }
-        else
-        {
-            return -2;
-        }
-    },
 }
 
 var Player = {
@@ -203,63 +115,121 @@ var Player = {
             'name' : "生命值",
             'value':20,
             'init' : 20,
-            'visual' : true,
             'max':20
         },
         'mp' : {
             'name' : "魔法值",
             'value': 20,
             'init' : 20,
-            'visual' : true,
             'max':100
         },
         'atk' : {
             'name' : "攻击力",
             'value':1,
             'init' : 1,
-            'visual' : true,
-            'max':1000000
         },
         'def' : {
             'name' : "防御力",
             'value':0,
             'init' : 0,
-            'visual' : true,
-            'max':100
         },
         'aspd' : {
             'name' : "攻击速度",
             'value':3,
             'init' : 3,
-            'visual' : false,
             'min':1
         },
         'spd' : {
-            'name' : "移动速度",
             'value':5,
             'init' :5,
-            'visual' : false,
-            'max':10
         },
         'gold' : {
             'name' : "金币",
             'value':0,
             'init' : 10,
-            'max' : 1000000,
         },
         'pos':{
-            'name':"位置",
             'value':0,
             'init':0,
-            'max' : 1000000,
         },
     },
+
+    weapon:null,
 
     format:{
         'posTxt':"1",
     },
     
-    aspdIndex:0,
+    idx:0,
+
+    atkDis:function()
+    {
+        if(Player.weapon==null)
+        {
+            return 2;
+        }
+        else {
+            return Player.weapon.atkDis;
+        }
+    },
+    atkWord:function()
+    {
+        if(Player.weapon==null)
+        {
+            return "打出一拳";
+        }
+        else {
+            return Player.weapon.atkWord;
+        }
+    },
+    getAspd : function()
+    {
+        if(Player.weapon==null)
+        {
+            return Player.getAttr('aspd');
+        }
+        else {
+            return Player.weapon.aspd;
+        }        
+    },
+
+    equipWp:function(id)
+    {
+        if(Fight.over==0)
+        {
+            Player.weapon = new Weapon(id);
+            console.log(Player.weapon);
+        }
+    },
+
+    unEquipWp:function()
+    {
+        if(Fight.over==0)
+            Player.weapon = null;
+        console.log(Player.weapon);
+    },
+
+    getAtkIdx:function()
+    {
+        if(Player.weapon==null)
+        {
+            return Player.idx;
+        }
+        else {
+            return Player.weapon.idx;
+        }
+    },
+
+    setAtkIdx:function(v)
+    {
+        if(Player.weapon==null)
+        {
+            Player.idx = v;
+        }
+        else {
+            Player.weapon.idx = v;
+        }
+    },
 
     fightUnit:function(u)
     {
@@ -280,6 +250,7 @@ var Player = {
                 Player.attr[v].value = Player.getAttr(v);
         }
         Player.posFormat();
+        Player.weapon = null;
     },
 
     //
@@ -307,27 +278,26 @@ var Player = {
     getAttrMax : function(attr)
     {
         var val = Player.attr[attr];
-        if(val!=undefined)
-            return Player.attr[attr].max;
-        else
-            return -1;
+        return Player.attr[attr].max;
     },
 
     getAttrMin : function(attr)
     {
         var val = Player.attr[attr];
-        if(val!=undefined)
-            return Player.attr[attr].min;
-        else
-            return -1;
+        return Player.attr[attr].min;
     },
 
     //
-    getAttack : function()
+    getAtk : function()
     {
-        var atk = Player.getAttr('atk');
-        //alert(power+','+Math.floor(power));
-        return Math.floor(atk);
+        if(Player.weapon==null)
+        {
+            var atk = Player.getAttr('atk');
+            return Math.floor(atk);
+        }
+        else {
+            return Player.weapon.atk;
+        }
     },
 
     //
@@ -344,11 +314,11 @@ var Player = {
         var maxVal = Player.getAttrMax(attr);
         var minVal = Player.getAttrMin(attr);
         if(newVal < 0) newVal = 0;
-        if(maxVal>0)
+        if(maxVal!=undefined&&maxVal>0)
         {
             if(newVal > maxVal) newVal = maxVal;
         }
-        if(minVal>0)
+        if(minVal!=undefined&&minVal>0)
         {
             if(newVal < maxVal) newVal = maxVal;
         }
@@ -411,4 +381,4 @@ var Player = {
 
 //extend(Player,Unit);
 
-export default { Player , Unit , Fight }; 
+export default { Player , Unit}; 

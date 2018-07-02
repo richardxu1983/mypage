@@ -20,9 +20,11 @@
 <script>
 
 import UnitBundle from '../../mlGame/core/unit.js'
+import FT from '../../mlGame/core/fight.js'
+
 var $ply = UnitBundle.Player;
-var $fight = UnitBundle.Fight;
-var $enm = UnitBundle.Fight.target;
+var $fight = FT.Fight;
+var $enm = FT.Fight.target;
 
 export default {
 	name:"fightPnl",
@@ -157,7 +159,7 @@ export default {
 			width: 435px;
 			left: 25px;
 			top:75px;
-			overflow: hidden;
+			overflow-y: scroll;
 		}
 		.close{
 			position: absolute;

@@ -14,6 +14,8 @@
 			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="btnBottom" @click="playerAttrTest">测试</button>
 			<button class="btnBottom" @click="newGame">新游戏</button>
+			<button class="btnBottom" @click="equipWp">装备武器</button>
+			<button class="btnBottom" @click="upEquip">卸下武器</button>
 		</div>
 	</div>
 </template>
@@ -56,8 +58,6 @@ export default {
 		$map.loadMap();
 		EB.Engine.loadGame();
 		$addinfo("加载完毕...");
-		console.log(EB);
-		console.log(EB.info.txt);
 	},
 	methods:
 	{
@@ -69,11 +69,11 @@ export default {
 		{
 			$ply.addAttr('gold',1);
 			$ply.fightUnit(new UnitBundle.Unit({
-				hp:20,
+				hp:30,
 				mp:0,
 				atk:2,
 				def:0,
-				aspd:5,
+				aspd:2,
 				spd:4,
 				name:"测试对象",
 			}));
@@ -82,6 +82,15 @@ export default {
 		{
 			EB.Engine.newGame();
 			$addinfo("重新开始了游戏...");
+		},
+		equipWp:function()
+		{
+			$ply.equipWp(1);
+			$addinfo("装备了:"+$ply.weapon.name);
+		},
+		upEquip:function()
+		{
+			$ply.unEquipWp(1);
 		},
 	}
 }
@@ -99,7 +108,8 @@ export default {
 		height: 150px;
 		top: 335px;
 		left: 25px;
-		border: solid 1px #eeeeee;
+		border: solid 1px #aaaaaa;
+		background: #FFFFFA;
 		padding: 5px;
 		resize: none;
 		overflow-y: scroll;
@@ -145,7 +155,7 @@ export default {
 		height: 550px;
 		margin: 0 45px 45px 45px;
 		background-color: #FFFFFA;
-		border: solid 1px #CDCDB4;
+		border: solid 1px #aaaaaa;
 		position: relative;
 		font-size: 80%;
 	}
