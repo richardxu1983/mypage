@@ -10,7 +10,7 @@ var Fight = FT.Fight;
 var Weapon = WP.Weapon;
 
 //unit 类
-function Unit(attr,weapon)
+function Unit(attr,weaponid)
 {
 	this.hp = attr.hp || 0;
     this.maxhp = attr.hp || 0;
@@ -20,7 +20,15 @@ function Unit(attr,weapon)
     this.aspd = attr.aspd || 0;
     this.spd = attr.spd || 0;
 	this.name = attr.name || "";
-    this.weapon = weapon || null;
+    if(weaponid==undefined)
+    {
+        this.weapon = null;
+    }
+    else
+    {
+        this.weapon = new Weapon(weaponid);
+    }
+
     this.idx=0;
 
     this.getAtkIdx=function()
@@ -102,7 +110,17 @@ function Unit(attr,weapon)
         else {
             return this.weapon.atkWord;
         }
-    }
+    };
+    this.startAtkWrd = function()
+    {
+        if(this.weapon==null)
+        {
+            return "";
+        }
+        else {
+            return this.weapon.startWrd;
+        }
+    };
 }
 
 var Player = {
@@ -113,9 +131,9 @@ var Player = {
 
         'hp' : {
             'name' : "生命值",
-            'value':20,
-            'init' : 20,
-            'max':20
+            'value':50,
+            'init' : 50,
+            'max':50
         },
         'mp' : {
             'name' : "魔法值",
@@ -160,7 +178,7 @@ var Player = {
         'posTxt':"1",
     },
     
-    idx:0,
+    idx:3,
 
     atkDis:function()
     {
@@ -182,6 +200,16 @@ var Player = {
             return Player.weapon.atkWord;
         }
     },
+    startAtkWrd:function()
+    {
+        if(Player.weapon==null)
+        {
+            return "";
+        }
+        else {
+            return Player.weapon.startWrd;
+        }
+    },
     getAspd : function()
     {
         if(Player.weapon==null)
@@ -198,7 +226,6 @@ var Player = {
         if(Fight.over==0)
         {
             Player.weapon = new Weapon(id);
-            console.log(Player.weapon);
         }
     },
 
@@ -206,7 +233,6 @@ var Player = {
     {
         if(Fight.over==0)
             Player.weapon = null;
-        console.log(Player.weapon);
     },
 
     getAtkIdx:function()

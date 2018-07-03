@@ -1,17 +1,15 @@
 <template>
 	<div class="fightPnl" v-if="show.v">
 		<div class="top">
-			<div class="ply">
-				{{player['name']}}
-			</div>
-			<div class="plyhp" :style="{width:plyhpw+'px'}"></div>
-			<div class="vs">vs</div>
-			<div class="enmhp" :style="{width:enmhpw+'px'}"></div>
-			<div class="enm">
-				{{ enmName }}
-			</div>
+			<div class="ply"><div class="right">{{player['name']}}</div></div>
+			<div class="plyhp1" ></div>
+			<div class="plyhp" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
+			<div class="vs">对阵</div>
+			<div class="enmhp1" ></div>
+			<div class="enmhp" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
+			<div class="enm"><div class="left">{{ enmName }}</div></div>
 		</div>
-		<div class="dis">距离：{{ dis }}</div>
+		<div class="dis">双方距离：{{ dis }}米</div>
 		<textarea name="" id = "ftMsg" class="msg" rows="16" readonly>{{info.v}}</textarea>
 		<button class="close" v-if="showClose.v" @click="close" >关闭</button>
 	</div>
@@ -25,6 +23,22 @@ import FT from '../../mlGame/core/fight.js'
 var $ply = UnitBundle.Player;
 var $fight = FT.Fight;
 var $enm = FT.Fight.target;
+
+function getColor(p)
+{
+    if(p>=0.8)
+	{
+		return "#00FF33";
+	}
+	else if(p>=0.4)
+	{
+		return "orange";
+	}
+	else(p>=0.15)
+	{
+		return "red";
+	}
+}
 
 export default {
 	name:"fightPnl",
@@ -46,14 +60,24 @@ export default {
 	    },
 	    plyhpw:function(){
 	    	var len;
-	    	len = Math.floor((this.player['hp'].value/this.player['hp'].max)*120);
+	    	len = Math.floor((this.player['hp'].value/this.player['hp'].max)*130);
 	    	return len;
+	    },
+	    plyhpc:function()
+	    {
+	    	var p = (this.player['hp'].value/this.player['hp'].max);
+	    	return getColor(p);
+	    },
+	    enmhpc:function()
+	    {
+	    	var p = (this.fight.target.hp/this.fight.target.maxhp);
+	    	return getColor(p);
 	    },
 	    enmhpw:function(){
 	    	if(this.fight.target)
 	    	{
 	    		var len;
-		    	len = Math.floor((this.fight.target.hp/this.fight.target.maxhp)*120);
+		    	len = Math.floor((this.fight.target.hp/this.fight.target.maxhp)*130);
 		    	return len;
 	    	}
 	    	else
@@ -99,8 +123,8 @@ export default {
 		position: absolute;
 		left: 50px;
 		top: 90px;
-		border: solid 1px #CDCDB4;
-		background-color: #FFFFF0;
+		border: solid 3px #aaaaaa;
+		background-color: white;
 		width: 500px;
 		height: 380px;
 		z-index:100;
@@ -108,58 +132,85 @@ export default {
 		.top{
 			position: absolute;
 			top: 20px;
-			left: 25px;
-			width: 450px;
+			left: 0px;
+			width: 500px;
 			padding: 0px;
 			height: 20px;
 			.vs{
 				position: absolute;
 				top:0px;
-				left: 220px;
+				left: 240px;
 			}
 			.ply{
 				position: absolute;
 				top:0px;
-				left: 10px;
-				width: 60px;
+				left: 0px;
+				width: 70px;
 				overflow: hidden;
+				text-align: left;
+				font-weight: bold;
+				.right{
+					float: right;
+				}
 			}
 			.plyhp{
 				position: absolute;
-				left: 70px;
-				height: 4px;
-				top: 7px;
-				background-color: black;
+				left: 85px;
+				height: 5px;
+				top: 6px;
 			}
 			.enmhp{
 				position: absolute;
-				right: 75px;
-				height: 4px;
-				top: 7px;
-				background-color: black;				
+				right: 85px;
+				height: 5px;
+				top: 6px;		
+			}
+			.plyhp1{
+				position: absolute;
+				left: 85px;
+				height: 5px;
+				top: 6px;
+				width: 130px;
+				background-color: black;
+			}
+			.enmhp1{
+				position: absolute;
+				right: 85px;
+				height: 5px;
+				top: 6px;
+				width: 130px;
+				background-color: black;		
 			}
 			.enm{
 				position: absolute;
 				top:0px;
-				right: 5px;
-				width: 60px;
+				right: 0px;
+				width: 70px;
 				overflow: hidden;
+				text-align: right;
+				font-weight: bold;
+				.left{
+					float: left;
+				}
 			}
 		}
 		.dis{
 			position: absolute;
 			left: 25px;
-			top:45px;
+			top:48px;
+			font-weight: bold;
 		}
 		.msg{
 			position: absolute;
-			border: solid 1px #eeeeee;
+			border: solid 1px #aaaaaa;
 			padding: 5px;
 			resize: none;
 			width: 435px;
 			left: 25px;
-			top:75px;
+			top:80px;
 			overflow-y: scroll;
+			background: #424242;
+			color: white;
 		}
 		.close{
 			position: absolute;

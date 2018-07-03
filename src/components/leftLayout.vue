@@ -40,10 +40,6 @@ export default {
 		return {
 			    routes:[
 			    {
-			    	name:"小站首页",
-			    	path:"/frontPage"
-			    },
-			    {
 			    	name:"魔法大陆",
 			    	path:"/magicLand"
 			    },

@@ -14,7 +14,8 @@
 			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="btnBottom" @click="playerAttrTest">测试</button>
 			<button class="btnBottom" @click="newGame">新游戏</button>
-			<button class="btnBottom" @click="equipWp">装备武器</button>
+			<button class="btnBottom" @click="equipWp1">装备匕首</button>
+			<button class="btnBottom" @click="equipWp2">装备弓箭</button>
 			<button class="btnBottom" @click="upEquip">卸下武器</button>
 		</div>
 	</div>
@@ -75,15 +76,20 @@ export default {
 				def:0,
 				aspd:2,
 				spd:4,
-				name:"测试对象",
-			}));
+				name:"强盗",
+			},0));
 		},
 		newGame:function()
 		{
 			EB.Engine.newGame();
 			$addinfo("重新开始了游戏...");
 		},
-		equipWp:function()
+		equipWp1:function()
+		{
+			$ply.equipWp(0);
+			$addinfo("装备了:"+$ply.weapon.name);
+		},
+		equipWp2:function()
 		{
 			$ply.equipWp(1);
 			$addinfo("装备了:"+$ply.weapon.name);
