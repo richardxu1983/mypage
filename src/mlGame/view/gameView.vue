@@ -17,6 +17,7 @@
 			<button class="btnBottom" @click="equipWp1">装备匕首</button>
 			<button class="btnBottom" @click="equipWp2">装备弓箭</button>
 			<button class="btnBottom" @click="upEquip">卸下武器</button>
+			<button class="btnBottom" @click="showwp">武器名</button>
 		</div>
 	</div>
 </template>
@@ -87,16 +88,18 @@ export default {
 		equipWp1:function()
 		{
 			$ply.equipWp(0);
-			$addinfo("装备了:"+$ply.weapon.name);
 		},
 		equipWp2:function()
 		{
 			$ply.equipWp(1);
-			$addinfo("装备了:"+$ply.weapon.name);
 		},
 		upEquip:function()
 		{
 			$ply.unEquipWp(1);
+		},
+		showwp:function()
+		{
+			$addinfo("装备了:"+$ply.wpName());
 		},
 	}
 }

@@ -1,16 +1,16 @@
 <template>
 	<div class="fightPnl" v-if="show.v">
 		<div class="top">
-			<div class="ply"><div class="right">{{player['name']}}</div></div>
-			<div class="plyhp1" ></div>
-			<div class="plyhp" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
+			<div class="ply nameTag"><div class="right">{{player['name']}}</div></div>
+			<div class="plyhp1 plyhp hpbar" ></div>
+			<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 			<div class="vs">对阵</div>
-			<div class="enmhp1" ></div>
-			<div class="enmhp" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
-			<div class="enm"><div class="left">{{ enmName }}</div></div>
+			<div class="enmhp1 enmhp hpbar" ></div>
+			<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
+			<div class="enm nameTag"><div class="left">{{ enmName }}</div></div>
 		</div>
 		<div class="dis">双方距离：{{ dis }}米</div>
-		<textarea name="" id = "ftMsg" class="msg" rows="16" readonly>{{info.v}}</textarea>
+		<textarea name="" id = "ftMsg" class="msg" rows="17" readonly>{{info.v}}</textarea>
 		<button class="close" v-if="showClose.v" @click="close" >关闭</button>
 	</div>
 </template>
@@ -70,14 +70,14 @@ export default {
 	    },
 	    enmhpc:function()
 	    {
-	    	var p = (this.fight.target.hp/this.fight.target.maxhp);
+	    	var p = (this.fight.target.hp()/this.fight.target.getAttr('maxhp'));
 	    	return getColor(p);
 	    },
 	    enmhpw:function(){
 	    	if(this.fight.target)
 	    	{
 	    		var len;
-		    	len = Math.floor((this.fight.target.hp/this.fight.target.maxhp)*130);
+		    	len = Math.floor((this.fight.target.hp()/this.fight.target.getAttr('maxhp'))*130);
 		    	return len;
 	    	}
 	    	else
@@ -88,7 +88,7 @@ export default {
 	    enmName: function () {
 			if(this.fight.target)
 			{
-				return this.fight.target.name;
+				return this.fight.target.name();
 			}
 			else
 			{
@@ -99,7 +99,7 @@ export default {
 	    {
 	    	if(this.fight.target)
 			{
-				return this.fight.target.hp;
+				return this.fight.target.hp();
 			}
 			else
 			{
@@ -122,13 +122,12 @@ export default {
 	.fightPnl{
 		position: absolute;
 		left: 50px;
-		top: 90px;
+		top: 50px;
 		border: solid 3px #aaaaaa;
 		background-color: white;
 		width: 500px;
-		height: 380px;
+		height: 460px;
 		z-index:100;
-
 		.top{
 			position: absolute;
 			top: 20px;
@@ -141,10 +140,10 @@ export default {
 				top:0px;
 				left: 240px;
 			}
-			.ply{
+			.nameTag
+			{
 				position: absolute;
 				top:0px;
-				left: 0px;
 				width: 70px;
 				overflow: hidden;
 				text-align: left;
@@ -152,46 +151,34 @@ export default {
 				.right{
 					float: right;
 				}
+				.left{
+					float: left;
+				}	
+			}
+			.ply{
+				left: 0px;
+			}
+			.hpbar{
+				position: absolute;
+				height: 5px;
+				top: 6px;				
 			}
 			.plyhp{
-				position: absolute;
 				left: 85px;
-				height: 5px;
-				top: 6px;
 			}
 			.enmhp{
-				position: absolute;
-				right: 85px;
-				height: 5px;
-				top: 6px;		
+				right: 85px;	
 			}
 			.plyhp1{
-				position: absolute;
-				left: 85px;
-				height: 5px;
-				top: 6px;
 				width: 130px;
 				background-color: black;
 			}
 			.enmhp1{
-				position: absolute;
-				right: 85px;
-				height: 5px;
-				top: 6px;
 				width: 130px;
 				background-color: black;		
 			}
 			.enm{
-				position: absolute;
-				top:0px;
 				right: 0px;
-				width: 70px;
-				overflow: hidden;
-				text-align: right;
-				font-weight: bold;
-				.left{
-					float: left;
-				}
 			}
 		}
 		.dis{
@@ -211,6 +198,8 @@ export default {
 			overflow-y: scroll;
 			background: #424242;
 			color: white;
+			line-height: 1.5;
+			padding-left: 15px;
 		}
 		.close{
 			position: absolute;

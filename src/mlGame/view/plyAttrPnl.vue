@@ -1,10 +1,11 @@
 <template>
 	<div class="playerInfo">
-		<p>{{ player['name'] }}</p>
-		<p><label>{{ player['hp'].name }}：</label>{{ player['hp'].value }}</p>
-		<p><label>{{ player['mp'].name }}：</label>{{ player['mp'].value }}</p>
-		<p><label>{{ player['atk'].name }}：</label>{{ player['atk'].value }}</p>
-		<p><label>{{ player['def'].name }}：</label>{{ player['def'].value }}</p>
+		<p>{{ player.attr['name'] }}</p>
+		<p><label>{{ player.attr['hp'].name }}：</label>{{ player.attr['hp'].value }}</p>
+		<p><label>{{ player.attr['mp'].name }}：</label>{{ player.attr['mp'].value }}</p>
+		<p><label>{{ player.attr['atk'].name }}：</label>{{ player.attr['atk'].value }}</p>
+		<p><label>{{ player.attr['def'].name }}：</label>{{ player.attr['def'].value }}</p>
+		<p><label>武器：</label>{{wpName}}</p>
 		<button class="close" @click="close">关闭</button>
 	</div>
 </template>
@@ -19,8 +20,14 @@ export default {
 	data:function()
 	{
 		return {
-			player:$ply.attr,
+			player:$ply,
 		}
+	},
+	computed: {
+		wpName:function()
+		{
+			return this.player.wpName();
+		},
 	},
 	methods:
 	{

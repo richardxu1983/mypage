@@ -12,14 +12,17 @@ var Weapon = WP.Weapon;
 //unit 类
 function Unit(attr,weaponid)
 {
-	this.hp = attr.hp || 0;
-    this.maxhp = attr.hp || 0;
-	this.mp = attr.mp || 0;
-	this.atk = attr.atk || 0;
-    this.def = attr.def || 0;
-    this.aspd = attr.aspd || 0;
-    this.spd = attr.spd || 0;
-	this.name = attr.name || "";
+    this.attr = {};
+	this.attr.hp = attr.hp || 0;
+    this.attr.maxhp = attr.hp || 0;
+	this.attr.mp = attr.mp || 0;
+	this.attr.atk = attr.atk || 0;
+    this.attr.def = attr.def || 0;
+    this.attr.aspd = attr.aspd || 0;
+    this.attr.spd = attr.spd || 0;
+	this.attr.name = attr.name || "";
+    this.target = null;
+
     if(weaponid==undefined)
     {
         this.weapon = null;
@@ -28,9 +31,37 @@ function Unit(attr,weaponid)
     {
         this.weapon = new Weapon(weaponid);
     }
+    this.hp = function()
+    {
+        return this.getAttr('hp');
+    };
+    this.wpName = function()
+    {
+        if(this.weapon==null)
+        {
+            return "拳头";
+        }
+        else {
+            return this.weapon.name;
+        }
+    },
 
-    this.idx=0;
+    this.idx=attr.aspd;
 
+    this.getAttr = function(v)
+    {
+        return this.attr[v];
+    };
+
+    this.name = function()
+    {
+        return this.attr.name;
+    };
+
+    this.fightName=function()
+    {
+        return this.attr.name;
+    },
     this.getAtkIdx=function()
     {
         if(this.weapon==null)
@@ -66,7 +97,7 @@ function Unit(attr,weaponid)
     {
         if(this.weapon==null)
         {
-            return this.aspd;
+            return this.getAttr('aspd');
         }
         else {
             return this.weapon.aspd;
@@ -76,7 +107,7 @@ function Unit(attr,weaponid)
     {
         if(this.weapon==null)
         {
-            return this.atk;
+            return this.getAttr('atk');
         }
         else {
             return this.weapon.atk;
@@ -84,22 +115,29 @@ function Unit(attr,weaponid)
     };
 	this.damage = function(val)
     {
-        var hp = this.hp;
+        var hp = this.hp();
         hp = hp - val;
         if(hp<=0)
         {
             hp = 0;
-            this.hp = hp;
+            this.setAttr('hp',hp);
             //this.die();
             return -1;
         }
-        this.hp = hp;
+        this.setAttr('hp',hp);
         return 1;
     };
 
+    this.setAttr =function(attr , val)
+    {
+        //alert(attr + ' : ' + val);
+        this.attr[attr] = val;
+    };
+
+
     this.alive = function()
     {
-    	return this.hp>0?true:false;
+    	return this.hp()>0?true:false;
     };
     this.atkWord=function()
     {
@@ -153,8 +191,8 @@ var Player = {
         },
         'aspd' : {
             'name' : "攻击速度",
-            'value':3,
-            'init' : 3,
+            'value':2,
+            'init' : 2,
             'min':1
         },
         'spd' : {
@@ -173,12 +211,23 @@ var Player = {
     },
 
     weapon:null,
-
+    target:null,
     format:{
         'posTxt':"1",
     },
     
-    idx:3,
+    idx:2,
+
+    wpName:function()
+    {
+        if(Player.weapon==null)
+        {
+            return "拳头";
+        }
+        else {
+            return Player.weapon.name;
+        }
+    },
 
     atkDis:function()
     {
@@ -190,6 +239,7 @@ var Player = {
             return Player.weapon.atkDis;
         }
     },
+
     atkWord:function()
     {
         if(Player.weapon==null)
@@ -200,6 +250,7 @@ var Player = {
             return Player.weapon.atkWord;
         }
     },
+
     startAtkWrd:function()
     {
         if(Player.weapon==null)
@@ -210,6 +261,7 @@ var Player = {
             return Player.weapon.startWrd;
         }
     },
+
     getAspd : function()
     {
         if(Player.weapon==null)
@@ -226,13 +278,17 @@ var Player = {
         if(Fight.over==0)
         {
             Player.weapon = new Weapon(id);
+            $SM.set('player.weapon' , id);
         }
     },
 
     unEquipWp:function()
     {
         if(Fight.over==0)
+        {
             Player.weapon = null;
+            $SM.set('player.weapon' ,undefined);
+        }
     },
 
     getAtkIdx:function()
@@ -267,7 +323,7 @@ var Player = {
         Player.format.posTxt = $map.mapName(Player.attr['pos'].value);
     },
 
-    initAttr:function()
+    loadAttr:function()
     {
         var v;
         for(v in Player.attr)
@@ -276,7 +332,11 @@ var Player = {
                 Player.attr[v].value = Player.getAttr(v);
         }
         Player.posFormat();
-        Player.weapon = null;
+        var id=$SM.get('player.weapon');
+        if(id!=undefined)
+            Player.weapon = new Weapon(id);
+        else
+            Player.weapon = null;
     },
 
     //
@@ -324,12 +384,6 @@ var Player = {
         else {
             return Player.weapon.atk;
         }
-    },
-
-    //
-    attrToMax : function(attr)
-    {
-        Player.setAttr(attr,Player.getAttrMax(attr));
     },
 
     //
@@ -390,6 +444,16 @@ var Player = {
             return -1;
         }
         return 0;
+    },
+
+    name:function()
+    {
+        return Player.attr.name;
+    },
+
+    fightName:function()
+    {
+        return "[ "+Player.attr.name+" ]";
     },
 
     //

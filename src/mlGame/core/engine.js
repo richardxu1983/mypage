@@ -31,10 +31,6 @@ var StateManager = {
     set: function(stateName, value, noEvent) {
 
         var fullPath = $SM.buildPath(stateName);
-
-        //make sure the value isn't over the engine maximum
-        if(typeof value == 'number' && value > $SM.MAX_STORE) value = $SM.MAX_STORE;
-
         try{
             eval('('+fullPath+') = value');
         } catch (e) {
@@ -107,7 +103,7 @@ var Engine =
             $SM.set('version', Engine.VERSION);
         }
         
-        UB.Player.initAttr();
+        UB.Player.loadAttr();
     },
 
     newGame:function()
@@ -115,7 +111,7 @@ var Engine =
         State = {};
         localStorage.gameState = JSON.stringify(State);
         $SM.set('version', Engine.VERSION);
-        UB.Player.initAttr();
+        UB.Player.loadAttr();
     }
 };
 

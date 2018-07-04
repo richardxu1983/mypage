@@ -1,7 +1,7 @@
 
 
 var wp = [
-{ 'id':0,	'type':"匕首", 'name':"一般的匕首", startWrd:"",atkWord:'挥动匕首，刺了出去', 'atkDis':2,	'idx':2, 'aspd':1, 'atk':10 },
+{ 'id':0,	'type':"匕首", 'name':"一般的匕首", startWrd:"",atkWord:'挥动匕首，刺了出去', 'atkDis':2,	'idx':2, 'aspd':2, 'atk':10 },
 { 'id':1,	'type':"弓箭", 'name':"一般的弓箭",startWrd:"开始蓄力拉弓", atkWord:'射出了一箭','atkDis':40,	'idx':0, 'aspd':4, 'atk':15 },
 ]
 

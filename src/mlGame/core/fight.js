@@ -27,6 +27,80 @@ function addMsg(v)
 	}
 }
 
+function HPCheck(u)
+{
+	if(u.hp()<=0)
+    {
+		addMsg(u.target.fightName()+"胜利了");
+		$addinfo(u.target.fightName()+"胜利了");
+		Fight.over = 1;
+		return 1;        	
+    }
+    return 0;
+}
+
+function PlyMove()
+{
+    if(Math.abs(Fight.dis) > Player.atkDis())
+    {
+        Fight.playerPos = Math.abs(Fight.dis)<=Player.getAttr('spd')?(Fight.targetPos - Player.atkDis()):Fight.playerPos + Player.getAttr('spd');
+        if(Fight.plyMCD==0)
+        	addMsg(Player.fightName()+"因为太远而无法攻击，于是向"+Fight.target.fightName()+""+"靠近。");
+        Fight.plyMCD++;
+        if(Fight.plyMCD>=10)
+        	Fight.plyMCD = 0;
+    }	
+}
+
+function EnmMove()
+{
+    if(Math.abs(Fight.targetPos - Fight.playerPos) >Fight.target.atkDis())
+    {
+        Fight.targetPos = Math.abs(Fight.dis)<=Fight.target.spd?(Fight.playerPos + Fight.target.atkDis()):Fight.targetPos - Fight.target.getAttr('spd');
+        if(Fight.enmMCD==0)
+        {
+            addMsg(Fight.target.fightName()+"因为太远而无法攻击，于是向"+Player.fightName()+"靠近。");             	
+        }
+        Fight.enmMCD++;
+        if(Fight.enmMCD>=10)
+        	Fight.enmMCD = 0;
+    }
+}
+
+function Act(u,cd,enter,turn)
+{
+    if(Math.abs(Fight.dis) <= u.atkDis())
+    {
+    	Fight[cd] = 0;
+    	if(Fight[enter]==0)
+    		addMsg(u.fightName()+"进入了攻击范围。");
+    	Fight[enter] = 1;
+
+        if(u.getAtkIdx() >= u.getAspd())
+        {
+        	if(u.hp()>0)
+	        {
+	            var atk = u.getAtk();
+	            u.target.damage(atk);
+	            addMsg(u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，造成了" + atk + "的伤害。");
+	        }
+        	u.setAtkIdx(0);
+        }
+        else
+        {
+        	if(u.getAtkIdx()==0)
+        	{
+        		let w = u.startAtkWrd();
+         		if(w!="")
+        		{
+	                addMsg(u.fightName()+w+"。");
+        		}               		
+        	}
+            u.setAtkIdx(u.getAtkIdx() + 1);
+        }
+    }
+}
+
 
 var Fight = {
 
@@ -47,6 +121,7 @@ var Fight = {
     close:function()
     {
         Fight.target = null;
+        Player.target = null;
         Fight.info.v = "";
         clearInterval(Fight.fightTimer);
         Fight.showPnl.v=false;
@@ -60,6 +135,8 @@ var Fight = {
     		Player = UB.Player;
     	}
         Fight.target = u;
+        Player.target = u;
+        u.target = Player;
         Fight.over=0;
         Fight.info.v = "";
         Fight.targetPos = 50;
@@ -77,8 +154,8 @@ var Fight = {
     {
     	Fight.init(u);
         Fight.fightTimer = setInterval(Fight.step,500);
-        addMsg("[ "+Player.attr.name+" ]"+"与"+u.name+"的战斗即将开始，双方距离："+Math.abs(Fight.targetPos - Fight.playerPos)+"米。");
-        $addinfo(Player.attr.name+"与"+u.name+"发生了争斗，胜利将鹿死谁手？");
+        addMsg(Player.fightName()+"与"+u.fightName()+"的战斗即将开始，双方距离："+Math.abs(Fight.targetPos - Fight.playerPos)+"米。");
+        $addinfo(Player.fightName()+"与"+u.fightName()+"发生了争斗，胜利将鹿死谁手？");
     },
 
     step:function()
@@ -93,118 +170,17 @@ var Fight = {
         }
         else
         {
-        	if(Player.hp()<=0)
-            {
-				addMsg(Fight.target.name+"胜利了");
-				$addinfo(Fight.target.name+"胜利了");
-				Fight.over = 1;
-				return;        	
-            }
-            if(Fight.target.hp<=0)
-            {
-                addMsg(Player.attr.name+"胜利了");
-                $addinfo(Player.attr.name+"胜利了");
-                Fight.over = 1;
-                return;     	
-            }
+        	if(HPCheck(Player)==1||HPCheck(Fight.target)==1)
+        		return;
 
             Fight.dis = Fight.targetPos - Fight.playerPos;
 
-            if(Math.abs(Fight.dis) > Player.atkDis())
-            {
-                Fight.playerPos = Math.abs(Fight.dis)<=Player.getAttr('spd')?(Fight.targetPos - Player.atkDis()):Fight.playerPos + Player.getAttr('spd');
-                if(Fight.plyMCD==0)
-                	addMsg("[ "+Player.attr.name+" ]因为太远而无法攻击，于是向"+Fight.target.name+""+"靠近。");
-                Fight.plyMCD++;
-                if(Fight.plyMCD>=10)
-                	Fight.plyMCD = 0;
-            }
-            else
-            {
-
-            	Fight.plyMCD = 0;
-            	if(Fight.plyEnter==0)
-            		addMsg("[ "+Player.attr.name+" ]进入了攻击范围。");
-            	Fight.plyEnter = 1;
-
-                if(Player.getAtkIdx() >= Player.getAspd())
-                {
-	                addMsg(Fight.playerTurn());
-                	Player.setAtkIdx(0);
-                }
-                else
-                {
-                	if(Player.getAtkIdx()==0)
-                	{
-                		let w = Player.startAtkWrd();
-                 		if(w!="")
-                		{
-			                addMsg("[ "+Player.attr.name+" ]"+w+"。");
-                		}               		
-                	}
-                    Player.setAtkIdx(Player.getAtkIdx() + 1);
-                }
-            }
-
-
-            if(Math.abs(Fight.targetPos - Fight.playerPos) >Fight.target.atkDis())
-            {
-                Fight.targetPos = Math.abs(Fight.dis)<=Fight.target.spd?(Fight.playerPos + Fight.target.atkDis()):Fight.targetPos - Fight.target.spd;
-                if(Fight.enmMCD==0)
-                {
-	                addMsg(Fight.target.name+"因为太远而无法攻击，于是向[ "+Player.attr.name+" ]靠近。");             	
-                }
-                Fight.enmMCD++;
-                if(Fight.enmMCD>=10)
-                	Fight.enmMCD = 0;
-            }
-            else
-            {
-            	Fight.enmMCD = 0;
-            	if(Fight.enmEnter==0)
-            		addMsg(Fight.target.name+"进入了攻击范围。");
-            	Fight.enmEnter = 1;
-                if(Fight.target.getAtkIdx()>=Fight.target.getAspd())
-                {
-	                addMsg(Fight.targetTurn());
-					Fight.target.setAtkIdx(0);
-                }
-                else
-                {
-                	if(Fight.target.getAtkIdx()==0)
-                	{
-                		let w = Fight.target.startAtkWrd();
-                		if(w!="")
-                		{
-                			addMsg(Fight.target.name+""+w+"。");
-                		}
-                	}
-                	Fight.target.setAtkIdx(Fight.target.getAtkIdx() + 1);
-                }
-            }
+            PlyMove();
+            EnmMove();
+            Act(Player,"plyMCD","plyEnter","playerTurn");
+            Act(Fight.target,"enmMCD","enmEnter","targetTurn");
         }
         unpdateFMsg();
-    },
-
-    playerTurn:function()
-    {
-        if(Player.hp()>0)
-        {
-            var atk = Player.getAtk();
-            Fight.target.damage(atk);
-            return "[ "+Player.attr.name+" ]"+"对"+""+Fight.target.name+""+Player.atkWord()+"，造成了" + atk + "的伤害。";
-        }
-    },
-
-    targetTurn:function()
-    {
-        if(Fight.target.hp>0)
-        {
-            var atk = Fight.target.getAtk();
-            Player.damage(atk);
-            return ""+Fight.target.name+""+"对"+"[ "+Player.attr.name+" ]"+Fight.target.atkWord()+"，造成了" + atk + "的伤害。"; 
-        }
-        return "";
     },
 }
 
