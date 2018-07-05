@@ -12,7 +12,8 @@
 		</div>
 		<div class="bottomBar">
 			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
-			<button class="btnBottom" @click="playerAttrTest">测试</button>
+			<button class="btnBottom" @click="test">测试</button>
+			<button class="btnBottom" @click="fight">战斗</button>
 			<button class="btnBottom" @click="newGame">新游戏</button>
 			<button class="btnBottom" @click="equipWp1">装备匕首</button>
 			<button class="btnBottom" @click="equipWp2">装备弓箭</button>
@@ -39,7 +40,7 @@ export default {
 	data:function()
 	{
 		return {
-			btnAttrTxt:"属性",
+			btnAttrTxt:"人物",
 			player:$ply.attr,
 			playerTxt:$ply.format,
 			plyAttrPnlShow:false,
@@ -67,11 +68,15 @@ export default {
 		{
 			this.plyAttrPnlShow = !this.plyAttrPnlShow;
 		},
-		playerAttrTest:function()
+		test:function()
 		{
 			$ply.addAttr('gold',1);
-			$ply.fightUnit(new UnitBundle.Unit({
+		},
+		fight:function()
+		{
+			$ply.fight(new UnitBundle.Unit({
 				hp:30,
+				maxhp:30,
 				mp:0,
 				atk:2,
 				def:0,

@@ -103,7 +103,7 @@ var Engine =
             $SM.set('version', Engine.VERSION);
         }
         
-        UB.Player.loadAttr();
+        UB.Player.load();
     },
 
     newGame:function()
@@ -111,7 +111,7 @@ var Engine =
         State = {};
         localStorage.gameState = JSON.stringify(State);
         $SM.set('version', Engine.VERSION);
-        UB.Player.loadAttr();
+        UB.Player.load();
     }
 };
 

@@ -1,8 +1,5 @@
-
-import UB from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
 
-var Player;
 var $addinfo = EB.info.addInfo;
 
 function unpdateFMsg()
@@ -32,49 +29,37 @@ function HPCheck(u)
 	if(u.hp()<=0)
     {
 		addMsg(u.target.fightName()+"胜利了");
-		$addinfo(u.target.fightName()+"胜利了");
+		$addinfo(u.target.name()+"胜利了");
 		Fight.over = 1;
 		return 1;        	
     }
     return 0;
 }
 
-function PlyMove()
+function Move(u)
 {
-    if(Math.abs(Fight.dis) > Player.atkDis())
+	var dis = Fight.absDis();
+    if( dis > u.atkDis())
     {
-        Fight.playerPos = Math.abs(Fight.dis)<=Player.getAttr('spd')?(Fight.targetPos - Player.atkDis()):Fight.playerPos + Player.getAttr('spd');
-        if(Fight.plyMCD==0)
-        	addMsg(Player.fightName()+"因为太远而无法攻击，于是向"+Fight.target.fightName()+""+"靠近。");
-        Fight.plyMCD++;
-        if(Fight.plyMCD>=10)
-        	Fight.plyMCD = 0;
-    }	
-}
-
-function EnmMove()
-{
-    if(Math.abs(Fight.targetPos - Fight.playerPos) >Fight.target.atkDis())
-    {
-        Fight.targetPos = Math.abs(Fight.dis)<=Fight.target.spd?(Fight.playerPos + Fight.target.atkDis()):Fight.targetPos - Fight.target.getAttr('spd');
-        if(Fight.enmMCD==0)
-        {
-            addMsg(Fight.target.fightName()+"因为太远而无法攻击，于是向"+Player.fightName()+"靠近。");             	
-        }
-        Fight.enmMCD++;
-        if(Fight.enmMCD>=10)
-        	Fight.enmMCD = 0;
+    	var t = u.target.fpos-u.fpos>=0?1:-1;
+        u.fpos = dis<=u.getAttr('spd')?(u.fpos + t*u.atkDis()):(u.fpos + t*u.getAttr('spd'));
+        if(u.mcd==0)
+        	addMsg(u.fightName()+"因为太远而无法攻击，于是向"+u.target.fightName()+""+"靠近。");
+        u.mcd++;
+        if(u.mcd>=10)
+        	u.mcd = 0;
     }
+    Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
-function Act(u,cd,enter,turn)
+function Act(u)
 {
-    if(Math.abs(Fight.dis) <= u.atkDis())
+    if(Fight.absDis() <= u.atkDis())
     {
-    	Fight[cd] = 0;
-    	if(Fight[enter]==0)
+    	u.mcd= 0;
+    	if(u.fEnter==0)
     		addMsg(u.fightName()+"进入了攻击范围。");
-    	Fight[enter] = 1;
+    	u.fEnter = 1;
 
         if(u.getAtkIdx() >= u.getAspd())
         {
@@ -99,63 +84,63 @@ function Act(u,cd,enter,turn)
             u.setAtkIdx(u.getAtkIdx() + 1);
         }
     }
+    Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
 
 var Fight = {
 
-    target:null,
-    playerPos:0,
-    targetPos:20,
+	left:null,
+	right:null,
     fightTimer:0,
     info:{v:""},
     over:0,
     showClose:{v:false},
     showPnl:{v:false},
-    plyMCD:0,
-    plyEnter:0,
-    enmEnter:0,
-    enmMCD:0,
     dis:0,
 
     close:function()
     {
+    	clearInterval(Fight.fightTimer);
         Fight.target = null;
-        Player.target = null;
+        Fight.left=null;
+        Fight.right = null;
         Fight.info.v = "";
-        clearInterval(Fight.fightTimer);
         Fight.showPnl.v=false;
         Fight.over = 0;
     },
 
-    init:function(u)
+    init:function(left,right)
     {
-    	if(Player==undefined)
-    	{
-    		Player = UB.Player;
-    	}
-        Fight.target = u;
-        Player.target = u;
-        u.target = Player;
-        Fight.over=0;
+    	Fight.left=left;
+        Fight.right = right;
+        Fight.left.target = right;
+        Fight.right.target = left;
+        Fight.over=2;
         Fight.info.v = "";
-        Fight.targetPos = 50;
-        Fight.playerPos = 0;
+        Fight.left.fpos = 0;
+        Fight.right.fpos = 50;
         Fight.showClose.v = false;
         Fight.showPnl.v=true;
-        Fight.plyMCD=0;
-	    Fight.plyEnter=0;
-	    Fight.enmEnter=0;
-	    Fight.enmMCD=0;
-        Fight.dis = Fight.targetPos - Fight.playerPos;
+        Fight.left.mcd = 0;
+        Fight.left.fEnter = 0;
+        Fight.right.mcd = 0;
+        Fight.right.fEnter = 0;
+        Fight.dis = Fight.right.fpos - Fight.left.fpos;
     },
 
-    start:function(u)
+    absDis:function()
     {
-    	Fight.init(u);
+    	Fight.dis = Fight.right.fpos - Fight.left.fpos;
+    	return Math.abs(Fight.dis);
+    },
+
+    start:function(left,right)
+    {
+    	Fight.init(left,right);
         Fight.fightTimer = setInterval(Fight.step,500);
-        addMsg(Player.fightName()+"与"+u.fightName()+"的战斗即将开始，双方距离："+Math.abs(Fight.targetPos - Fight.playerPos)+"米。");
-        $addinfo(Player.fightName()+"与"+u.fightName()+"发生了争斗，胜利将鹿死谁手？");
+        addMsg(Fight.left.fightName()+"与"+Fight.right.fightName()+"的战斗即将开始，双方距离："+Fight.absDis()+"米。");
+        $addinfo(Fight.left.name()+"与"+Fight.right.name()+"发生了争斗，胜利将鹿死谁手？");
     },
 
     step:function()
@@ -170,15 +155,12 @@ var Fight = {
         }
         else
         {
-        	if(HPCheck(Player)==1||HPCheck(Fight.target)==1)
+        	if(HPCheck(Fight.left)==1||HPCheck(Fight.right)==1)
         		return;
-
-            Fight.dis = Fight.targetPos - Fight.playerPos;
-
-            PlyMove();
-            EnmMove();
-            Act(Player,"plyMCD","plyEnter","playerTurn");
-            Act(Fight.target,"enmMCD","enmEnter","targetTurn");
+            Move(Fight.left);
+            Act(Fight.left);
+            Move(Fight.right);
+            Act(Fight.right);
         }
         unpdateFMsg();
     },

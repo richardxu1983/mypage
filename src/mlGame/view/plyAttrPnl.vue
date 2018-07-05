@@ -1,10 +1,10 @@
 <template>
 	<div class="playerInfo">
 		<p>{{ player.attr['name'] }}</p>
-		<p><label>{{ player.attr['hp'].name }}：</label>{{ player.attr['hp'].value }}</p>
-		<p><label>{{ player.attr['mp'].name }}：</label>{{ player.attr['mp'].value }}</p>
-		<p><label>{{ player.attr['atk'].name }}：</label>{{ player.attr['atk'].value }}</p>
-		<p><label>{{ player.attr['def'].name }}：</label>{{ player.attr['def'].value }}</p>
+		<p><label>生命：</label>{{ player.attr['hp'].value }}</p>
+		<p><label>法力：</label>{{ player.attr['mp'].value }}</p>
+		<p><label>攻击：</label>{{ player.attr['atk'].value }}</p>
+		<p><label>防御：</label>{{ player.attr['def'].value }}</p>
 		<p><label>武器：</label>{{wpName}}</p>
 		<button class="close" @click="close">关闭</button>
 	</div>

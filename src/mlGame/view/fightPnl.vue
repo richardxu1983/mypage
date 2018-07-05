@@ -1,13 +1,13 @@
 <template>
 	<div class="fightPnl" v-if="show.v">
 		<div class="top">
-			<div class="ply nameTag"><div class="right">{{player['name']}}</div></div>
+			<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
 			<div class="plyhp1 plyhp hpbar" ></div>
 			<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 			<div class="vs">对阵</div>
 			<div class="enmhp1 enmhp hpbar" ></div>
 			<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
-			<div class="enm nameTag"><div class="left">{{ enmName }}</div></div>
+			<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
 		</div>
 		<div class="dis">双方距离：{{ dis }}米</div>
 		<textarea name="" id = "ftMsg" class="msg" rows="17" readonly>{{info.v}}</textarea>
@@ -22,7 +22,6 @@ import FT from '../../mlGame/core/fight.js'
 
 var $ply = UnitBundle.Player;
 var $fight = FT.Fight;
-var $enm = FT.Fight.target;
 
 function getColor(p)
 {
@@ -46,7 +45,6 @@ export default {
 	{
 		return {
 			showClose:$fight.showClose,
-			player:$ply.attr,
 			fight:$fight,
 			info:$fight.info,
 			show:$fight.showPnl
@@ -54,57 +52,43 @@ export default {
 	},
 	computed: {
 	    // a computed getter
+	    left:function()
+	    {
+	    	return this.fight.left.attr;
+	    },
 	    dis:function()
 	    {
-	    	return Math.abs(this.fight.targetPos - this.fight.playerPos);
+	    	return this.fight.absDis();
 	    },
-	    plyhpw:function(){
-	    	var len;
-	    	len = Math.floor((this.player['hp'].value/this.player['hp'].max)*130);
-	    	return len;
+	    plyhpw:function()
+	    {
+    	    var len;
+	    	len = Math.floor((this.left['hp'].value/this.left['hp'].max)*130);
+	    	return len;		
 	    },
 	    plyhpc:function()
 	    {
-	    	var p = (this.player['hp'].value/this.player['hp'].max);
-	    	return getColor(p);
+    		var p = (this.left['hp'].value/this.left['hp'].max);
+    		return getColor(p);	
 	    },
 	    enmhpc:function()
 	    {
-	    	var p = (this.fight.target.hp()/this.fight.target.getAttr('maxhp'));
+	    	var p = (this.fight.right.hp()/this.fight.right.getAttrMax('hp'));
 	    	return getColor(p);
 	    },
-	    enmhpw:function(){
-	    	if(this.fight.target)
-	    	{
-	    		var len;
-		    	len = Math.floor((this.fight.target.hp()/this.fight.target.getAttr('maxhp'))*130);
-		    	return len;
-	    	}
-	    	else
-	    	{
-	    		return 0;
-	    	}
-	    },
-	    enmName: function () {
-			if(this.fight.target)
-			{
-				return this.fight.target.name();
-			}
-			else
-			{
-				return "--";
-			}
-	    },
-	    enmHp:function()
+	    enmhpw:function()
 	    {
-	    	if(this.fight.target)
-			{
-				return this.fight.target.hp();
-			}
-			else
-			{
-				return "--";
-			}
+    		var len;
+	    	len = Math.floor(this.fight.right.hp()/this.fight.right.getAttrMax('hp')*130);
+	    	return len;
+	    },
+	    lftN:function()
+	    {
+			return this.fight.left.name();    	
+	    },
+	    rgtN: function () 
+	    {
+			return this.fight.right.name(); 
 	    },
 	},
 	methods:
