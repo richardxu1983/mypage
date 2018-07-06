@@ -1,9 +1,10 @@
 <template>
-	<div>
-		<div class="markdown-body" >
+	<div class="bak">
+		<div class="title" >
 			<h2>{{ gametitle }}</h2>
 			<p>{{ gamedesc }}</p>
 		</div>
+		<br>
 		<div>
 			<gameView></gameView>
 		</div>
@@ -37,5 +38,8 @@ export default {
 
 <style lang="scss" scoped>
 	
+	.bak{
+		background: #f6f6f6;
+	}
 
 </style>

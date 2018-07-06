@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div >
 		<img class="avatar" src="/static/img/avatar.png">
 		<ul class="other-site">
 	      <li v-for="site in thirdPartySite" :key="site.url" @click="openThirdPartySite(site.url)">

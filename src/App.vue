@@ -42,19 +42,25 @@ export default {
 
 <style type="text/css">
 
+  body{
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+    background: #f6f6f6;
+  }
+
   .main-container {
     position: relative;
-    left: 250px;
-    right: 0px;
-    bottom: 0px;
-    top: 0px;
+    width:1000px;
+    margin:0 auto;
+    padding: 25px 45px 45px 45px;
+    background-color: white;
   }
 
   .markdown-body {
     box-sizing: border-box;
     min-width: 200px;
     max-width: 980px;
-    padding: 45px 45px 20px 45px;
   }
 
   @media (max-width: 767px) {

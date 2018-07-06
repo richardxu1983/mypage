@@ -123,7 +123,6 @@ export default {
 		top: 335px;
 		left: 25px;
 		border: solid 1px #aaaaaa;
-		background: #FFFFFA;
 		padding: 5px;
 		resize: none;
 		overflow-y: scroll;
@@ -167,11 +166,12 @@ export default {
 	.mlBoard{
 		width: 600px;
 		height: 550px;
-		margin: 0 45px 45px 45px;
-		background-color: #FFFFFA;
-		border: solid 1px #aaaaaa;
+		margin: 0;
+		background-color: #fff;
+		border: solid 3px #ddd;
 		position: relative;
 		font-size: 80%;
+		border-radius: 4px;
 	}
 
 </style>

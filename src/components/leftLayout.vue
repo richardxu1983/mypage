@@ -1,17 +1,18 @@
 <template>
-	<div class="left-layout-container">
-		<img @click="home" class="siteLogo" src="/static/img/siteLogo.png">
-		<div class="siteTitle"> 
-			<div class="siteTitleCell">
-				<b>小站</b>
-			</div> 
-			<div class="siteTitleCell1">
-				{{ titleEmoji }}
-			</div> 
+	<div class="AppHeader">
+		<div class="nav">
+			<div class="begin"> 
+				<div @click="home" class="a">
+					<b>小破站</b>
+				</div> 
+				<div @click="home" class="a left">
+					{{ titleEmoji }}
+				</div> 
+			</div>
+			<ul class="end">
+		    	<router-link tag="li" v-for="route in routes" :to="route.path" :key="route.name" >{{route.name}}</router-link>
+		    </ul>
 		</div>
-	    <ul class="left-menu">
-	    	<router-link tag="li" v-for="route in routes" :to="route.path" :key="route.name" >{{route.name}}</router-link>
-	    </ul>
 	</div>
 </template>
 
@@ -72,77 +73,64 @@ export default {
 
 <style lang="scss" scoped>
 
-	.siteLogo {
-	width: 115px;
-	height: 90px;
-	margin-top: 50px;
-	margin-left: 45px;
-	cursor: pointer;
+	.AppHeader{
+		position: relative;
+	    z-index: 100;
+	    min-width: 1032px;
+	    overflow: hidden;
+	    background: #fff;
+	    box-shadow: 0 1px 3px rgba(26,26,26,.1);
+	    background-clip: content-box;
 	}
 
-	.siteTitle {
-	color: #6495ED;
-	margin-left: 50px;
-	cursor: pointer;
-	margin-top: 10px;
-		.siteTitleCell{
-			float: left;
-			margin-left: 10px;
-			padding: 0;
-			font-size: 130%;
-		}
-		.siteTitleCell1{
-			float: left;
-			margin-left: 10px;
-			padding-top:2px;
-			font-size: 100%;
-		}
-	}
-
-	.left-layout-container {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	bottom: 0px;
-	width: 249px;
-	background-color: #ffffff;
-	border-right: 1px solid #eeeeee;
-	}
-
-  	.left-menu {
-    	// 上面总的高度为 290px，下面 QQ 群的 margin + 高度为 240px
-	    height: calc(100% - 290px - 240px);
-	    min-height: 150px;
-	    list-style: none;
-	    color: #4A708B;
-	    margin-bottom:100px;
-	    margin-top:100px;
-	    padding: 0;
-	    li {
-	    	padding-right: 40px;
-	    	text-align: right;
-	    	box-sizing: border-box;
-			width: 100%;
-			height: 60px;
-			padding-top: 10px;
-			line-height: 40px;
-			cursor: pointer;
-			font-size: 16px;
-	      &:hover{
-	      	background-color:#FFFFE0;
-	      }
-	      &:before {
-	        width: 4px;
-	        height: 100%;
-	        content: '';
-	        margin-right: 69px;
-	        float: left;
-	        display: table;
-	      }
-    	}
-    	.router-link-active{
-    		background-color:#FFFFE0;
-    	}
+  	.nav {
+		position: relative;
+	    display: flex;
+	    justify-content: flex-begin;
+	    align-items: center;
+	    width: 1000px;
+	    height: 52px;
+	    margin: 0 auto;
+	    color: #8590a6;
+	    .begin{
+	    	justify-content: flex-begin;
+	    	-webkit-box-flex: 1;
+		    -ms-flex: 1;
+		    flex: 0 1 auto;
+		    -webkit-box-pack: begin;
+			display: flex;
+			color: #87CEFA;
+			font-size: 24px;
+			.a {
+				cursor: pointer;
+			}
+			.left{
+				margin-left: 15px;
+				font-size: 0.6em;
+				padding-top: 7px;
+			}
+	    }
+	    ul
+	    {
+		    flex: 0 1 auto;
+		    display:flex;
+		    font-size: 15px;
+	    	li
+	    	{
+				cursor: pointer;
+				list-style-type: none;
+				text-align: center;
+				padding: 0 15px;
+				line-height: 50px;
+		      &:hover{
+		      	background-color: #E0FFFF;
+		      }
+	    	}
+	    	.router-link-active{
+	    		color: black;
+	    		border-bottom: solid 3px #87CEFA;
+	    	}
+	    }
 	}
 
 </style>
