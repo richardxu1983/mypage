@@ -3,7 +3,7 @@
 		<div class="nav">
 			<div class="begin"> 
 				<div @click="home" class="a">
-					<b>小破站</b>
+					<b>小-破-站</b>
 				</div> 
 				<div @click="home" class="a left">
 					{{ titleEmoji }}
@@ -122,6 +122,10 @@ export default {
 				text-align: center;
 				padding: 0 15px;
 				line-height: 50px;
+				-webkit-user-select:none;
+			    -moz-user-select:none;
+			    -ms-user-select:none;
+			    user-select:none;
 		      &:hover{
 		      	background-color: #E0FFFF;
 		      }

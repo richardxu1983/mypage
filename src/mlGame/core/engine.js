@@ -41,6 +41,15 @@ var StateManager = {
         Engine.saveGame();
     },
 
+    setArray:function(k,id)
+    {
+        var j,len;
+        if(State[k]==undefined)
+            State[k]=[];
+        State[k].push(id);
+        Engine.saveGame();
+    },
+
     //return state, undefined or 0
     get: function(stateName, requestZero) {
         var whichState = null;
@@ -103,7 +112,7 @@ var Engine =
             $SM.set('version', Engine.VERSION);
         }
         
-        UB.Player.load();
+        UB.Player.load(State);
     },
 
     newGame:function()
@@ -130,4 +139,4 @@ var info={
     }
 };
 
-export default { Engine , StateManager , info }; 
+export default { Engine , StateManager , info,State }; 

@@ -71,6 +71,7 @@ export default {
 		test:function()
 		{
 			$ply.addAttr('gold',1);
+			$ply.addSkToFight(0);
 		},
 		fight:function()
 		{
@@ -78,9 +79,9 @@ export default {
 				hp:30,
 				maxhp:30,
 				mp:0,
-				atk:2,
+				str:2,
 				def:0,
-				aspd:2,
+				agi:2,
 				spd:4,
 				name:"强盗",
 			},0));
@@ -171,7 +172,7 @@ export default {
 		border: solid 3px #ddd;
 		position: relative;
 		font-size: 80%;
-		border-radius: 4px;
+		border-radius: 6px;
 	}
 
 </style>

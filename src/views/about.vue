@@ -1,5 +1,5 @@
 <template>
-	<div >
+	<div class="box">
 		<img class="avatar" src="/static/img/avatar.png">
 		<ul class="other-site">
 	      <li v-for="site in thirdPartySite" :key="site.url" @click="openThirdPartySite(site.url)">
@@ -37,23 +37,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+	
+	.box{
+		box-shadow: 0 1px 3px rgba(26,26,26,.1);
+	}
 
 	.avatar {
 	width: 75px;
 	height: 75px;
 	border-radius: 10px;
-	margin-top: 50px;
-	margin-left: 45px;
+	margin-top: 25px;
+	margin-left: 0px;
 	cursor: pointer;
 	}
 
 	.other-site {
 	list-style: none;
 	margin-top: 20px;
-	margin-bottom: 0px;
+	margin-bottom: 25px;
 	height: 20px;
 	width: 120px;
-	margin-left: 35px;
+	margin-left: 0px;
 	padding: 0;
 	}
 	.other-site li {

@@ -3,11 +3,13 @@ import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
 import FT from '../../mlGame/core/fight.js'
 import WP from '../../mlGame/core/weapon.js'
+import SK from '../../mlGame/core/skill.js'
 
 var $map = MpB.Gmap;
 var $SM = EB.StateManager;
 var Fight = FT.Fight;
 var Weapon = WP.Weapon;
+var skl = SK.SKL;
 
 class Unit
 {
@@ -24,15 +26,14 @@ class Unit
                 'value': attr.mp || 0,
                 'max':attr.mp || 0
             },
-            'atk' : {
-                'value':attr.atk || 0,
+            'str' : {
+                'value':attr.str || 0,
             },
             'def' : {
                 'value':attr.def || 0,
             },
-            'aspd' : {
-                'value':attr.aspd || 0,
-                'min':1
+            'agi' : {
+                'value':attr.agi || 0,
             },
             'spd' : {
                 'value':attr.spd || 0,
@@ -44,13 +45,24 @@ class Unit
                 'value':attr.pos || 0,
             },
         };
-        this.idx = attr.aspd.value;
+
+        this.sk = [];   //全部学习技能
+        this.skf = [];  //携带到战斗的技能
+
+        this.skSlot = [];
+        for(var i=0;i<15;i++)
+        {
+            this.skSlot[i]=[];
+        }
+
+        this.idx = 2;
         this.target = null;
         this.fpos = 0;
         this.mcd = 0;
         this.fEnter=0;
         this.format = {'posTxt':"1"};
-        if(weaponid==undefined)
+
+        if(weaponid==undefined||(weaponid==-1))
         {
             this.weapon = null;
         }
@@ -60,6 +72,24 @@ class Unit
             this.idx = this.weapon.idx;
         }
     }
+
+    addSkToFight(id)
+    {
+        if(skl[id]==undefined)
+            return;
+
+        if(this.skf.includes(id))
+            return;
+
+        this.skf.push(id);
+
+        var tg = skl[id].tg;
+
+        this.skSlot[tg].push(id);
+        this.onadSTF(id);
+    }
+
+    onadSTF(id){}
 
     //
     hp()
@@ -118,7 +148,7 @@ class Unit
     {
         if(this.weapon==null)
         {
-            return this.getAttr('aspd');
+            return 2;
         }
         else {
             return this.weapon.aspd;
@@ -129,10 +159,12 @@ class Unit
     {
         if(this.weapon==null)
         {
-            return this.getAttr('atk');
+            var str =  this.getAttr('str');
+            return Math.ceil(str/10);
         }
         else {
-            return this.weapon.atk;
+            var str =  this.getAttr('str');
+            return Math.ceil(this.weapon.atk * (1+str/100));
         }
     }
 
@@ -223,7 +255,7 @@ class Unit
         if(Fight.over==0)
         {
             this.weapon = null;
-            this.idx = this.attr.aspd.value;
+            this.idx = 2;
             this.onUnEqWp();
         }
     }
@@ -263,6 +295,10 @@ class Ply extends Unit
         $SM.set('player.'+attr , newVal);
     }
 
+    onadSTF(id){
+        $SM.setArray('player.skf', id);
+    }
+
     onEqWp(id){
         $SM.set('player.weapon' , id);
     }
@@ -276,7 +312,7 @@ class Ply extends Unit
         return "[ "+this.attr.name+" ]";
     }
 
-    load()
+    load(State)
     {
         var v;
         for(v in this.attr)
@@ -285,11 +321,24 @@ class Ply extends Unit
                 this.attr[v].value = this.getAttr(v);
         }
         this.posFormat();
+
+        //load weapon
         var id=$SM.get('player.weapon');
         if(id!=undefined)
             this.equipWp(id);
         else
             this.unEquipWp();
+
+        //load skill
+        this.skf=[];
+        if(State!=undefined&&State["player.skf"]!=undefined)
+        {
+            var j,len;
+            for(j = 0,len=State["player.skf"].length; j < len; j++) 
+            {
+                this.skf[j] = State["player.skf"][j];
+            }           
+        }  
     }
 
     getAttr(attr)
@@ -316,9 +365,9 @@ var PlyInit = {
     'hp' : 50,
     'maxhp':50,
     'mp' : 20,
-    'atk' : 5,
+    'str' : 20,
     'def' : 0,
-    'aspd' : 3,
+    'agi' : 3,
     'spd' : 4,
     'gold' : 10,
     'pos':0,

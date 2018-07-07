@@ -49,6 +49,13 @@ export default {
     background: #f6f6f6;
   }
 
+  .nosel{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+  }
+  
   .main-container {
     position: relative;
     width:1000px;

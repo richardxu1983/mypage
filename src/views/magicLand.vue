@@ -1,8 +1,8 @@
 <template>
 	<div class="bak">
 		<div class="title" >
-			<h2>{{ gametitle }}</h2>
-			<p>{{ gamedesc }}</p>
+			<h3>{{ gametitle }}</h3>
+			<p class="d">{{ gamedesc }}</p>
 		</div>
 		<br>
 		<div>
@@ -24,7 +24,7 @@ export default {
 	{
 		return {
 			gametitle:"魔法大陆",
-			gamedesc:"一个练手vue的小游戏"
+			gamedesc:"魔法大陆是老徐在小破站上做的第一个游戏，是一个关于一群勇敢的冒险者在充满魔法的大陆上冒险的故事。"
 		}
 	},
 	created:function()
@@ -40,6 +40,11 @@ export default {
 	
 	.bak{
 		background: #f6f6f6;
+		.d{
+			width: 600px;
+			font-size: 15px;
+			color: #666;
+		}
 	}
 
 </style>

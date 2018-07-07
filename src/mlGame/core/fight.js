@@ -1,6 +1,8 @@
 import EB from '../../mlGame/core/engine.js'
+import SK from '../../mlGame/core/skill.js'
 
 var $addinfo = EB.info.addInfo;
+var skl = SK.SKL;
 
 function unpdateFMsg()
 {
@@ -52,6 +54,32 @@ function Move(u)
     Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
+function tg5(u)
+{
+    var j,len,ac=-1,chance;
+    for(j = 0,len=u.target.skSlot[5].length; j < len; j++) 
+    {
+        chance = Math.floor(Math.random()*101);
+
+        if(chance<skl[u.target.skSlot[5][j]].chance)
+        {
+            ac = skl[u.target.skSlot[5][j]].ac;
+            switch(ac)
+            {
+            case 3:
+                {
+                    Fight.dmg=0;
+                    Fight.w=Fight.w+"但"+u.target.fightName()+"使出一招“"+skl[u.target.skSlot[5][j]].name+"”，躲过了这次攻击";
+                }
+            default:
+              break;
+            }
+            break;
+        }
+    }
+    return ac;
+}
+
 function Act(u)
 {
     if(Fight.absDis() <= u.atkDis())
@@ -65,9 +93,17 @@ function Act(u)
         {
         	if(u.hp()>0)
 	        {
-	            var atk = u.getAtk();
-	            u.target.damage(atk);
-	            addMsg(u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，造成了" + atk + "的伤害。");
+	            Fight.dmg = u.getAtk();
+                var ac;
+                Fight.w = u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，";
+
+                //类型5技能触发判断
+                ac = tg5(u);
+
+	            u.target.damage(Fight.dmg);
+                if(ac==-1)
+                    Fight.w=Fight.w+"造成了" + Fight.dmg + "的伤害。";
+                addMsg(Fight.w);
 	        }
         	u.setAtkIdx(0);
         }
@@ -98,6 +134,8 @@ var Fight = {
     showClose:{v:false},
     showPnl:{v:false},
     dis:0,
+    w:"",
+    dmg:0,
 
     close:function()
     {
