@@ -1,17 +1,21 @@
 <template>
-	<div class="fightPnl" v-if="show.v">
-		<div class="top">
-			<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
-			<div class="plyhp1 plyhp hpbar" ></div>
-			<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
-			<div class="vs">对阵</div>
-			<div class="enmhp1 enmhp hpbar" ></div>
-			<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
-			<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
+	<div v-if="show.v">
+		<div class="md bd">
 		</div>
-		<div class="dis">双方距离：{{ dis }}米</div>
-		<textarea name="" id = "ftMsg" class="msg" rows="17" readonly>{{info.v}}</textarea>
-		<button class="close" v-if="showClose.v" @click="close" >关闭</button>
+		<div class="fp">
+			<div class="top">
+				<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
+				<div class="plyhp1 plyhp hpbar" ></div>
+				<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
+				<div class="vs">对阵</div>
+				<div class="enmhp1 enmhp hpbar" ></div>
+				<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
+				<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
+			</div>
+			<div class="dis">双方距离：{{ dis }}米</div>
+			<textarea name="" id = "ftMsg" class="msg" rows="17" readonly>{{info.v}}</textarea>
+			<button class="close" v-if="showClose.v" @click="close" >关闭</button>					
+		</div>
 	</div>
 </template>
 
@@ -103,7 +107,12 @@ export default {
 
 <style lang="scss" scoped>
 
-	.fightPnl{
+	.bd{
+		width: 600px;
+    	height: 550px;
+	}
+
+	.fp{
 		position: absolute;
 		left: 50px;
 		top: 50px;

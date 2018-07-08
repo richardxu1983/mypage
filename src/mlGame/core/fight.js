@@ -33,7 +33,7 @@ function HPCheck(u)
 		addMsg(u.target.fightName()+"胜利了");
 		$addinfo(u.target.name()+"胜利了");
 		Fight.over = 1;
-		return 1;        	
+		return 1;
     }
     return 0;
 }
@@ -88,7 +88,7 @@ function Act(u)
     	if(u.fEnter==0)
     		addMsg(u.fightName()+"进入了攻击范围。");
     	u.fEnter = 1;
-
+        console.log(u.name()+",u.getAtkIdx()="+u.getAtkIdx()+" , u.getAspd()="+u.getAspd())
         if(u.getAtkIdx() >= u.getAspd())
         {
         	if(u.hp()>0)

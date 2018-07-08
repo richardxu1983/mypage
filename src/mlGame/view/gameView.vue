@@ -76,15 +76,15 @@ export default {
 		fight:function()
 		{
 			$ply.fight(new UnitBundle.Unit({
-				hp:30,
-				maxhp:30,
+				hp:50,
+				maxhp:50,
 				mp:0,
-				str:2,
+				str:20,
 				def:0,
-				agi:2,
+				agi:20,
 				spd:4,
 				name:"强盗",
-			},0));
+			},1));
 		},
 		newGame:function()
 		{
@@ -93,11 +93,11 @@ export default {
 		},
 		equipWp1:function()
 		{
-			$ply.equipWp(0);
+			$ply.equipWp(1);
 		},
 		equipWp2:function()
 		{
-			$ply.equipWp(1);
+			$ply.equipWp(2);
 		},
 		upEquip:function()
 		{

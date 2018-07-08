@@ -9,6 +9,7 @@ var $map = MpB.Gmap;
 var $SM = EB.StateManager;
 var Fight = FT.Fight;
 var Weapon = WP.Weapon;
+var $wp = WP.wp;
 var skl = SK.SKL;
 
 class Unit
@@ -48,7 +49,6 @@ class Unit
 
         this.sk = [];   //全部学习技能
         this.skf = [];  //携带到战斗的技能
-
         this.skSlot = [];
         for(var i=0;i<15;i++)
         {
@@ -64,13 +64,13 @@ class Unit
 
         if(weaponid==undefined||(weaponid==-1))
         {
-            this.weapon = null;
+            this.weapon = new Weapon(0);
         }
         else
         {
             this.weapon = new Weapon(weaponid);
-            this.idx = this.weapon.idx;
         }
+        this.idx = $wp[this.weapon.id].idx;
     }
 
     addSkToFight(id)
@@ -99,13 +99,7 @@ class Unit
 
     wpName()
     {
-        if(this.weapon==null)
-        {
-            return "拳头";
-        }
-        else {
-            return this.weapon.name;
-        }
+        return $wp[this.weapon.id].name;
     }
 
     getAttr(v)
@@ -135,37 +129,17 @@ class Unit
 
     atkDis()
     {
-        if(this.weapon==null)
-        {
-            return 2;
-        }
-        else {
-            return this.weapon.atkDis;
-        }
+        return $wp[this.weapon.id].atkDis;
     }
 
     getAspd()
     {
-        if(this.weapon==null)
-        {
-            return 2;
-        }
-        else {
-            return this.weapon.aspd;
-        }        
+        return $wp[this.weapon.id].aspd;
     }
 
     getAtk()
     {
-        if(this.weapon==null)
-        {
-            var str =  this.getAttr('str');
-            return Math.ceil(str/10);
-        }
-        else {
-            var str =  this.getAttr('str');
-            return Math.ceil(this.weapon.atk * (1+str/100));
-        }
+        return Math.ceil($wp[this.weapon.id].atk * (1+this.attr[$wp[this.weapon.id].ka].value*$wp[this.weapon.id].kaa));
     }
 
     damage(val)
@@ -208,13 +182,7 @@ class Unit
     
     atkWord()
     {
-        if(this.weapon==null)
-        {
-            return "打出一拳";
-        }
-        else {
-            return this.weapon.atkWord;
-        }
+        return $wp[this.weapon.id].atkWord;
     }
 
     getAttrMax(attr)
@@ -231,13 +199,7 @@ class Unit
 
     startAtkWrd()
     {
-        if(this.weapon==null)
-        {
-            return "";
-        }
-        else {
-            return this.weapon.startWrd;
-        }
+        return $wp[this.weapon.id].startWrd;
     }
 
     equipWp(id)
@@ -245,7 +207,7 @@ class Unit
         if(Fight.over==0)
         {
             this.weapon = new Weapon(id);
-            this.idx = this.weapon.idx;
+            this.idx = $wp[this.weapon.id].idx;
             this.onEqWp(id);
         }
     }
@@ -254,9 +216,9 @@ class Unit
     {
         if(Fight.over==0)
         {
-            this.weapon = null;
-            this.idx = 2;
-            this.onUnEqWp();
+            this.weapon = new Weapon(0);
+            this.idx = $wp[this.weapon.id].idx;
+            this.onEqWp(0);
         }
     }
 
@@ -327,7 +289,7 @@ class Ply extends Unit
         if(id!=undefined)
             this.equipWp(id);
         else
-            this.unEquipWp();
+            this.equipWp(0);
 
         //load skill
         this.skf=[];
@@ -374,7 +336,7 @@ var PlyInit = {
     'name':"冒险者",  
 };
 
-var Player = new Ply(PlyInit);
+var Player = new Ply(PlyInit,0);
 //extend(Player,Unit);
 
 export default { Player , Unit}; 
