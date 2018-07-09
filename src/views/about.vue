@@ -43,22 +43,22 @@ export default {
 	}
 
 	.avatar {
-	width: 75px;
-	height: 75px;
-	border-radius: 10px;
-	margin-top: 25px;
-	margin-left: 0px;
-	cursor: pointer;
+		width: 75px;
+		height: 75px;
+		border-radius: 10px;
+		margin-top: 25px;
+		margin-left: 0px;
+		cursor: pointer;
 	}
 
 	.other-site {
-	list-style: none;
-	margin-top: 20px;
-	margin-bottom: 25px;
-	height: 20px;
-	width: 120px;
-	margin-left: 0px;
-	padding: 0;
+		list-style: none;
+		margin-top: 20px;
+		margin-bottom: 25px;
+		height: 20px;
+		width: 120px;
+		margin-left: 0px;
+		padding: 0;
 	}
 	.other-site li {
 	  cursor: pointer;

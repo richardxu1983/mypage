@@ -4,8 +4,9 @@
 			<div class="gtime">1000&nbsp;年&nbsp;1&nbsp;月&nbsp;1&nbsp;日&nbsp; 1&nbsp;时</div>
 			<div class="gold">{{ player['gold'].value }}<span class="unitTxt">金</span></div>
 		</div>
-		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl"></plyAttrPnl>
+		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
+		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
 		<div class="mapPanel">
 			<h3>{{ playerTxt['posTxt'] }}</h3>
@@ -30,6 +31,7 @@ import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
 import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
+import wpDesc from '../../mlGame/view/wpDesc.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -44,13 +46,15 @@ export default {
 			player:$ply.attr,
 			playerTxt:$ply.format,
 			plyAttrPnlShow:false,
+			wpDesc:false,
 			info:EB.info.txt,
 		}
 	},
 	components: 
 	{
 	  plyAttrPnl,
-	  fightPnl
+	  fightPnl,
+	  wpDesc
 	},
 	created:function()
 	{
@@ -67,6 +71,14 @@ export default {
 		oncloseplyAttrPnl:function()
 		{
 			this.plyAttrPnlShow = !this.plyAttrPnlShow;
+		},
+		clsWp:function()
+		{
+			this.wpDesc=false;
+		},
+		opWp:function()
+		{
+			this.wpDesc=true;
 		},
 		test:function()
 		{
@@ -171,7 +183,7 @@ export default {
 		background-color: #fff;
 		border: solid 3px #ddd;
 		position: relative;
-		font-size: 80%;
+		font-size: 90%;
 		border-radius: 6px;
 	}
 

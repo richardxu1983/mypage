@@ -107,10 +107,7 @@ export default {
 
 <style lang="scss" scoped>
 
-	.bd{
-		width: 600px;
-    	height: 550px;
-	}
+	@import "../../scss/mlGame";
 
 	.fp{
 		position: absolute;
