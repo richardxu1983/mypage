@@ -84,19 +84,22 @@ export default {
 		{
 			$ply.addAttr('gold',1);
 			$ply.addSkToFight(0);
+			$ply.addSkToFight(1);
 		},
 		fight:function()
 		{
-			$ply.fight(new UnitBundle.Unit({
-				hp:50,
-				maxhp:50,
+			var u = new UnitBundle.Unit({
+				hp:100,
+				maxhp:100,
 				mp:0,
 				str:20,
 				def:0,
 				agi:20,
-				spd:4,
+				spd:1,
 				name:"强盗",
-			},1));
+			},1);
+			u.addSkToFight(0);
+			$ply.fight(u);
 		},
 		newGame:function()
 		{

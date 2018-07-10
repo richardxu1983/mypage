@@ -3,6 +3,7 @@ import SK from '../../mlGame/core/skill.js'
 
 var $addinfo = EB.info.addInfo;
 var skl = SK.SKL;
+var $ac = SK.AC;
 
 function unpdateFMsg()
 {
@@ -17,7 +18,7 @@ function addMsg(v)
 {
 	if(v!="")
 	{
-	    Fight.info.v=Fight.info.v+v+"\n";
+	    Fight.info.v=Fight.info.v+(Fight.t/2).toFixed(1)+"秒 : "+v+"\n";
 	    unpdateFMsg();
 	    if(Fight.info.length>1000)
 	    {
@@ -54,54 +55,79 @@ function Move(u)
     Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
-function tg5(u)
+function tg(index,u)
 {
-    var j,len,ac=-1,chance;
-    for(j = 0,len=u.target.skSlot[5].length; j < len; j++) 
-    {
-        chance = Math.floor(Math.random()*101);
+    var j,len,ac=-1,cd,chance,id;
 
-        if(chance<skl[u.target.skSlot[5][j]].chance)
+    for(j = 0,len=u.skSlot[index].length; j < len; j++) 
+    {
+        id = u.skSlot[index][j];
+
+        chance = Math.floor(Math.random()*101);
+        cd = skl[id].cd;
+        if(cd<0||(cd>0&&((Fight.t-u.skd[id].cd)>cd)))
         {
-            ac = skl[u.target.skSlot[5][j]].ac;
-            switch(ac)
+            if((chance<skl[id].chance)
+                ||(u.skd[id].ct==0&&(skl[id].fc>0&&chance<skl[id].fc)))
             {
-            case 3:
+                ac = skl[id].ac;
+                switch(ac)
                 {
-                    Fight.dmg=0;
-                    Fight.w=Fight.w+"但"+u.target.fightName()+"使出一招“"+skl[u.target.skSlot[5][j]].name+"”，躲过了这次攻击";
+                case 1:
+                    {
+                        if(Fight.absDis()<=skl[id].dt2)
+                        {
+                            u.skd[id].cd = Fight.t;
+                            u.skd[id].ct++;
+                            var t = u.target.fpos-u.fpos>=0?1:-1;
+                            u.fpos = u.fpos - t*skl[id].dt1;
+                            Fight.dis = Fight.right.fpos - Fight.left.fpos;
+                            addMsg(u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[1].str);
+                        }
+                    }
+                    break;
+                case 3:
+                    {
+                        u.skd[id].cd = Fight.t;
+                        u.skd[id].ct++;
+                        Fight.dmg=0;
+                        Fight.w=Fight.w+"但"+u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[3].str;
+                    }
+                    break;
+                default:
+                  break;
                 }
-            default:
-              break;
+                break;
             }
-            break;
         }
+
+
     }
-    return ac;
+    return ac;   
 }
 
 function Act(u)
 {
+    var ac;
+    tg(4,u);
     if(Fight.absDis() <= u.atkDis())
     {
     	u.mcd= 0;
     	if(u.fEnter==0)
     		addMsg(u.fightName()+"进入了攻击范围。");
     	u.fEnter = 1;
-        console.log(u.name()+",u.getAtkIdx()="+u.getAtkIdx()+" , u.getAspd()="+u.getAspd())
         if(u.getAtkIdx() >= u.getAspd())
         {
         	if(u.hp()>0)
 	        {
 	            Fight.dmg = u.getAtk();
-                var ac;
                 Fight.w = u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，";
 
                 //类型5技能触发判断
-                ac = tg5(u);
+                ac = tg(5,u.target);
 
 	            u.target.damage(Fight.dmg);
-                if(ac==-1)
+                if(Fight.dmg>0)
                     Fight.w=Fight.w+"造成了" + Fight.dmg + "的伤害。";
                 addMsg(Fight.w);
 	        }
@@ -136,6 +162,7 @@ var Fight = {
     dis:0,
     w:"",
     dmg:0,
+    t:0,
 
     close:function()
     {
@@ -154,10 +181,12 @@ var Fight = {
         Fight.right = right;
         Fight.left.target = right;
         Fight.right.target = left;
+        Fight.left.initSk();
+        Fight.right.initSk();
         Fight.over=2;
         Fight.info.v = "";
         Fight.left.fpos = 0;
-        Fight.right.fpos = 50;
+        Fight.right.fpos = 20;
         Fight.showClose.v = false;
         Fight.showPnl.v=true;
         Fight.left.mcd = 0;
@@ -183,7 +212,7 @@ var Fight = {
 
     step:function()
     {
-
+        Fight.t++;
         if(Fight.over==1)
         {
             unpdateFMsg();

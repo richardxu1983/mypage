@@ -49,6 +49,7 @@ class Unit
 
         this.sk = [];   //全部学习技能
         this.skf = [];  //携带到战斗的技能
+        this.skd = {};
         this.skSlot = [];
         for(var i=0;i<15;i++)
         {
@@ -83,10 +84,21 @@ class Unit
 
         this.skf.push(id);
 
+        this.skd[id]={cd:-100,ct:0};
         var tg = skl[id].tg;
 
         this.skSlot[tg].push(id);
         this.onadSTF(id);
+    }
+
+    initSk()
+    {
+        var i,len,id;
+        for(i = 0,len=this.skf.length; i < len; i++) 
+        {
+            id=this.skf[i];
+            this.skd[id]={cd:-100,ct:0};
+        }
     }
 
     onadSTF(id){}
