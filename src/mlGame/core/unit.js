@@ -342,7 +342,7 @@ var PlyInit = {
     'str' : 20,
     'def' : 0,
     'agi' : 3,
-    'spd' : 4,
+    'spd' : 1,
     'gold' : 10,
     'pos':0,
     'name':"冒险者",  

@@ -1,5 +1,7 @@
 <template>
 	<div>
+		<div class="md bd">
+		</div>
 		<div class="box bframe">
 			<h1 class="pn">{{ player.attr['name'] }}</h1>
 			<p>拥有金币：{{ player.attr['gold'].value }}</p>

@@ -5,10 +5,10 @@
 		<div class="fp">
 			<div class="top">
 				<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
-				<div class="plyhp1 plyhp hpbar" ></div>
+				<div class="hp1 plyhp hpbar" ></div>
 				<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 				<div class="vs">对阵</div>
-				<div class="enmhp1 enmhp hpbar" ></div>
+				<div class="hp1 enmhp hpbar" ></div>
 				<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
 				<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
 			</div>
@@ -111,8 +111,8 @@ export default {
 
 	.fp{
 		position: absolute;
-		left: 50px;
-		top: 50px;
+		left: -3px;
+		top: 40px;
 		border: solid 3px #aaaaaa;
 		background-color: white;
 		width: 500px;
@@ -159,13 +159,9 @@ export default {
 			.enmhp{
 				right: 85px;	
 			}
-			.plyhp1{
+			.hp1{
 				width: 130px;
 				background-color: black;
-			}
-			.enmhp1{
-				width: 130px;
-				background-color: black;		
 			}
 			.enm{
 				right: 0px;

@@ -88,7 +88,7 @@ export default {
 	    display: flex;
 	    justify-content: flex-begin;
 	    align-items: center;
-	    width: 1000px;
+	    width: 800px;
 	    height: 52px;
 	    margin: 0 auto;
 	    color: #8590a6;

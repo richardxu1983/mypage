@@ -1,6 +1,7 @@
 <template>
 	<div class="bx bframe">
 		<h2>[&ensp;{{n}}&ensp;]</h2>
+		<p>-&ensp;{{rg}}&ensp;-</p>
 		<p>攻击力：<b>{{atk}}+<label class="add">{{add}}</label></b></p>
 		<p>主要属性：{{ka}}（每点{{ka}}提升&ensp;{{kaa}}%&ensp;攻击力）</p>
 		<p>攻击距离：{{dis}}&ensp;米</p>
@@ -10,7 +11,6 @@
 </template>
 
 <script>
-
 import UB from '../../mlGame/core/unit.js'
 import WP from '../../mlGame/core/weapon.js'
 var $wp = WP.wp;
@@ -59,6 +59,10 @@ export default {
 		add:function()
 		{
 			return Math.ceil($wp[this.wp.id].atk * (1+this.ply[$wp[this.wp.id].ka].value*$wp[this.wp.id].kaa))-$wp[this.wp.id].atk;
+		},
+		rg:function()
+		{
+			return $wp[this.wp.id].rg?"远程武器":"近程武器";
 		}
 	},
 	methods:

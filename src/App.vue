@@ -63,7 +63,7 @@ export default {
   
   .main-container {
     position: relative;
-    width:1000px;
+    width:800px;
     margin:0 auto;
     padding: 25px 45px 45px 45px;
     background-color:white;

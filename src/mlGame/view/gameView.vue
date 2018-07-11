@@ -83,8 +83,6 @@ export default {
 		test:function()
 		{
 			$ply.addAttr('gold',1);
-			$ply.addSkToFight(0);
-			$ply.addSkToFight(1);
 		},
 		fight:function()
 		{
@@ -98,13 +96,15 @@ export default {
 				spd:1,
 				name:"强盗",
 			},1);
-			u.addSkToFight(0);
 			$ply.fight(u);
 		},
 		newGame:function()
 		{
 			EB.Engine.newGame();
 			$addinfo("重新开始了游戏...");
+			$ply.equipWp(2);
+			$ply.addSkToFight(1);
+			$ply.addSkToFight(0);
 		},
 		equipWp1:function()
 		{
@@ -134,7 +134,7 @@ export default {
 	}
 	.infoBox{
 		position: absolute;
-		width: 535px;
+		width: 435px;
 		height: 150px;
 		top: 335px;
 		left: 25px;
@@ -160,7 +160,7 @@ export default {
 	.topBar{
 		position: absolute;
 		padding: 15px 25px 0px 25px;
-		width: 525px;
+		width: 425px;
 		.gtime{
 			float: left;
 		}
@@ -180,7 +180,7 @@ export default {
 	}
 
 	.mlBoard{
-		width: 600px;
+		width: 500px;
 		height: 550px;
 		margin: 0;
 		background-color: #fff;

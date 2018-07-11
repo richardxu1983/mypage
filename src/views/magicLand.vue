@@ -41,7 +41,6 @@ export default {
 	.bak{
 		background: #f6f6f6;
 		.d{
-			width: 600px;
 			font-size: 15px;
 			color: #666;
 		}
