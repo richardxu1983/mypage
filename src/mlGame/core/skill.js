@@ -34,10 +34,11 @@ ac（动作）类型：
 3：躲闪
 4：重击
 5：瞬移靠近
-6：格挡
-7：连击
-8：快速移动
-9：增强自身
+6:快速攻击
+7：格挡
+8：连击
+9：快速移动
+10：增强自身
  */
 
 var AC = [
@@ -45,14 +46,17 @@ var AC = [
 {id:1,	name:"后跳",		str:"向后跳走"},
 {id:2,	name:"推开",		str:""},
 {id:3,	name:"躲闪",		str:"躲过了这次攻击"},
-{id:4,	name:"重击",		str:"躲过了这次攻击"},
+{id:4,	name:"重击",		str:"产生了重击效果!!"},
 {id:5,	name:"瞬移靠近",		str:"迅速靠近"},
+{id:6,	name:"快速攻击",		str:"发动了一次快速攻击"},
 ];
 
 var SKL = [
-{id:0,	name:"闪避",		tg:5,	ac:3,	cd:3,	fc:75,	chance:10,	nd:0,	wp:0,	dt1:0,	dt2:0},
-{id:1,	name:"后跳",		tg:4,	ac:1,	cd:16,	fc:65,	chance:6,	nd:2,	wp:0,	dt1:8,	dt2:15},
-{id:2,	name:"瞬步",		tg:4,	ac:5,	cd:16,	fc:80,	chance:10,	nd:1,	wp:0,	dt1:15,	dt2:2},
+{id:0,	name:"闪避",		tg:5,	ac:3,	cd:3,	fc:75,	chance:10,	nd:0,	wp:0,	oac:-1,	dt1:0,	dt2:0},
+{id:1,	name:"后跳",		tg:4,	ac:1,	cd:16,	fc:100,	chance:100,	nd:2,	wp:0,	oac:-1,	dt1:8,	dt2:15},
+{id:2,	name:"瞬步",		tg:4,	ac:5,	cd:16,	fc:80,	chance:10,	nd:1,	wp:0,	oac:-1,	dt1:15,	dt2:2},
+{id:3,	name:"重击",		tg:2,	ac:4,	cd:3,	fc:80,	chance:30,	nd:0,	wp:0,	oac:-1,	dt1:2,	dt2:0},
+{id:4,	name:"快速攻击",		tg:7,	ac:6,	cd:3,	fc:100,	chance:100,	nd:0,	wp:0,	oac:1,	dt1:1,	dt2:0},
 ];
 
 export default { SKL,AC}; 

@@ -87,8 +87,8 @@ export default {
 		fight:function()
 		{
 			var u = new UnitBundle.Unit({
-				hp:100,
-				maxhp:100,
+				hp:300,
+				maxhp:300,
 				mp:0,
 				str:20,
 				def:0,
@@ -105,6 +105,8 @@ export default {
 			$ply.equipWp(2);
 			$ply.addSkToFight(1);
 			$ply.addSkToFight(0);
+			$ply.addSkToFight(3);
+			$ply.addSkToFight(4);
 		},
 		equipWp1:function()
 		{

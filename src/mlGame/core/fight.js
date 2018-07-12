@@ -57,60 +57,100 @@ function Move(u)
     Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
-function tg(index,u)
+function tg(index,u,depth,oac,dmg)
 {
-    var j,len,ac=-1,chance,id;
+    var j,len,ac=-1,chance,id,iac=-1;
 
     for(j = 0,len=u.skSlot[index].length; j < len; j++) 
     {
         id = u.skSlot[index][j];
         chance = Math.floor(Math.random()*101);
-        if(skCheck(id,u,chance))
+
+        if((index==7&&(oac==skl[id].oac))||index!=7)
         {
-            ac = skl[id].ac;
-            switch(ac)
+            if(skCheck(id,u,chance))
             {
-            case 1:
+                ac = skl[id].ac;
+                switch(ac)
                 {
-                    if(Fight.absDis()<=skl[id].dt2)
+                case 1:
+                    {
+                        if(Fight.absDis()<=skl[id].dt2)
+                        {
+                            u.skd[id].cd = Fight.t;
+                            u.skd[id].ct++;
+                            var t = u.target.fpos-u.fpos>=0?1:-1;
+                            u.fpos = u.fpos - t*skl[id].dt1;
+                            Fight.dis = Fight.right.fpos - Fight.left.fpos;
+                            Fight.w=Fight.w+u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[1].str;
+                            iac = 1;
+                            //addMsg(u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[1].str);
+                        }
+                    }
+                    break;
+                case 3:
+                    {
+                        u.skd[id].cd = Fight.t;
+                        u.skd[id].ct++;
+                        dmg=0;
+                        Fight.w=Fight.w+"但"+u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[3].str;
+                        iac = 3;
+                    }
+                    break;
+                case 4:
+                {
+                    u.skd[id].cd = Fight.t;
+                    u.skd[id].ct++;
+                    dmg=dmg*skl[id].dt1;
+                    Fight.w=Fight.w+$ac[4].str;
+                    iac = 4;
+                }
+                break;
+                case 5:
+                {
+                    if(Fight.absDis()>=skl[id].dt2&&Fight.absDis()<=skl[id].dt1)
                     {
                         u.skd[id].cd = Fight.t;
                         u.skd[id].ct++;
                         var t = u.target.fpos-u.fpos>=0?1:-1;
-                        u.fpos = u.fpos - t*skl[id].dt1;
+                        u.fpos = u.target.fpos - t;
                         Fight.dis = Fight.right.fpos - Fight.left.fpos;
-                        addMsg(u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[1].str);
+                        addMsg(u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[5].str+u.target.fightName());
+                        iac = 5;
                     }
                 }
                 break;
-            case 3:
+                case 6:
                 {
-                    u.skd[id].cd = Fight.t;
-                    u.skd[id].ct++;
-                    Fight.dmg=0;
-                    Fight.w=Fight.w+"但"+u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[3].str;
+                    if(Fight.absDis() <= u.atkDis())
+                    {
+                        u.skd[id].cd = Fight.t;
+                        u.skd[id].ct++;
+                        dmg = u.getAtk();
+                        Fight.w = Fight.w + "，并且对"+u.target.fightName()+$ac[6].str+"，";
+                        dmg = tg(2,u,1,-1,dmg);
+                        dmg = tg(5,u.target,1,-1,dmg);
+                        if(dmg>0)
+                        {
+                            u.target.damage(dmg);
+                            Fight.w=Fight.w+"造成了" + dmg + "的伤害。";
+                        }
+                        iac = 6;
+                    }
                 }
                 break;
-            case 5:
-            {
-                if(Fight.absDis()>=skl[id].dt2&&Fight.absDis()<=skl[id].dt1)
-                {
-                    u.skd[id].cd = Fight.t;
-                    u.skd[id].ct++;
-                    var t = u.target.fpos-u.fpos>=0?1:-1;
-                    u.fpos = u.target.fpos - t;
-                    Fight.dis = Fight.right.fpos - Fight.left.fpos;
-                    addMsg(u.fightName()+"使出一招“"+skl[id].name+"”，"+$ac[5].str+u.target.fightName());
+                default:
+                  break;
                 }
+                break;
             }
-            break;
-            default:
-              break;
-            }
-            break;
         }
     }
-    return ac;   
+    if(depth==0)
+    {
+        tg(7,u,1,iac,dmg);
+    }
+    return dmg;
 }
 
 
@@ -137,8 +177,17 @@ function Act(u)
     {
         return;
     }
-    var ac;
-    tg(4,u);
+
+    Fight.w="";
+
+    tg(4,u,0,-1,0);
+
+    if(Fight.w!="")
+    {
+        addMsg(Fight.w);
+        Fight.w = "";
+    }
+
     if(Fight.absDis() <= u.atkDis())
     {
     	u.mcd= 0;
@@ -147,18 +196,15 @@ function Act(u)
     	u.fEnter = 1;
         if(u.getAtkIdx() >= u.getAspd())
         {
-
-            Fight.dmg = u.getAtk();
-            Fight.w = u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，";
-
-            //类型5技能触发判断
-            ac = tg(5,u.target);
-
-            u.target.damage(Fight.dmg);
-            if(Fight.dmg>0)
-                Fight.w=Fight.w+"造成了" + Fight.dmg + "的伤害。";
+            var dmg=0;
+            dmg = nAtk(u);
+            dmg = tg(5,u.target,0,-1,dmg);
+            if(dmg>0)
+            {
+                u.target.damage(dmg);
+                Fight.w=Fight.w+"造成了" + dmg + "的伤害。";
+            }
             addMsg(Fight.w);
-
         	u.setAtkIdx(0);
         }
         else
@@ -177,6 +223,14 @@ function Act(u)
     Fight.dis = Fight.right.fpos - Fight.left.fpos;
 }
 
+
+function nAtk(u)
+{
+    var dmg = u.getAtk();
+    Fight.w = u.fightName()+"对"+u.target.fightName()+u.atkWord()+"，";
+    dmg = tg(2,u,0,-1,dmg);
+    return dmg;
+}
 
 var Fight = {
 
