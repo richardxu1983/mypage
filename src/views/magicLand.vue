@@ -23,13 +23,13 @@ export default {
 	data:function()
 	{
 		return {
-			gametitle:"魔法大陆",
-			gamedesc:"魔法大陆是老徐在小破站上做的第一个游戏，是一个关于一群勇敢的冒险者在充满魔法的大陆上冒险的故事。"
+			gametitle:"苦逼屠龙记",
+			gamedesc:"苦逼屠龙记是老徐在小破站上做的第一个游戏，是一个关于一个勇敢的冒险者要在600天以内恶龙手中拯救村庄的故事。"
 		}
 	},
 	created:function()
 	{
-		document.title = "魔法大陆";
+		document.title = "苦逼屠龙记";
 	}
 }
 

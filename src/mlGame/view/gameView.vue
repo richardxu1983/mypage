@@ -1,8 +1,8 @@
 <template>
 	<div class="mlBoard">
 		<div class="topBar" >
-			<div class="gtime">1000&nbsp;年&nbsp;1&nbsp;月&nbsp;1&nbsp;日&nbsp; 1&nbsp;时</div>
-			<div class="gold">{{ player['gold'].value }}<span class="unitTxt">金</span></div>
+			<div class="gtime">第&ensp;1&ensp;天&ensp;8&ensp;时&ensp; [&ensp; 剩余：600天 &ensp;]</div>
+			<div class="gold">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
 		</div>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
@@ -64,7 +64,6 @@ export default {
 	{
 		$map.loadMap();
 		EB.Engine.loadGame();
-		$addinfo("加载完毕...");
 	},
 	methods:
 	{
@@ -131,12 +130,9 @@ export default {
 
 <style lang="scss" scoped>
 	
-	.unitTxt{
-		margin-left: 5px;
-	}
 	.infoBox{
 		position: absolute;
-		width: 435px;
+		width: 635px;
 		height: 150px;
 		top: 335px;
 		left: 25px;
@@ -162,7 +158,7 @@ export default {
 	.topBar{
 		position: absolute;
 		padding: 15px 25px 0px 25px;
-		width: 425px;
+		width: 625px;
 		.gtime{
 			float: left;
 		}
@@ -182,7 +178,7 @@ export default {
 	}
 
 	.mlBoard{
-		width: 500px;
+		width: 700px;
 		height: 550px;
 		margin: 0;
 		background-color: #fff;

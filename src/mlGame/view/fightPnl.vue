@@ -111,24 +111,24 @@ export default {
 
 	.fp{
 		position: absolute;
-		left: -3px;
+		left: 25px;
 		top: 40px;
 		border: solid 3px #aaaaaa;
 		background-color: white;
-		width: 500px;
+		width: 650px;
 		height: 460px;
 		z-index:100;
 		.top{
 			position: absolute;
 			top: 20px;
 			left: 0px;
-			width: 500px;
+			width: 650px;
 			padding: 0px;
 			height: 20px;
 			.vs{
 				position: absolute;
 				top:0px;
-				left: 240px;
+				left: 310px;
 			}
 			.nameTag
 			{
@@ -178,7 +178,7 @@ export default {
 			border: solid 1px #aaaaaa;
 			padding: 5px;
 			resize: none;
-			width: 435px;
+			width: 575px;
 			left: 25px;
 			top:80px;
 			overflow-y: scroll;
@@ -190,7 +190,7 @@ export default {
 		.close{
 			position: absolute;
 			bottom: 10px;
-			left: 220px;
+			left: 285px;
 		}
 	}
 

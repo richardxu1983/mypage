@@ -41,7 +41,7 @@ export default {
 		return {
 			    routes:[
 			    {
-			    	name:"魔法大陆",
+			    	name:"苦逼屠龙记",
 			    	path:"/magicLand"
 			    },
 			    {
