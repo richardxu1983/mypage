@@ -1,16 +1,15 @@
 <template>
 	<div class="mlBoard">
+		<myArea></myArea>
 		<div class="topBar" >
 			<div class="gtime">第&ensp;1&ensp;天&ensp;8&ensp;时&ensp; [&ensp; 剩余：600天 &ensp;]</div>
 			<div class="gold">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
 		</div>
+		
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
-		<div class="mapPanel">
-			<h3>{{ playerTxt['posTxt'] }}</h3>
-		</div>
 		<div class="bottomBar">
 			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="btnBottom" @click="test">测试</button>
@@ -32,6 +31,7 @@ import MpB from '../../mlGame/core/gameMap.js'
 import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
+import myArea from '../../mlGame/view/area.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -54,7 +54,8 @@ export default {
 	{
 	  plyAttrPnl,
 	  fightPnl,
-	  wpDesc
+	  wpDesc,
+	  myArea
 	},
 	created:function()
 	{
@@ -62,7 +63,6 @@ export default {
 	},
 	mounted:function()
 	{
-		$map.loadMap();
 		EB.Engine.loadGame();
 	},
 	methods:
@@ -133,28 +133,14 @@ export default {
 	.infoBox{
 		position: absolute;
 		width: 635px;
-		height: 150px;
-		top: 335px;
+		height: 100px;
+		bottom: 50px;
 		left: 25px;
 		border: solid 1px #aaaaaa;
 		padding: 5px;
 		resize: none;
 		overflow-y: scroll;
 	}
-
-	.mapPanel{
-		position: absolute;
-		width: 535px;
-		height: 150px;
-		top: 50px;
-		left: 25px;
-		padding: 5px;
-		resize: none;
-		h3{
-			margin: 0 0 0 5px;
-		}
-	}
-	
 	.topBar{
 		position: absolute;
 		padding: 15px 25px 0px 25px;

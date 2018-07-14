@@ -61,7 +61,6 @@ class Unit
         this.fpos = 0;
         this.mcd = 0;
         this.fEnter=0;
-        this.format = {'posTxt':"1"};
 
         if(weaponid==undefined||(weaponid==-1))
         {
@@ -242,15 +241,9 @@ class Unit
         }
     }
 
-    posFormat()
-    {
-        this.format.posTxt = $map.mapName(this.attr['pos'].value);
-    }
-
     arriveAt(i)
     {
         Player.setAttr('pos',i);
-        Player.posFormat();
     }
 
     onEqWp(id){}
@@ -294,7 +287,6 @@ class Ply extends Unit
             if(typeof(this.attr[v])=="object")
                 this.attr[v].value = this.getAttr(v);
         }
-        this.posFormat();
 
         //load weapon
         var id=$SM.get('player.weapon');

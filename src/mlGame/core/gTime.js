@@ -1,4 +1,5 @@
 
+const MAX_HOUR = 24;
 
 var time = {
 
@@ -10,41 +11,19 @@ var time = {
 
 	init:function()
 	{
-		time.day = 600;
+		time.day = 1;
 		time.hour = 8;
 		time.min = 0;
 	},
 
-	start:function()
+	addHour:function(v)
 	{
-		time.timer = setInterval(time.step,1000);
-	},
-
-	step:function()
-	{
-		time.min++;
-		if(time.min>=1)
+		time.hour = time.hour + v;
+		var add = Math.floor(time.hour/MAX_HOUR);
+		if(add>0)
 		{
-			time.min=0;
-			time.hour++;
-			if(time.hour>=24)
-			{
-				time.hour=0;
-				time.day--;
-				if(time.day<=0)
-				{
-					time.day=0;
-					time.stop();
-				}
-			}
+			time.hour = time.hour%MAX_HOUR;
+			time.day = time.day + add;
 		}
-		$SM.set('time.'+min , time.min);
-		$SM.set('time.'+hour , time.hour);
-		$SM.set('time.'+day , time.day);
-	},
-
-	stop:function()
-	{
-		clearInterval(time.timer);
 	}
 }
