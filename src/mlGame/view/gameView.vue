@@ -2,23 +2,21 @@
 	<div class="mlBoard">
 		<myArea></myArea>
 		<div class="topBar" >
-			<div class="gtime">第&ensp;1&ensp;天&ensp;8&ensp;时&ensp; [&ensp; 剩余：600天 &ensp;]</div>
-			<div class="gold">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
+			<tiv class="left"></tiv>
+			<div class="right">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
 		</div>
-		
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
 		<div class="bottomBar">
-			<button class="btnBottom" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
-			<button class="btnBottom" @click="test">测试</button>
-			<button class="btnBottom" @click="fight">战斗</button>
-			<button class="btnBottom" @click="newGame">新游戏</button>
-			<button class="btnBottom" @click="equipWp1">装备匕首</button>
-			<button class="btnBottom" @click="equipWp2">装备弓箭</button>
-			<button class="btnBottom" @click="upEquip">卸下武器</button>
-			<button class="btnBottom" @click="showwp">武器名</button>
+			<button class="left" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
+			<button class="left" @click="test">金币+1</button>
+			<button class="left" @click="fight">战斗</button>
+			<button class="left" @click="newGame">新游戏</button>
+			<button class="left" @click="equipWp1">装备匕首</button>
+			<button class="left" @click="equipWp2">装备弓箭</button>
+			<button class="left" @click="upEquip">卸下武器</button>
 		</div>
 	</div>
 </template>
@@ -32,6 +30,7 @@ import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import myArea from '../../mlGame/view/area.vue'
+import tiv from '../../mlGame/view/tiv.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -44,7 +43,6 @@ export default {
 		return {
 			btnAttrTxt:"人物",
 			player:$ply.attr,
-			playerTxt:$ply.format,
 			plyAttrPnlShow:false,
 			wpDesc:false,
 			info:EB.info.txt,
@@ -55,7 +53,8 @@ export default {
 	  plyAttrPnl,
 	  fightPnl,
 	  wpDesc,
-	  myArea
+	  myArea,
+	  tiv
 	},
 	created:function()
 	{
@@ -119,17 +118,15 @@ export default {
 		{
 			$ply.unEquipWp(1);
 		},
-		showwp:function()
-		{
-			$addinfo("装备了:"+$ply.wpName());
-		},
 	}
 }
 
 </script>
 
 <style lang="scss" scoped>
-	
+
+	@import "../../scss/mlGame";
+
 	.infoBox{
 		position: absolute;
 		width: 635px;
@@ -145,22 +142,10 @@ export default {
 		position: absolute;
 		padding: 15px 25px 0px 25px;
 		width: 625px;
-		.gtime{
-			float: left;
-		}
-		.gold{
-			position: absolute;
-			right: 0px;
-		}
 	}
-
 	.bottomBar{
 		position: absolute;
 		bottom: 0;
-	}
-
-	.btnBottom{
-		float: left;
 	}
 
 	.mlBoard{

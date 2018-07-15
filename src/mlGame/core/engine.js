@@ -1,5 +1,7 @@
 
 import UB from '../../mlGame/core/unit.js'
+import TI from '../../mlGame/core/gTime.js'
+var $ti = TI.gtime;
 
 var StateManager = {
 
@@ -111,7 +113,7 @@ var Engine =
             State = {};
             $SM.set('version', Engine.VERSION);
         }
-        
+        $ti.init();
         UB.Player.load(State);
     },
 

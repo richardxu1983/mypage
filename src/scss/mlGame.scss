@@ -36,3 +36,40 @@
 		margin: 0 0 6px 0;
 	}
 }
+
+.left{
+	float: left;
+}
+
+.right{
+	float: right;
+}
+
+.plcBtn{
+	margin-right: 1em;
+	border: solid 1px black;
+	padding: 2px 8px 2px 8px;
+	font-size: 1.1em;
+	cursor: pointer;
+}
+.plcBtn:hover{
+	background-color: #B0E2FF
+}
+.plcBtn:active{
+	background-color: #7D9EC0;
+}
+
+.actBtn{
+	margin-right: 1em;
+	border-radius: 0.3em;
+	padding: 4px 12px 4px 12px;
+	font-size: 1.1em;
+	cursor: pointer;
+	background-color: #BFEFFF;
+}
+.actBtn:hover{
+	background-color: #A4D3EE;
+}
+.actBtn:active{
+	background-color: #7D9EC0;
+}
