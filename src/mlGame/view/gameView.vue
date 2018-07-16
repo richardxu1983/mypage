@@ -7,6 +7,7 @@
 		</div>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
+		<areaGo></areaGo>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
 		<div class="bottomBar">
@@ -31,6 +32,7 @@ import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import myArea from '../../mlGame/view/area.vue'
 import tiv from '../../mlGame/view/tiv.vue'
+import areaGo from '../../mlGame/view/areaGo.vue'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -54,7 +56,8 @@ export default {
 	  fightPnl,
 	  wpDesc,
 	  myArea,
-	  tiv
+	  tiv,
+	  areaGo
 	},
 	created:function()
 	{

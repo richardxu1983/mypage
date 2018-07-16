@@ -48,12 +48,7 @@ export default {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
     background: #f6f6f6;
   }
-  .md{
-    position: relative;
-    background-color: white;
-    z-index: 90;
-    opacity:0.8;
-  }
+
   .nosel{
     -webkit-user-select:none;
     -moz-user-select:none;

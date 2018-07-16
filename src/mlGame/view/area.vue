@@ -1,6 +1,6 @@
 <template>
 	<div class="mapPanel">
-		<div><b class="title">{{plyPos}}</b>&ensp;{{dist}}</div>
+		<div><b class="title">位置：{{plyPos}}</b>&ensp;{{dist}}</div>
 		<div class="plc">
 			<div v-for="p in places" :key="p" class="plcBtn left nosel">
 				{{plName(p)}}
@@ -74,7 +74,7 @@ export default {
 		},
 		act:function(p)
 		{
-			
+			ACT.AreaDoAct(p,this.pos.value);
 		},
 	}
 }
@@ -94,7 +94,7 @@ export default {
 	left: 1.5em;
 	padding: 5px;
 	.title{
-		font-size: 1.5em;
+		font-size: 1.4em;
 	}
 	.plc{
 		padding: 1em 0 0 0;
@@ -105,7 +105,7 @@ export default {
 		margin-top: 2em;
 	}
 	.subTitle{
-		font-size: 1.35em;
+		font-size: 1.31em;
 		margin-bottom: 0.7em;
 	}
 }

@@ -1,6 +1,7 @@
 
 .bframe{
-	border: solid 3px #aaaaaa;
+	border: solid 4px #B0E2FF;
+	border-radius: 0.5em;
 	padding: 0 0px 25px 25px;
 }
 
@@ -17,8 +18,15 @@
 	}
 }
 
+.md{
+position: relative;
+background-color: black;
+z-index: 90;
+opacity:0.6;
+}
+
 .bd{
-	width: 500px;
+	width: 700px;
 	height: 550px;
 }
 
