@@ -2,15 +2,27 @@
 	<div v-if="data.areaGo">
 		<div class="md bd">
 		</div>
-		<div class="box bframe">
-			<h3>选择要前往的地方...</h3>
-			<div v-for="p in places" :key="p">
-				<ul>
-					<li  class="plcBtn left nosel" @click="gotoArea(p)">{{plName(p)}}</li><span>耗时：{{cti(p)}}小时</span>
-				</ul>
+		<div class="mediumBox bframe">
+			<h2>{{tit}}</h2>
+			<div v-if="!data.areaGoProc">
+				<div v-for="p in places" :key="p" >
+					<ul>
+						<li  class="actBtn left nosel" @click="gotoArea(p)">{{plName(p)}}</li><span>耗时：{{cti(p)}}小时</span>
+					</ul>
+				</div>
+				<button class="close" @click="close">关闭</button>				
 			</div>
-			<button class="close" @click="close" >关闭</button>	
-		</div>		
+			<div class="proc" v-if="data.areaGoProc">
+				<div class="baseBar bar"></div>
+				<transition
+				   appear
+				   v-on:appear="customAppearHook"
+				   v-on:after-appear="customAfterAppearHook"
+				 >
+					<div class="procBar bar" id="procbar"></div>
+				</transition>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -25,7 +37,8 @@ export default {
 	data:function()
 	{
 		return{
-			data:ACT.actData
+			data:ACT.actData,
+			tit:"请选择要去的地方..."
 		}
 	},
 	computed:{
@@ -42,11 +55,12 @@ export default {
 		},
 		close:function()
 		{
-			ACT.clearAreaGo();
+			ACT.areaGo.clear();
 		},
 		gotoArea:function(p)
 		{
-			ACT.gotoArea(p);
+			this.tit = "正在前往 [ "+$area[p].name+" ]";
+			ACT.areaGo.confirm(p);
 		},
 		cti:function(p)
 		{
@@ -55,6 +69,18 @@ export default {
 			var x2 = $area[p].pos.x;
 			var y2 = $area[p].pos.y;
 			return Math.ceil(Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) * 1);
+		},
+		customAppearHook:function()
+		{
+
+		},
+		customAfterAppearHook:function()
+		{
+			document.getElementById('procbar').style.transition="width 1500ms ease-out";
+			document.getElementById('procbar').style.width = '22em';
+			document.getElementById('procbar').addEventListener('webkitTransitionEnd', function(){
+				ACT.areaGo.goto();
+			});
 		}
 	}
 }
@@ -65,11 +91,14 @@ export default {
 
 @import "../../scss/mlGame";
 
-.box{
+.mediumBox{
 	.close{
 		position: absolute;
-		bottom: 10px;
-		left: 17em;
+		bottom: 1em;
+		left:16em;
+	}
+	h2{
+		margin-top: 1.2em;
 	}
 }
 
@@ -82,5 +111,25 @@ ul{
 		text-align: center;
 	}
 }
+
+.proc{
+	margin-top: 2em;
+	.bar{
+		position: absolute;
+		top: 9em;
+		left: 5em;	
+		height: 3em;	
+	}
+	.baseBar{
+		width: 22em;
+		border: solid 1px black;
+	}
+	.procBar{
+		width: 0em;
+		background-color: blue;
+		border: solid 1px blue;
+	}
+}
+
 
 </style>

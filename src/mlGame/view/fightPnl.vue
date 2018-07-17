@@ -2,7 +2,7 @@
 	<div v-if="show.v">
 		<div class="md bd">
 		</div>
-		<div class="fp">
+		<div class="fp bframe">
 			<div class="top">
 				<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
 				<div class="hp1 plyhp hpbar" ></div>
@@ -109,11 +109,14 @@ export default {
 
 	@import "../../scss/mlGame";
 
+	.bframe{
+		padding: 0;
+	}
+
 	.fp{
 		position: absolute;
 		left: 25px;
 		top: 40px;
-		border: solid 3px #aaaaaa;
 		background-color: white;
 		width: 650px;
 		height: 460px;
@@ -138,12 +141,6 @@ export default {
 				overflow: hidden;
 				text-align: left;
 				font-weight: bold;
-				.right{
-					float: right;
-				}
-				.left{
-					float: left;
-				}	
 			}
 			.ply{
 				left: 0px;

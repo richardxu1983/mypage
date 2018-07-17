@@ -18,6 +18,19 @@
 	}
 }
 
+.mediumBox{
+	position: absolute;
+	left: 7.5em;
+	top: 6em;
+	background-color: white;
+	z-index:100;
+	width: 470px;
+	height: 300px;
+	padding: 0 2em 0 2em;
+	box-sizing:border-box;
+	text-align: center;
+}
+
 .md{
 position: relative;
 background-color: black;
