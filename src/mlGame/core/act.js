@@ -45,6 +45,7 @@ var areaGo = {
 		actData.areaGo = false;
 		actData.area = -1;
 		actData.areaGoProc = false;
+		actData.areaTo = -1;
 	},
 
 	goto:function()

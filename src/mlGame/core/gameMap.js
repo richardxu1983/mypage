@@ -29,9 +29,10 @@ const AreaList =
 	type:1,
 	dist:0,
 	pos:{'x':1000,'y':1000},
-	place:[0,1,2,3],
+	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2],
 	to:[1,2,3,4],
+	npc:[],
 },
 {
 	id:1,	
@@ -39,9 +40,10 @@ const AreaList =
 	type:1,
 	dist:0,
 	pos:{'x':1001,'y':1000},
-	place:[0,1,2,3],
+	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2],
 	to:[0,2,4],
+	npc:[],
 },
 {
 	id:2,	
@@ -49,9 +51,10 @@ const AreaList =
 	type:1,
 	dist:0,
 	pos:{'x':1000,'y':999},
-	place:[0,1,2,3],
+	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2],
 	to:[0,1,3],
+	npc:[],
 },
 {
 	id:3,	
@@ -59,9 +62,10 @@ const AreaList =
 	type:1,
 	dist:0,
 	pos:{'x':999,'y':1000},
-	place:[0,1,2,3],
+	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2],
 	to:[0,2,4],
+	npc:[],
 },
 {
 	id:4,	
@@ -72,6 +76,7 @@ const AreaList =
 	place:[0,1,2,3],
 	act:[0,1,2],
 	to:[0,1,3],
+	npc:[],
 },
 ]
 

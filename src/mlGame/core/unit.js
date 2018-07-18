@@ -327,6 +327,18 @@ class Ply extends Unit
     }
 }
 
+class Npc extends Unit 
+{ 
+    constructor(attr,id,placeid,distr,type,weaponid) 
+    { 
+        super(attr,weaponid);
+        this.id = id;
+        this.belong = distr;
+        this.placeId = placeid;
+        this.type = type;
+    }
+}
+
 var PlyInit = {
     'hp' : 50,
     'maxhp':50,

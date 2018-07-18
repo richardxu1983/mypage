@@ -2,9 +2,11 @@
 	<div class="mapPanel">
 		<div><b class="title">位置：{{plyPos}}</b>&ensp;{{dist}}</div>
 		<div class="plc">
-			<div v-for="p in places" :key="p" class="plcBtn left nosel">
-				{{plName(p)}}
+			<div v-for="(p,index) in places" :key="p.id" class="plcBtn left nosel">
+				{{plName(p.id,index)}}
 			</div>
+		</div>
+		<div class="npc">
 		</div>
 		<div class="act">
 			<div class="subTitle"><b>行动</b></div>
@@ -64,7 +66,7 @@ export default {
 	},
 	methods:
 	{
-		plName:function(p)
+		plName:function(p,index)
 		{
 			return $plc[p].name;
 		},
@@ -99,7 +101,10 @@ export default {
 	.plc{
 		padding: 1em 0 0 0;
 		margin: 1em 0 0em 0;
-		height: 5em;
+		height: 3em;
+	}
+	.npc{
+		margin-top: 2em;
 	}
 	.act{
 		margin-top: 2em;

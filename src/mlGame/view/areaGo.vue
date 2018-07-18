@@ -37,8 +37,7 @@ export default {
 	data:function()
 	{
 		return{
-			data:ACT.actData,
-			tit:"请选择要去的地方..."
+			data:ACT.actData
 		}
 	},
 	computed:{
@@ -46,6 +45,17 @@ export default {
 		{
 			return $area[this.data.area].to;
 		},
+		tit:function()
+		{
+			if(!this.data.areaGoProc)
+			{
+				return "请选择要去的地方...";
+			}
+			else
+			{
+				return "正在前往[ "+$area[this.data.areaTo].name+" ]";
+			}
+		}
 	},
 	methods:
 	{
@@ -59,7 +69,6 @@ export default {
 		},
 		gotoArea:function(p)
 		{
-			this.tit = "正在前往 [ "+$area[p].name+" ]";
 			ACT.areaGo.confirm(p);
 		},
 		cti:function(p)
@@ -118,16 +127,16 @@ ul{
 		position: absolute;
 		top: 9em;
 		left: 5em;	
-		height: 3em;	
+		height: 2em;	
 	}
 	.baseBar{
 		width: 22em;
-		border: solid 1px black;
+		border: solid 1px #999;
 	}
 	.procBar{
 		width: 0em;
-		background-color: blue;
-		border: solid 1px blue;
+		background-color: #6495ED;
+		border: solid 1px #6495ED;
 	}
 }
 
