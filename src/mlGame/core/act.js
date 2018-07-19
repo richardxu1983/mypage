@@ -26,6 +26,11 @@ var areAct=[
 	name:'睡觉',
 	t:8,
 },
+{
+	id:3,
+	name:'找个路人',
+	t:0.5,
+},
 ]
 
 var onAction = false;
