@@ -3,6 +3,8 @@ import MpB from '../../mlGame/core/gameMap.js'
 import TI from '../../mlGame/core/gTime.js'
 import UB from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
+import NPC from '../../mlGame/core/npc.js'
+var $npc = NPC.npc;
 var $addinfo = EB.info.addInfo;
 var $ply = UB.Player;
 var $ti = TI.gtime;
@@ -40,6 +42,13 @@ var actData = {
 	area:-1,
 	areaGoProc:false,
 	areaTo:-1,
+	npcTalk:false,
+	npcId:-1,
+	ntStep:-1,
+	ntSeg:-1,
+	ntIndex:-1,
+	psByEmot:"",
+	plyOp:false,
 }
 
 var areaGo = {
@@ -73,6 +82,74 @@ var areaGo = {
 	}
 }
 
+var npcTalk = {
+
+	clear:function()
+	{
+		onAction = false;
+		actData.npcTalk = false;
+		actData.npcId = -1;
+	},
+
+	talk:function(npcId)
+	{
+		actData.npcTalk = true;
+		actData.npcId = npcId;
+		actData.ntStep = $npc[actData.npcId].step;
+		actData.ntSeg = 0;
+		actData.ntIndex = 0;
+		if($npc[actData.npcId].d["0"])
+			actData.psByEmot = "["+$npc[actData.npcId].d["0"]+"]";
+		if(actData.ntStep==1)
+			actData.plyOp=true;
+	},
+
+	talkToPsby:function(area)
+	{
+		var npcId = MpB.Gmap.pickPsby(area);
+		npcTalk.talk(npcId);
+	},
+
+	curName:function()
+	{
+		if(!actData.npcTalk)
+			return "";
+
+		return $npc[actData.npcId].name;
+	},
+
+	emot:function()
+	{
+		var i = actData.ntIndex;
+		if($npc[actData.npcId].d[i])
+			actData.psByEmot = "["+$npc[actData.npcId].d[i]+"]";
+	},
+
+	clickOpt:function(v)
+	{
+		var i = actData.ntIndex;
+		actData.ntIndex = $npc[actData.npcId].o[i][v].t;
+		actData.ntStep = 0;
+		actData.ntSeg = 0;
+		actData.plyOp=false;
+		npcTalk.emot();
+	},
+
+	segNext:function()
+	{
+		actData.ntSeg+=1;
+	},
+
+	StepNext:function()
+	{
+		if(actData.ntStep==0)
+		{
+			actData.ntStep=1;
+			actData.plyOp=true;
+		}
+	}
+}
+
 function AreaDoAct(act,area)
 {
 	if(onAction)
@@ -89,10 +166,15 @@ function AreaDoAct(act,area)
 				actData.areaTo = -1;
 			}
 			break;
+		case 3:
+		{
+			npcTalk.talkToPsby(area);
+		}
+		break;
 		default:
 			onAction = false;
 			break;
 	}
 }
 
-export default { areAct,AreaDoAct,actData,areaGo}; 
+export default { areAct,AreaDoAct,actData,areaGo,npcTalk};

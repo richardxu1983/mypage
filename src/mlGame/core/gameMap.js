@@ -32,7 +32,7 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[1,2,3,4],
-	npc:[],
+	passerby:[0],
 },
 {
 	id:1,	
@@ -43,7 +43,7 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,2,4],
-	npc:[],
+	passerby:[0],
 },
 {
 	id:2,	
@@ -54,7 +54,7 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,1,3],
-	npc:[],
+	passerby:[0],
 },
 {
 	id:3,	
@@ -65,7 +65,7 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,2,4],
-	npc:[],
+	passerby:[0],
 },
 {
 	id:4,	
@@ -76,7 +76,7 @@ const AreaList =
 	place:[0,1,2,3],
 	act:[0,1,2],
 	to:[0,1,3],
-	npc:[],
+	passerby:[0],
 },
 ]
 
@@ -101,7 +101,10 @@ const plc = [
 
 var Gmap = {
 
-
+	pickPsby:function(area)
+	{
+		return AreaList[area].passerby[0];
+	}
 }
 
 
