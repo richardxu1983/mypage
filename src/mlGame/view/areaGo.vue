@@ -101,6 +101,7 @@ export default {
 @import "../../scss/mlGame";
 
 .mediumBox{
+	background-color: #F5F5DC;
 	.close{
 		position: absolute;
 		bottom: 1em;

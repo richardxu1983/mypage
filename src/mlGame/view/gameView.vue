@@ -10,7 +10,8 @@
 		<areaGo></areaGo>
 		<ntk></ntk>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
-		<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>
+		<div class="infoBox" id="info"></div>
+		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
 		<div class="bottomBar">
 			<button class="left" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="left" @click="test">金币+1</button>
@@ -135,19 +136,22 @@ export default {
 
 	.infoBox{
 		position: absolute;
-		width: 635px;
-		height: 100px;
-		bottom: 50px;
-		left: 25px;
-		border: solid 1px #aaaaaa;
-		padding: 5px;
-		resize: none;
-		overflow-y: scroll;
+		width: 100%;
+		bottom: 2em;
+		padding: 0.3em 0 0.3em 1em;
+		box-sizing: border-box;
+		overflow-y: hidden;
+		height: 2em;
+		background-color: #8B8878;
+		color: white;
 	}
 	.topBar{
 		position: absolute;
-		padding: 15px 25px 0px 25px;
-		width: 625px;
+		padding: 0.3em 1em 0.5em 1em;
+		width: 100%;
+		background-color: #8B8878;
+		box-sizing: border-box;
+		color: white;
 	}
 	.bottomBar{
 		position: absolute;
@@ -158,11 +162,11 @@ export default {
 		width: 700px;
 		height: 550px;
 		margin: 0;
-		background-color: #fff;
-		border: solid 3px #ddd;
+		border: solid 3px #CDB38B;
 		position: relative;
 		font-size: 90%;
 		border-radius: 6px;
+		background-color: #F5F5DC;
 	}
 
 </style>

@@ -4,6 +4,8 @@ import TI from '../../mlGame/core/gTime.js'
 import UB from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
 import NPC from '../../mlGame/core/npc.js'
+import DT from '../../mlGame/core/gData.js'
+var $dt = DT.data;
 var $npc = NPC.npc;
 var $addinfo = EB.info.addInfo;
 var $ply = UB.Player;
@@ -47,6 +49,7 @@ var actData = {
 	ntStep:-1,
 	ntSeg:-1,
 	ntIndex:-1,
+	ntInfo:"",
 	psByEmot:"",
 	plyOp:false,
 }
@@ -89,6 +92,11 @@ var npcTalk = {
 		onAction = false;
 		actData.npcTalk = false;
 		actData.npcId = -1;
+		if(actData.ntInfo)
+		{
+			$addinfo(actData.ntInfo);
+			actData.ntInfo="";
+		}
 	},
 
 	talk:function(npcId)
@@ -98,10 +106,12 @@ var npcTalk = {
 		actData.ntStep = $npc[actData.npcId].step;
 		actData.ntSeg = 0;
 		actData.ntIndex = 0;
+		actData.ntInfo="";
 		if($npc[actData.npcId].d["0"])
 			actData.psByEmot = "["+$npc[actData.npcId].d["0"]+"]";
 		if(actData.ntStep==1)
 			actData.plyOp=true;
+		$ti.addHour($dt.npcTkTime);
 	},
 
 	talkToPsby:function(area)
@@ -132,6 +142,8 @@ var npcTalk = {
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
 		actData.plyOp=false;
+		if($npc[actData.npcId].o[i][v].i)
+			actData.ntInfo = $npc[actData.npcId].o[i][v].i;
 		npcTalk.emot();
 	},
 

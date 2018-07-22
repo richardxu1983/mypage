@@ -7,6 +7,8 @@
 <script>
 
 import TI from '../../mlGame/core/gTime.js'
+import DT from '../../mlGame/core/gData.js'
+var $dt = DT.data;
 var $ti = TI.gtime;
 
 
@@ -21,7 +23,7 @@ export default {
 	computed:{
 		remain:function()
 		{
-			return (60-this.ti.day);
+			return ($dt.timeLimit-this.ti.day);
 		},
 	},
 	methods:
