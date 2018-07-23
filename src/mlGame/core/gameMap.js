@@ -37,7 +37,8 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[1,2,3,4],
-	passerby:[0],
+	passerby:[0,1,2],
+	passerbyProb:[0.1,0.3,0.4],
 },
 {
 	id:1,	
@@ -48,7 +49,8 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,2,4],
-	passerby:[0],
+	passerby:[0,1,2],
+	passerbyProb:[0.1,0.3,0.4],
 },
 {
 	id:2,	
@@ -59,7 +61,8 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,1,3],
-	passerby:[0],
+	passerby:[0,1,2],
+	passerbyProb:[0.1,0.3,0.4],
 },
 {
 	id:3,	
@@ -70,7 +73,8 @@ const AreaList =
 	place:[{id:0},{id:1},{id:2},{id:3}],
 	act:[0,1,2,3],
 	to:[0,2,4],
-	passerby:[0],
+	passerby:[0,1,2],
+	passerbyProb:[0.1,0.3,0.4],
 },
 {
 	id:4,	
@@ -81,7 +85,8 @@ const AreaList =
 	place:[0,1,2,3],
 	act:[0,1,2],
 	to:[0,1,3],
-	passerby:[0],
+	passerby:[0,1,2],
+	passerbyProb:[0.1,0.3,0.4],
 },
 ]
 
@@ -108,7 +113,29 @@ var Gmap = {
 
 	pickPsby:function(area)
 	{
-		return AreaList[area].passerby[0];
+		var ran = Math.random();
+		var p,pos=-1;
+		for(var i=0,len=AreaList[area].passerbyProb.length;i<len;i++)
+		{
+			p=AreaList[area].passerbyProb[i];
+			if(ran<p)
+			{
+				pos = i;
+				break;
+			}
+			else
+			{
+				ran-=p;
+			}
+		}
+		if(pos>=0)
+		{
+			return AreaList[area].passerby[pos];
+		}
+		else
+		{
+			return -1;
+		}
 	}
 }
 

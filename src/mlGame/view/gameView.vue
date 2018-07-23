@@ -149,9 +149,8 @@ export default {
 		position: absolute;
 		padding: 0.3em 1em 0.5em 1em;
 		width: 100%;
-		background-color: #8B8878;
 		box-sizing: border-box;
-		color: white;
+		background-color: #c8d0b1;
 	}
 	.bottomBar{
 		position: absolute;
@@ -162,11 +161,10 @@ export default {
 		width: 700px;
 		height: 550px;
 		margin: 0;
-		border: solid 3px #CDB38B;
+		border: solid 3px #ccc;
 		position: relative;
 		font-size: 90%;
 		border-radius: 6px;
-		background-color: #F5F5DC;
 	}
 
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div class="mapPanel">
-		<div><b class="title">位置：{{plyPos}}</b>&ensp;{{dist}}</div>
+		<div><b class="title">[{{plyPos}}]</b>&ensp;{{dist}}</div>
 		<div class="desc">
 			守望镇看起来有些萧条，人们看起来不富裕，街上的人不多，来往的人们毫无表情地看着你。
 		</div>
@@ -8,8 +8,6 @@
 			<div v-for="(p,index) in places" :key="p.id" class="plcBtn left nosel">
 				{{plName(p.id,index)}}
 			</div>
-		</div>
-		<div class="npc">
 		</div>
 		<div class="act">
 			<div class="subTitle"><b>行动</b></div>
@@ -93,9 +91,8 @@ export default {
 
 .mapPanel{
 	position: absolute;
-	top: 5em;
-	left: 1.5em;
-	padding: 5px;
+	top: 4em;
+	left: 2.5em;
 	.title{
 		font-size: 1.4em;
 	}
@@ -107,9 +104,6 @@ export default {
 		padding: 1em 0 0 0;
 		margin: 1em 0 0em 0;
 		height: 3em;
-	}
-	.npc{
-		margin-top: 2em;
 	}
 	.act{
 		margin-top: 2em;

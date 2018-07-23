@@ -7,7 +7,7 @@
 			<div class="psbBox">
 				<div class="desc green">[{{desc}}]</div>
 				<div class="desc green">{{emot}}<span class="black">{{pa}}</span></div>
-				<div class="desc green"></div>				
+				<div class="desc green"></div>
 			</div>
 
 			<div class="plyOp" v-if="data.plyOp">
@@ -15,7 +15,7 @@
 				<div class="desc psbBox opt" v-for="(v,index) in opts" :key="index" @click="clickOpt(index)">->“{{v.w}}”</div>			
 			</div>
 
-			<div class="ctn sayBlock opt" v-if="showCtn" @click="contin">
+			<div class="ctn sayBlock opt" v-if="data.ntCtn" @click="contin">
 				->继续<-	
 			</div>
 		</div>
@@ -48,17 +48,7 @@ export default {
 		},
 		desc:function()
 		{
-			var d = $npc[this.data.npcId].desc;
-			var wp = $npc[this.data.npcId].wp;
-			if(wp<=0)
-			{
-				d+="，没有装备什么武器";
-			}
-			else
-			{
-				d+="，带了一"+WP.wpL[wp]+WP.wpQ[$wp[wp].quality]+"的"+WP.wpType[$wp[wp].type];
-			}
-			return d;
+			return $npcTalk.getDesc();
 		},
 		emot:function()
 		{
@@ -66,43 +56,34 @@ export default {
 		},
 		opts:function()
 		{
-			var i = this.data.ntIndex;
-			if($npc[this.data.npcId].o[i])
+			if(this.data.npcId>=0)
 			{
-				if($npc[this.data.npcId].o[i][0].t>0)
+				var i = this.data.ntIndex;
+				if($npc[this.data.npcId].o[i])
 				{
-					return $npc[this.data.npcId].o[i];
-				}
+					if($npc[this.data.npcId].o[i][0].t>0)
+					{
+						return $npc[this.data.npcId].o[i];
+					}
+				}				
 			}
 		},
 		pa:function()
 		{
-			var i = this.data.ntIndex;
-			if($npc[this.data.npcId].a[i])
+			if(this.data.npcId>=0)
 			{
-				var seg = this.data.ntSeg;
-				return "“"+$npc[this.data.npcId].a[i][seg]+"”";
-			}
-			else
-			{
-				return "";
+				var i = this.data.ntIndex;
+				if($npc[this.data.npcId].a[i])
+				{
+					var seg = this.data.ntSeg;
+					return "“"+$npc[this.data.npcId].a[i][seg]+"”";
+				}
+				else
+				{
+					return "";
+				}				
 			}
 		},
-		showCtn:function()
-		{
-			var i = this.data.ntIndex;
-			var step = this.data.ntStep;
-			if(step==0)
-			{
-				return true;
-			}
-			else
-			{
-				if($npc[this.data.npcId].o[i].length==1)
-					return true;
-			}
-			return false;
-		}
 	},
 	methods:
 	{
@@ -112,33 +93,7 @@ export default {
 		},
 		contin:function()
 		{
-			var i = this.data.ntIndex;
-			var t = $npc[this.data.npcId].o[i][0].t;
-			if(t>0)
-			{
-				var step = this.data.ntStep;
-				if(step==0)
-				{
-					var len = $npc[this.data.npcId].a[i].length;
-					var seg = this.data.ntSeg+1;
-					if(seg<len)
-					{
-						$npcTalk.segNext();
-					}
-					else{
-						$npcTalk.StepNext();
-					}
-				}
-				else
-				{
-					if($npc[this.data.npcId].o[i].length==1)
-						$npcTalk.clickOpt(0);
-				}
-			}
-			else
-			{
-				$npcTalk.clear();
-			}
+			$npcTalk.onCtn();
 		}
 	}
 }
