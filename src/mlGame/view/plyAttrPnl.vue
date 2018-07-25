@@ -27,7 +27,7 @@
 <script>
 
 import UB from '../../mlGame/core/unit.js'
-import SK from '../../mlGame/core/skill.js'
+import SK from '../../mlGame/data/skill.js'
 var skl = SK.SKL;
 var $ply = UB.Player;
 

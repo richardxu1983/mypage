@@ -13,7 +13,8 @@
 <script>
 import UB from '../../mlGame/core/unit.js'
 import WP from '../../mlGame/core/weapon.js'
-var $wp = WP.wp;
+import WPD from '../../mlGame/data/wpData.js'
+var $wp = WPD.wp;
 var $ply = UB.Player;
 
 const attrN = {

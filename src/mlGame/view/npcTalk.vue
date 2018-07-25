@@ -12,7 +12,7 @@
 
 			<div class="plyOp" v-if="data.plyOp">
 				<div class="desc"><b>你：</b></div>
-				<div class="desc psbBox opt" v-for="(v,index) in opts" :key="index" @click="clickOpt(index)">->“{{v.w}}”</div>			
+				<div class="desc psbBox opt" v-for="(v,index) in opts" :key="index" v-if="selPlyOp(index)" @click="clickOpt(index)">->“{{v.w}}”</div>			
 			</div>
 
 			<div class="ctn sayBlock opt" v-if="data.ntCtn" @click="contin">
@@ -37,7 +37,7 @@ export default {
 	data:function()
 	{
 		return{
-			data:ACT.actData
+			data:ACT.actData,
 		}
 	},
 	computed:{
@@ -71,6 +71,10 @@ export default {
 		contin:function()
 		{
 			$npcTalk.onCtn();
+		},
+		selPlyOp:function(i)
+		{
+			return $npcTalk.selPlyOp(i);
 		}
 	}
 }

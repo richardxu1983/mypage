@@ -3,13 +3,14 @@ import EB from '../../mlGame/core/engine.js'
 import MpB from '../../mlGame/core/gameMap.js'
 import FT from '../../mlGame/core/fight.js'
 import WP from '../../mlGame/core/weapon.js'
-import SK from '../../mlGame/core/skill.js'
+import SK from '../../mlGame/data/skill.js'
+import WPD from '../../mlGame/data/wpData.js'
 
 var $map = MpB.Gmap;
 var $SM = EB.StateManager;
 var Fight = FT.Fight;
 var Weapon = WP.Weapon;
-var $wp = WP.wp;
+var $wp = WPD.wp;
 var skl = SK.SKL;
 
 class Unit

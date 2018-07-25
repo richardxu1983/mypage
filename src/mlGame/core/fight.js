@@ -1,8 +1,7 @@
 import EB from '../../mlGame/core/engine.js'
-import SK from '../../mlGame/core/skill.js'
-import WP from '../../mlGame/core/weapon.js'
-
-var $wp = WP.wp;
+import SK from '../../mlGame/data/skill.js'
+import WPD from '../../mlGame/data/wpData.js'
+var $wp = WPD.wp;
 var $addinfo = EB.info.addInfo;
 var skl = SK.SKL;
 var $ac = SK.AC;

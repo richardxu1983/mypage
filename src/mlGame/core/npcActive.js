@@ -25,6 +25,7 @@ var actData = {
 	ntCtn:false,
 	psByEmot:"",
 	plyOp:false,
+	plySaid:{},
 }
 
 function ShowNpc()
@@ -79,6 +80,7 @@ var npcTalk = {
 		actData.to = $ans[actData.ansId][actData.ntIndex].t;
 		actData.ntInfo="";
 		actData.plyOp=false;
+		actData.plySaid = {};
 
 		$ti.addHour($dt.npcTkTime);
 
@@ -135,6 +137,7 @@ var npcTalk = {
 			return "附近没有什么人，也许过些时候来会有人。"
 		}
 	},
+
 	curName:function()
 	{
 		if(!actData.npcTalk)
@@ -153,6 +156,7 @@ var npcTalk = {
 		var to = actData.to;
 		var index = to+""+v;
 		var dlgId = actData.dlg;
+		actData.plySaid[index] = 0;
 		actData.ntIndex = NPC.npcDlg[dlgId].pair[index];
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
@@ -245,6 +249,27 @@ var npcTalk = {
 				return $ply[ply][to];
 			}
 		}
+	},
+
+	selPlyOp:function(i)
+	{
+		var to = actData.to;
+		var index = to+""+i;
+		console.log("index="+index+" , actData.plySaid[index]="+actData.plySaid[index]);
+		if(actData.plySaid[index]==undefined)
+		{
+			return true;
+		}
+		else
+		{
+			var ply = actData.plyId;
+			console.log("$ply[ply][to][i].once="+$ply[ply][to][i].once);
+			if($ply[ply][to][i].once==true)
+			{
+				return false;
+			}
+		}
+		return true;
 	},
 
 	npcAns:function()

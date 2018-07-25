@@ -34,7 +34,7 @@ var npc = [
 var plyAsk = [];
 plyAsk[0] = [];
 plyAsk[0][0] = [{w:"你好",once:false},{w:"打扰了",once:false}];
-plyAsk[0][1] = [{w:"请问，你知道恶龙在哪里吗",once:true},{w:"请问，你知道哪里有旅馆吗",once:true},{w:"打扰了，再见",once:false}];
+plyAsk[0][1] = [{w:"请问，你知道恶龙在哪里吗",once:true},{w:"请问，你知道哪里有旅馆吗",once:true},{w:"我没问题了，再见",once:false}];
 plyAsk[0][2] = [{w:"太感谢了，我还有个问题",once:false},{w:"非常感谢，再见了，我的朋友",once:false}];
 plyAsk[0][3] = [{w:"好吧，我还有个问题",once:false},{w:"好吧，那再见了",once:false}];
 
