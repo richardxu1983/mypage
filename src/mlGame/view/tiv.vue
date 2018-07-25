@@ -7,7 +7,7 @@
 <script>
 
 import TI from '../../mlGame/core/gTime.js'
-import DT from '../../mlGame/core/gData.js'
+import DT from '../../mlGame/data/gData.js'
 var $dt = DT.data;
 var $ti = TI.gtime;
 

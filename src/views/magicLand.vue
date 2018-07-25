@@ -14,7 +14,7 @@
 <script>
 
 import gameView from '../mlGame/view/gameview.vue'
-import DT from '../mlGame/core/gData.js'
+import DT from '../mlGame/data/gData.js'
 var $dt = DT.data;
 
 export default {

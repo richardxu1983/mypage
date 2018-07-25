@@ -6,7 +6,7 @@
 			<h2>{{npcName}}</h2>
 			<div class="psbBox">
 				<div class="desc green">[{{desc}}]</div>
-				<div class="desc green">{{emot}}<span class="black">{{pa}}</span></div>
+				<div class="desc green">{{emot}}<span class="black">{{npcAns}}</span></div>
 				<div class="desc green"></div>
 			</div>
 
@@ -24,13 +24,12 @@
 
 <script>
 
-import ACT from '../../mlGame/core/act.js'
-import NPC from '../../mlGame/core/npc.js'
+import ACT from '../../mlGame/core/npcActive.js'
 import WP from '../../mlGame/core/weapon.js'
 
 var $wp = WP.wp;
 var $npcTalk = ACT.npcTalk;
-var $npc = NPC.npc;
+
 
 
 export default {
@@ -56,33 +55,11 @@ export default {
 		},
 		opts:function()
 		{
-			if(this.data.npcId>=0)
-			{
-				var i = this.data.ntIndex;
-				if($npc[this.data.npcId].o[i])
-				{
-					if($npc[this.data.npcId].o[i][0].t>0)
-					{
-						return $npc[this.data.npcId].o[i];
-					}
-				}				
-			}
+			return $npcTalk.plyOpt();
 		},
-		pa:function()
+		npcAns:function()
 		{
-			if(this.data.npcId>=0)
-			{
-				var i = this.data.ntIndex;
-				if($npc[this.data.npcId].a[i])
-				{
-					var seg = this.data.ntSeg;
-					return "“"+$npc[this.data.npcId].a[i][seg]+"”";
-				}
-				else
-				{
-					return "";
-				}				
-			}
+			return $npcTalk.npcAns();
 		},
 	},
 	methods:
