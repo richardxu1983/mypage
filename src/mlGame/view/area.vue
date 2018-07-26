@@ -25,9 +25,12 @@
 import MpB from '../../mlGame/core/gameMap.js'
 import ACT from '../../mlGame/core/act.js'
 import UB from '../../mlGame/core/unit.js'
-var $area = MpB.AreaList;
-var $dist = MpB.district;
-var $plc = MpB.plc;
+import AREA from '../../mlGame/data/area.js'
+import DIST from '../../mlGame/data/dist.js'
+import PLC from '../../mlGame/data/plc.js'
+var $area = AREA.AreaData;
+var $dist = DIST.dist;
+var $plc = PLC.plc;
 var $ply = UB.Player;
 var $act = ACT.areAct;
 
@@ -91,7 +94,7 @@ export default {
 
 .mapPanel{
 	position: absolute;
-	top: 4em;
+	top: 5em;
 	left: 2.5em;
 	.title{
 		font-size: 1.4em;

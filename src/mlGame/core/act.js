@@ -1,16 +1,14 @@
 
-import MpB from '../../mlGame/core/gameMap.js'
 import TI from '../../mlGame/core/gTime.js'
 import UB from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
 import NPC from '../../mlGame/core/npcActive.js'
-
+import AREA from '../../mlGame/data/area.js'
 var $addinfo = EB.info.addInfo;
 var $ply = UB.Player;
 var $ti = TI.gtime;
-var $area = MpB.AreaList;
-var $dist = MpB.district;
-var $plc = MpB.plc;
+var $area = AREA.AreaData;
+
 
 var areAct=[
 {

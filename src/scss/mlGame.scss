@@ -32,7 +32,7 @@
 
 .md{
 position: relative;
-background-color: white;
+background-color: black;
 z-index: 90;
 opacity:0.8;
 }
@@ -67,16 +67,17 @@ opacity:0.8;
 
 .plcBtn{
 	margin-right: 1em;
-	border: solid 1px black;
+	border: solid 1px #ddd;
 	padding: 2px 8px 2px 8px;
 	font-size: 1.1em;
 	cursor: pointer;
+	color: #ddd;
 }
 .plcBtn:hover{
-	background-color: #B0E2FF
+	background-color: #666;
 }
 .plcBtn:active{
-	background-color: #7D9EC0;
+	background-color: #333;
 }
 
 .actBtn{
@@ -85,11 +86,12 @@ opacity:0.8;
 	padding: 4px 12px 4px 12px;
 	font-size: 1.1em;
 	cursor: pointer;
-	background-color: #BFEFFF;
+	background-color: #666;
+	color: #ddd;
 }
 .actBtn:hover{
-	background-color: #A4D3EE;
+	background-color: #999;
 }
 .actBtn:active{
-	background-color: #7D9EC0;
+	background-color: #444;
 }

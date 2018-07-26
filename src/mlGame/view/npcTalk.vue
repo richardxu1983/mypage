@@ -87,6 +87,7 @@ export default {
 
 .box{
 	background-color: 	#F5F5DC;
+	color: black;
 	h2{
 		margin: 2em 0 .3em 0;
 	}

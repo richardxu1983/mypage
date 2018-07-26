@@ -1,4 +1,5 @@
 <template>
+
 	<div class="mlBoard">
 		<myArea></myArea>
 		<div class="topBar" >
@@ -22,6 +23,7 @@
 			<button class="left" @click="upEquip">卸下武器</button>
 		</div>
 	</div>
+
 </template>
 
 <script>
@@ -107,11 +109,6 @@ export default {
 		{
 			EB.Engine.newGame();
 			$addinfo("重新开始了游戏...");
-			$ply.equipWp(2);
-			$ply.addSkToFight(1);
-			$ply.addSkToFight(0);
-			$ply.addSkToFight(3);
-			$ply.addSkToFight(4);
 		},
 		equipWp1:function()
 		{
@@ -133,7 +130,7 @@ export default {
 <style lang="scss" scoped>
 
 	@import "../../scss/mlGame";
-
+	
 	.infoBox{
 		position: absolute;
 		width: 100%;
@@ -142,7 +139,7 @@ export default {
 		box-sizing: border-box;
 		overflow-y: hidden;
 		height: 2em;
-		background-color: #8B8878;
+		background-color: black;
 		color: white;
 	}
 	.topBar{
@@ -150,7 +147,7 @@ export default {
 		padding: 0.3em 1em 0.5em 1em;
 		width: 100%;
 		box-sizing: border-box;
-		background-color: #c8d0b1;
+		color: white;
 	}
 	.bottomBar{
 		position: absolute;
@@ -165,6 +162,8 @@ export default {
 		position: relative;
 		font-size: 90%;
 		border-radius: 6px;
+		background-color: #333;
+		color: #98FB98;
 	}
 
 </style>

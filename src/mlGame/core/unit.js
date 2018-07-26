@@ -1,12 +1,11 @@
 
 import EB from '../../mlGame/core/engine.js'
-import MpB from '../../mlGame/core/gameMap.js'
 import FT from '../../mlGame/core/fight.js'
 import WP from '../../mlGame/core/weapon.js'
 import SK from '../../mlGame/data/skill.js'
 import WPD from '../../mlGame/data/wpData.js'
-
-var $map = MpB.Gmap;
+import DT from '../../mlGame/data/gData.js'
+var $dt = DT.data;
 var $SM = EB.StateManager;
 var Fight = FT.Fight;
 var Weapon = WP.Weapon;
@@ -316,7 +315,7 @@ class Ply extends Unit
             var val = this.attr[attr];
             if(val!=undefined)
             {
-                $SM.set('player.'+attr , PlyInit[attr]);
+                $SM.set('player.'+attr , $dt.plyInit[attr]);
             }
             else
             {
@@ -340,20 +339,7 @@ class Npc extends Unit
     }
 }
 
-var PlyInit = {
-    'hp' : 50,
-    'maxhp':50,
-    'mp' : 20,
-    'str' : 20,
-    'def' : 0,
-    'agi' : 3,
-    'spd' : 1,
-    'gold' : 10,
-    'pos':0,
-    'name':"冒险者",  
-};
-
-var Player = new Ply(PlyInit,0);
+var Player = new Ply($dt.plyInit,0);
 //extend(Player,Unit);
 
 export default { Player , Unit}; 

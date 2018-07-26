@@ -29,8 +29,9 @@
 <script>
 
 import MpB from '../../mlGame/core/gameMap.js'
+import AREA from '../../mlGame/data/area.js'
 import ACT from '../../mlGame/core/act.js'
-var $area = MpB.AreaList;
+var $area = AREA.AreaData;
 
 export default {
 	name:"areaGo",
@@ -102,6 +103,7 @@ export default {
 
 .mediumBox{
 	background-color: #F5F5DC;
+	color: black;
 	.close{
 		position: absolute;
 		bottom: 1em;
