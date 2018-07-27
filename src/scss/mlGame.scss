@@ -1,6 +1,6 @@
 
 .bframe{
-	border: solid 4px #CDB38B;
+	border: ridge 0.4em #CDB38B;
 	padding: 0 0px 25px 25px;
 }
 
@@ -8,7 +8,7 @@
 	position: absolute;
 	left: 6.5em;
 	top: 90px;
-	background-color: white;
+	background-color: 	#F5F5DC;
 	z-index:100;
 	width: 470px;
 	height: 300px;
@@ -34,7 +34,7 @@
 position: relative;
 background-color: black;
 z-index: 90;
-opacity:0.8;
+opacity:0.5;
 }
 
 .bd{
@@ -50,7 +50,7 @@ opacity:0.8;
 	width: 350px;
 	height: 350px;
 	color: white;
-	background-color: #333;
+	background-color: #F5F5DC;
 	
 	p{
 		margin: 0 0 6px 0;
@@ -67,31 +67,30 @@ opacity:0.8;
 
 .plcBtn{
 	margin-right: 1em;
-	border: solid 1px #ddd;
-	padding: 2px 8px 2px 8px;
-	font-size: 1.1em;
+	border: solid 1px #666;
+	padding: 0.4em 0.8em 0.4em 0.8em;
+	font-size: 1em;
 	cursor: pointer;
-	color: #ddd;
+	color: #333;
 }
 .plcBtn:hover{
-	background-color: #666;
+	background-color: #ddd;
 }
 .plcBtn:active{
-	background-color: #333;
+	background-color: #aaa;
 }
 
 .actBtn{
 	margin-right: 1em;
-	border-radius: 0.3em;
-	padding: 4px 12px 4px 12px;
-	font-size: 1.1em;
+	padding: 0.5em 0.9em 0.5em 0.9em;
+	font-size: 1em;
 	cursor: pointer;
-	background-color: #666;
-	color: #ddd;
+	background-color: #8B8B7A;
+	color: white;
 }
 .actBtn:hover{
-	background-color: #999;
+	background-color: #636363;
 }
 .actBtn:active{
-	background-color: #444;
+	background-color: #333;
 }

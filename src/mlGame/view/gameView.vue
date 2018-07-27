@@ -139,15 +139,14 @@ export default {
 		box-sizing: border-box;
 		overflow-y: hidden;
 		height: 2em;
-		background-color: black;
+		background-color: #666;
 		color: white;
 	}
 	.topBar{
 		position: absolute;
-		padding: 0.3em 1em 0.5em 1em;
+		padding: 1em 1.5em 0.5em 1.5em;
 		width: 100%;
 		box-sizing: border-box;
-		color: white;
 	}
 	.bottomBar{
 		position: absolute;
@@ -158,12 +157,10 @@ export default {
 		width: 700px;
 		height: 550px;
 		margin: 0;
-		border: solid 3px #ccc;
+		border: solid 1px #ccc;
 		position: relative;
 		font-size: 90%;
-		border-radius: 6px;
-		background-color: #333;
-		color: #98FB98;
+		background-color: white;
 	}
 
 </style>

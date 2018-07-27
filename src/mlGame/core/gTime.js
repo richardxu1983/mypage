@@ -1,31 +1,58 @@
 
 const MAX_HOUR = 24;
 
-var gtime = {
-
+var gT = {
 	day:600,
 	hour:8,
-	min:0,
-	mc:60,
-	timer:null,
+}
+
+var gtime = {
 
 	init:function()
 	{
-		gtime.day = 1;
-		gtime.hour = 8;
-		gtime.min = 0;
+		gT.day = 1;
+		gT.hour = 8;
+		gtime.set();
 	},
 
 	addHour:function(v)
 	{
-		gtime.hour = gtime.hour + v;
-		var add = Math.floor(gtime.hour/MAX_HOUR);
+		gT.hour = gT.hour + v;
+		var add = Math.floor(gT.hour/MAX_HOUR);
 		if(add>0)
 		{
-			gtime.hour = gtime.hour%MAX_HOUR;
-			gtime.day = gtime.day + add;
+			gT.hour = gT.hour%MAX_HOUR;
+			gT.day = gT.day + add;
 		}
-	}
+		gtime.set();
+	},
+
+	load:function()
+	{
+		try
+	    {
+	        var gameTime = JSON.parse(localStorage.gameTime);
+	        if(gameTime) 
+	        {
+	            gT.day = gameTime.day;
+	            gT.hour = gameTime.hour;
+	        }
+        } 
+        catch(e) 
+        {
+        	gtime.init();
+        }
+	},
+
+	reSet:function()
+	{
+		gtime.init();
+	},
+
+	set:function()
+	{
+		localStorage.gameTime = JSON.stringify(gT);
+	},
 }
 
-export default { gtime}; 
+export default { gtime,gT}; 

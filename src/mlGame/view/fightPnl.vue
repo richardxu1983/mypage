@@ -117,7 +117,7 @@ export default {
 		position: absolute;
 		left: 25px;
 		top: 40px;
-		background-color: white;
+		background-color: #F5F5DC;
 		width: 650px;
 		height: 460px;
 		z-index:100;

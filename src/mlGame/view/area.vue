@@ -1,6 +1,6 @@
 <template>
 	<div class="mapPanel">
-		<div><b class="title">[{{plyPos}}]</b>&ensp;{{dist}}</div>
+		<div><span class="title">[&ensp;{{plyPos}}&ensp;]</span></div>
 		<div class="desc">
 			守望镇看起来有些萧条，人们看起来不富裕，街上的人不多，来往的人们毫无表情地看着你。
 		</div>
@@ -95,9 +95,9 @@ export default {
 .mapPanel{
 	position: absolute;
 	top: 5em;
-	left: 2.5em;
+	padding: 0 0 0 1.5em;
 	.title{
-		font-size: 1.4em;
+		font-size: 1.3em;
 	}
 	.desc{
 		padding: 0.5em 0 0 0;

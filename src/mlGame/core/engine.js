@@ -113,7 +113,7 @@ var Engine =
             State = {};
             $SM.set('version', Engine.VERSION);
         }
-        $ti.init();
+        $ti.load();
         UB.Player.load(State);
     },
 
@@ -122,6 +122,7 @@ var Engine =
         State = {};
         localStorage.gameState = JSON.stringify(State);
         $SM.set('version', Engine.VERSION);
+        $ti.reSet();
         UB.Player.load();
     }
 };

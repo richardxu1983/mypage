@@ -1,6 +1,6 @@
 <template>
 	<div class="">
-		<div>第&ensp;{{ti.day}}&ensp;天&ensp;{{Math.floor(ti.hour)}}&ensp;时&ensp; [&ensp; 剩余：{{remain}}天 &ensp;]</div>
+		<div>第&ensp;{{day}}&ensp;天&ensp;{{Math.floor(h)}}&ensp;时&ensp; [&ensp; 剩余：{{remain}}天 &ensp;]</div>
 	</div>
 </template>
 
@@ -9,8 +9,7 @@
 import TI from '../../mlGame/core/gTime.js'
 import DT from '../../mlGame/data/gData.js'
 var $dt = DT.data;
-var $ti = TI.gtime;
-
+var $ti = TI.gT;
 
 export default {
 	name:"tiv",
@@ -21,6 +20,15 @@ export default {
 		}
 	},
 	computed:{
+
+		day:function()
+		{
+			return this.ti.day;
+		},
+		h:function()
+		{
+			return this.ti.hour;
+		},
 		remain:function()
 		{
 			return ($dt.timeLimit-this.ti.day);
