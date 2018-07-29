@@ -1,8 +1,8 @@
 <template>
 	<div class="mapPanel">
-		<div><span class="title">[&ensp;{{plyPos}}&ensp;]</span></div>
+		<div><span class="title"><b>[&ensp;{{plyPos}}&ensp;]</b></span></div>
 		<div class="desc">
-			守望镇看起来有些萧条，人们看起来不富裕，街上的人不多，来往的人们毫无表情地看着你。
+			这里看起来有些萧条，人们看起来不富裕，街上的人不多，来往的人们毫无表情地看着你。
 		</div>
 		<div class="plc">
 			<div v-for="(p,index) in places" :key="p.id" class="plcBtn left nosel">

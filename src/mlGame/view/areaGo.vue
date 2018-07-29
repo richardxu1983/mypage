@@ -78,7 +78,7 @@ export default {
 			var y1 = $area[this.data.area].pos.y;
 			var x2 = $area[p].pos.x;
 			var y2 = $area[p].pos.y;
-			return Math.ceil(Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) * 1);
+			return Math.ceil(Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) * 2);
 		},
 		customAppearHook:function()
 		{

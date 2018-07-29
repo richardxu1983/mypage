@@ -13,7 +13,7 @@ var $area = AREA.AreaData;
 var areAct=[
 {
 	id:0,
-	name:'离开',
+	name:'前往',
 	t:0,
 },
 {
@@ -59,7 +59,7 @@ var areaGo = {
 		var y1 = $area[actData.area].pos.y;
 		var x2 = $area[actData.areaTo].pos.x;
 		var y2 = $area[actData.areaTo].pos.y;
-		var hour = Math.ceil(Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) * 1);
+		var hour = Math.ceil(Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) * 2);
 		$ti.addHour(hour);
 		$ply.arriveAt(actData.areaTo);
 		$addinfo(hour+"个小时以后，我来到了"+$area[actData.areaTo].name);
