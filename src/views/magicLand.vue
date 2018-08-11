@@ -31,7 +31,7 @@ export default {
 	computed:{
 		desc:function()
 		{
-			return "苦逼屠龙记是老徐在小破站上做的第一个游戏，是一个关于一个勇敢的冒险者要在"+$dt.timeLimit+"天以内恶龙手中拯救村庄的故事。";
+			return "苦逼屠龙记是老徐在小破站上做的第一个游戏，是一个关于一个勇敢的冒险者要在"+$dt.timeLimit+"天以内恶龙手中拯救村庄的故事。（游戏仍然在开发中，目前不具备可玩性）";
 		},
 	},
 	created:function()
