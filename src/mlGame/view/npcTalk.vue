@@ -88,6 +88,10 @@ export default {
 .box{
 	background-color: 	#F5F5DC;
 	color: black;
+	width: 46em;
+	height: 30em;
+	left: 0em;
+	top:2em;
 	h2{
 		margin: 2em 0 .3em 0;
 	}
@@ -116,11 +120,15 @@ export default {
 }
 
 .psbSay{
+	top: 0em;
 	margin: 2em 0 1em 0;
 }
 
 .plyOp{
+	position: absolute;
 	margin: 3em 0 1em 0;
+	width: 44em;
+	bottom: 2em;
 	.op{
 		margin: 0 0 .5em 0;
 	}

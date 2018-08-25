@@ -26,10 +26,8 @@ import MpB from '../../mlGame/core/gameMap.js'
 import ACT from '../../mlGame/core/act.js'
 import UB from '../../mlGame/core/unit.js'
 import AREA from '../../mlGame/data/area.js'
-import DIST from '../../mlGame/data/dist.js'
 import PLC from '../../mlGame/data/plc.js'
 var $area = AREA.AreaData;
-var $dist = DIST.dist;
 var $plc = PLC.plc;
 var $ply = UB.Player;
 var $act = ACT.areAct;
@@ -46,18 +44,6 @@ export default {
 		plyPos:function()
 		{
 			return $area[this.pos.value].name;
-		},
-		dist:function()
-		{
-			var dis = $area[this.pos.value].dist;
-			if(dis>=0)
-			{
-				return "（隶属于："+$dist[dis].name+"）";
-			}
-			else
-			{
-				return "";
-			}
 		},
 		places:function()
 		{

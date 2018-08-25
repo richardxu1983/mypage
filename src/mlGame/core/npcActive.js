@@ -1,5 +1,6 @@
 import DT from '../../mlGame/data/gData.js'
 import NPC from '../../mlGame/data/npc.js'
+import DLG from '../../mlGame/data/dlg.js'
 import ACT from '../../mlGame/core/act.js'
 import MpB from '../../mlGame/core/gameMap.js'
 import TI from '../../mlGame/core/gTime.js'
@@ -7,8 +8,8 @@ import EB from '../../mlGame/core/engine.js'
 var $addinfo = EB.info.addInfo;
 var $ti = TI.gtime;
 var $npc = NPC.npc;
-var $ply = NPC.plyAsk;
-var $ans = NPC.npcAns;
+var $ply = DLG.plyAsk;
+var $ans = DLG.npcAns;
 var $dt = DT.data;
 
 var actData = {
@@ -69,14 +70,13 @@ var npcTalk = {
 	{
 		actData.npcTalk = true;
 		actData.npcId = npcId;
-
-		var dlgId = $npc[actData.npcId].dlg;
-		actData.dlg = dlgId;
+		var frd = $npc[npcId].frd;
+		actData.ansId = $npc[npcId].dlg.ans[frd];
+		actData.dlg = actData.ansId;
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
-		actData.plyId = $npc[actData.npcId].plyAsk;
-		actData.ansId = $npc[actData.npcId].ans;
-		actData.ntIndex = NPC.npcDlg[dlgId].start;
+		actData.plyId = $npc[npcId].dlg.ply;
+		actData.ntIndex = DLG.npcDlg[actData.ansId].start;
 		actData.to = $ans[actData.ansId][actData.ntIndex].t;
 		actData.ntInfo="";
 		actData.plyOp=false;
@@ -157,7 +157,7 @@ var npcTalk = {
 		var index = to+""+v;
 		var dlgId = actData.dlg;
 		actData.plySaid[index] = 0;
-		actData.ntIndex = NPC.npcDlg[dlgId].pair[index];
+		actData.ntIndex = DLG.npcDlg[dlgId].pair[index];
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
 		actData.plyOp=false;
@@ -255,7 +255,7 @@ var npcTalk = {
 	{
 		var to = actData.to;
 		var index = to+""+i;
-		console.log("index="+index+" , actData.plySaid[index]="+actData.plySaid[index]);
+		//console.log("index="+index+" , actData.plySaid[index]="+actData.plySaid[index]);
 		if(actData.plySaid[index]==undefined)
 		{
 			return true;
@@ -263,7 +263,7 @@ var npcTalk = {
 		else
 		{
 			var ply = actData.plyId;
-			console.log("$ply[ply][to][i].once="+$ply[ply][to][i].once);
+			//console.log("$ply[ply][to][i].once="+$ply[ply][to][i].once);
 			if($ply[ply][to][i].once==true)
 			{
 				return false;
