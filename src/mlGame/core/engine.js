@@ -1,7 +1,9 @@
 
 import UB from '../../mlGame/core/unit.js'
 import TI from '../../mlGame/core/gTime.js'
+import DT from '../../mlGame/data/gData.js'
 var $ti = TI.gtime;
+var $GDATA = DT.data;
 
 var StateManager = {
 
@@ -98,6 +100,34 @@ var Engine =
         }
     },
 
+    gameInit:function()
+    {
+        Engine.loadGame();
+        Engine.sceneTag();
+    },
+
+    sceneTo:function(n)
+    {
+        $GDATA.currentScene = n;
+        Engine.sceneTag();
+    },
+
+    sceneTag:function()
+    {
+        var index = $GDATA.currentScene;
+        var maxIndex = $GDATA.maxScene;
+        var e;
+        for(var i=0;i<(maxIndex+1);i++)
+        {
+            if(i!=index)
+            {
+                e=document.getElementById("nav_"+i);
+                e.style.backgroundColor="#8B8B7A";
+                e.style.color="white";
+            }
+        }
+    },
+
     loadGame: function() 
     {
         try 
@@ -111,7 +141,6 @@ var Engine =
         catch(e) 
         {
             State = {};
-            $SM.set('version', Engine.VERSION);
         }
         $ti.load();
         UB.Player.load(State);
@@ -121,7 +150,6 @@ var Engine =
     {
         State = {};
         localStorage.gameState = JSON.stringify(State);
-        $SM.set('version', Engine.VERSION);
         $ti.reSet();
         UB.Player.load();
     }

@@ -1,10 +1,14 @@
 <template>
 
-	<div class="mlBoard">
-		<myArea></myArea>
+	<div class="mlBoard nosel">
 		<div class="topBar" >
 			<tiv class="left"></tiv>
 			<div class="right">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
+		</div>
+		<div class="nav">
+			<div v-for="p in sceneList" :key="p" :id="p.id" @click="sceneTo(p.param)" class="left navBtn">
+				{{p.name}}
+			</div>
 		</div>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
@@ -38,6 +42,7 @@ import myArea from '../../mlGame/view/area.vue'
 import tiv from '../../mlGame/view/tiv.vue'
 import areaGo from '../../mlGame/view/areaGo.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
+import sdt from '../../mlGame/data/scene.js'
 
 var $ply = UnitBundle.Player;
 var $map = MpB.Gmap;
@@ -53,6 +58,7 @@ export default {
 			plyAttrPnlShow:false,
 			wpDesc:false,
 			info:EB.info.txt,
+			sceneList:sdt.dt.tab,
 		}
 	},
 	components: 
@@ -71,7 +77,7 @@ export default {
 	},
 	mounted:function()
 	{
-		EB.Engine.loadGame();
+		EB.Engine.gameInit();
 	},
 	methods:
 	{
@@ -107,7 +113,7 @@ export default {
 		},
 		newGame:function()
 		{
-			EB.Engine.newGame();
+			EB.Engine.gameInit();
 			$addinfo("重新开始了游戏...");
 		},
 		equipWp1:function()
@@ -122,6 +128,14 @@ export default {
 		{
 			$ply.unEquipWp(1);
 		},
+		sceneTo:function(n)
+		{
+			//alert(n);
+			var element=document.getElementById("nav_"+n);
+			element.style.backgroundColor="white";
+			element.style.color="black";
+			EB.Engine.sceneTo(n);
+		},
 	}
 }
 
@@ -131,6 +145,24 @@ export default {
 
 	@import "../../scss/mlGame";
 	
+	.nav{
+		position: absolute;
+		top: 5em;
+		padding-left: 3em;
+	}
+	
+	.navBtn
+	{
+		width: 6em;
+		height: 2em;
+		color: black;
+		margin-right: .5em;
+		text-align: center;
+		padding-top: .5em;
+		cursor: pointer;
+		border: solid 1px black;
+	}
+
 	.infoBox{
 		position: absolute;
 		width: 100%;

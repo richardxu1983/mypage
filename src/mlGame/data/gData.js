@@ -14,7 +14,9 @@ var data = {
 	    'gold' : 10,
 	    'pos':0,
 	    'name':"冒险者",
-    }
+    },
+    currentScene:0,
+    maxScene:3,
 };
 
 export default { data }; 
