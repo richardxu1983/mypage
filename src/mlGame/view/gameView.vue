@@ -10,6 +10,7 @@
 				{{p.name}}
 			</div>
 		</div>
+		<sceneView></sceneView>
 		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
 		<areaGo></areaGo>
@@ -18,13 +19,13 @@
 		<div class="infoBox" id="info"></div>
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
 		<div class="bottomBar">
-			<button class="left" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
-			<button class="left" @click="test">金币+1</button>
-			<button class="left" @click="fight">战斗</button>
-			<button class="left" @click="newGame">新游戏</button>
-			<button class="left" @click="equipWp1">装备匕首</button>
-			<button class="left" @click="equipWp2">装备弓箭</button>
-			<button class="left" @click="upEquip">卸下武器</button>
+			<button class="right" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
+			<button class="right" @click="test">金币+1</button>
+			<button class="right" @click="fight">战斗</button>
+			<button class="right" @click="newGame">新游戏</button>
+			<button class="right" @click="equipWp1">装备匕首</button>
+			<button class="right" @click="equipWp2">装备弓箭</button>
+			<button class="right" @click="upEquip">卸下武器</button>
 		</div>
 	</div>
 
@@ -34,18 +35,17 @@
 
 import UnitBundle from '../../mlGame/core/unit.js'
 import EB from '../../mlGame/core/engine.js'
-import MpB from '../../mlGame/core/gameMap.js'
 import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
-import myArea from '../../mlGame/view/area.vue'
 import tiv from '../../mlGame/view/tiv.vue'
 import areaGo from '../../mlGame/view/areaGo.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
+import SCE from '../../mlGame/core/sceneCtrl.js'
 import sdt from '../../mlGame/data/scene.js'
-
+import sceneView from '../../mlGame/view/scene.vue'
+var $SCENE = SCE.scene;
 var $ply = UnitBundle.Player;
-var $map = MpB.Gmap;
 var $addinfo = EB.info.addInfo;
 
 export default {
@@ -66,10 +66,10 @@ export default {
 	  plyAttrPnl,
 	  fightPnl,
 	  wpDesc,
-	  myArea,
 	  tiv,
 	  areaGo,
-	  ntk
+	  ntk,
+	  sceneView,
 	},
 	created:function()
 	{
@@ -131,10 +131,7 @@ export default {
 		sceneTo:function(n)
 		{
 			//alert(n);
-			var element=document.getElementById("nav_"+n);
-			element.style.backgroundColor="white";
-			element.style.color="black";
-			EB.Engine.sceneTo(n);
+			$SCENE.to(n);
 		},
 	}
 }
@@ -147,8 +144,8 @@ export default {
 	
 	.nav{
 		position: absolute;
-		top: 5em;
-		padding-left: 3em;
+		top: 4em;
+		padding-left: 2em;
 	}
 	
 	.navBtn
@@ -160,7 +157,7 @@ export default {
 		text-align: center;
 		padding-top: .5em;
 		cursor: pointer;
-		border: solid 1px black;
+		border: outset 0.2em #CDB38B;
 	}
 
 	.infoBox{
@@ -183,6 +180,7 @@ export default {
 	.bottomBar{
 		position: absolute;
 		bottom: 0;
+		right: 0;
 	}
 
 	.mlBoard{
