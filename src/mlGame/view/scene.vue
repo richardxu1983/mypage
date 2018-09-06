@@ -44,7 +44,7 @@ export default {
 		position: absolute;
 		border: solid 0.15em #CDBA96;
 		width: 100%;
-		height: 27.7em;
+		height: 24.7em;
 		top:6.5em;
 		box-sizing: border-box;
 		padding: 1em 1em 0em 1em;

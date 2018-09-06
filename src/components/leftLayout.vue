@@ -1,5 +1,5 @@
 <template>
-	<div class="AppHeader">
+	<div class="AppHeader nosel">
 		<div class="nav">
 			<div class="begin"> 
 				<div @click="home" class="a">

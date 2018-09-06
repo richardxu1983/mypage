@@ -39,11 +39,8 @@ class Unit
             'spd' : {
                 'value':attr.spd || 0,
             },
-            'gold' : {
-                'value':attr.gold || 0,
-            },
-            'pos':{
-                'value':attr.pos || 0,
+            'lvl':{
+                'value':attr.lvl || 1,
             },
         };
 
@@ -202,6 +199,31 @@ class Unit
         return this.attr[attr].max;
     }
 
+    setAttrMax(attr,v)
+    {
+        this.attr[attr].max = v;
+    }
+
+    hpMaxAdd(v)
+    {
+        var hpmax = this.getAttrMax('hp');
+        hpmax+=v;
+        var hp = this.hp();
+        hp+=v;
+        this.setAttrMax('hp', hpmax);
+        this.setAttr('hp', hp);
+    }
+
+    mpMaxAdd(v)
+    {
+        var mpmax = this.getAttrMax('mp');
+        mpmax+=v;
+        var mp = this.getAttr('mp');
+        mp+=v;
+        this.setAttrMax('mp', mpmax);
+        this.setAttr('mp', mp);
+    }
+
     getAttrMin(attr)
     {
         var val = this.attr[attr];
@@ -256,7 +278,35 @@ class Ply extends Unit
     constructor(attr,weaponid) 
     { 
         super(attr,weaponid); 
-    } 
+        this.attr.gold = 
+        {
+            'value':attr.gold || 0,
+        }
+        this.attr.unUsed = 
+        {
+            'value':0,
+        }
+    }
+
+    lvl()
+    {
+        return this.getAttr('lvl');
+    }
+
+    lvlUp()
+    {
+        var lvl = this.lvl();
+        if(lvl<$dt.plyMaxLevel)
+        {
+            lvl++;
+            this.setAttr('lvl', lvl);
+            var unUsed = this.getAttr('unUsed');
+            unUsed+=$dt.plyLvlupPnts;
+            this.setAttr('unUsed', unUsed);
+            this.hpMaxAdd($dt.plyLvlUpAdd.hp);
+            this.mpMaxAdd($dt.plyLvlUpAdd.mp);
+        }
+    }
 
     onSetAttr(attr ,newVal){
         $SM.set('player.'+attr , newVal);
@@ -329,13 +379,30 @@ class Ply extends Unit
 
 class Npc extends Unit 
 { 
-    constructor(attr,id,placeid,distr,type,weaponid) 
+    constructor(attr,id,qulity,weaponid)
     { 
         super(attr,weaponid);
         this.id = id;
-        this.belong = distr;
-        this.placeId = placeid;
-        this.type = type;
+        this.qulity = qulity;
+        this.attrInitByLvl();
+    }
+
+    attrInitByLvl()
+    {
+        var lvl = this.getAttr('lvl');
+        var q = this.qulity;
+        var hp = lvl*(5+qulity)+100+10*qulity;
+        var mp = lvl*(5+qulity)+100+10*qulity;
+        var str = 20+lvl*(1+qulity)+2*qulity;
+        var def = lvl*(1+qulity)+2*qulity;
+        this.setAttrMax('hp',hp);
+        this.setAttr('hp',hp);
+        this.setAttrMax('mp',mp);
+        this.setAttr('mp',mp);
+        this.setAttr('str',str);
+        this.setAttr('agi',20);
+        this.setAttr('spd',1);
+        this.setAttr('def',def);
     }
 }
 

@@ -19,6 +19,9 @@
 		<div class="infoBox" id="info"></div>
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
 		<div class="bottomBar">
+			[&ensp;{{ player.name }}&ensp;]：等级&ensp;{{ player.lvl.value }}
+		</div>
+		<div class="tool">
 			<button class="right" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="right" @click="test">金币+1</button>
 			<button class="right" @click="fight">战斗</button>
@@ -163,26 +166,39 @@ export default {
 	.infoBox{
 		position: absolute;
 		width: 100%;
-		bottom: 2em;
+		bottom: 4em;
 		padding: 0.3em 0 0.3em 1em;
 		box-sizing: border-box;
 		overflow-y: hidden;
 		height: 2em;
-		background-color: #666;
+		background-color: #333;
 		color: white;
+		font-size: 1.1em;
 	}
 	.topBar{
 		position: absolute;
 		padding: 1em 1.5em 0.5em 1.5em;
 		width: 100%;
 		box-sizing: border-box;
+		color: #FFF8DC;
+	}
+	.tool{
+		position: absolute;
+		bottom: -2em;
+		left: 0;
 	}
 	.bottomBar{
 		position: absolute;
 		bottom: 0;
-		right: 0;
+		width: 100%;
+		background-color:#554837;
+		height: 4em;
+		padding: 1.2em .5em 0em 1em;
+		box-sizing: border-box;
+		color: #eee;
+		border: outset 0.2em #CDB38B;
+		font-size: 1.05em;
 	}
-
 	.mlBoard{
 		width: 700px;
 		height: 550px;
@@ -190,7 +206,7 @@ export default {
 		border: solid 1px #ccc;
 		position: relative;
 		font-size: 90%;
-		background-color: white;
+		background-color: #333;
 	}
 
 </style>
