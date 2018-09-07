@@ -5,12 +5,14 @@ import WP from '../../mlGame/core/weapon.js'
 import SK from '../../mlGame/data/skill.js'
 import WPD from '../../mlGame/data/wpData.js'
 import DT from '../../mlGame/data/gData.js'
+import NPCD from '../../mlGame/data/npc.js'
 var $dt = DT.data;
 var $SM = EB.StateManager;
 var Fight = FT.Fight;
 var Weapon = WP.Weapon;
 var $wp = WPD.wp;
 var skl = SK.SKL;
+var $npc = NPCD.npc;
 
 class Unit
 {
@@ -365,6 +367,7 @@ class Ply extends Unit
             var val = this.attr[attr];
             if(val!=undefined)
             {
+                //alert(attr + ' : ' + $dt.plyInit[attr]);
                 $SM.set('player.'+attr , $dt.plyInit[attr]);
             }
             else
@@ -372,7 +375,7 @@ class Ply extends Unit
                 $SM.set('player.'+attr , 0);
             }
         }
-        //alert(attr + ' : ' + $SM.get('fighter.'+attr));
+        //alert(attr + ' : ' + $SM.get('player.'+attr));
         return $SM.get('player.'+attr);
     }
 }
@@ -408,5 +411,11 @@ class Npc extends Unit
 
 var Player = new Ply($dt.plyInit,0);
 //extend(Player,Unit);
+var unitCtrl = {
+    npcName:function(id)
+    {
+        return $npc[id].name;
+    }
+}
 
-export default { Player , Unit}; 
+export default { Player , Unit , Npc,unitCtrl}; 

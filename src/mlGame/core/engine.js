@@ -75,6 +75,28 @@ var StateManager = {
         var dot = (input.charAt(0) == '[')? '' : '.'; //if it starts with [foo] no dot to join
         return 'State' + dot + input;
     },
+
+    load:function()
+    {
+        try 
+        {
+            var savedState = JSON.parse(localStorage.gameState);
+            if(savedState) 
+            {
+                State = savedState;
+            }
+        } 
+        catch(e) 
+        {
+            State = {};
+        }
+    },
+
+    new:function()
+    {
+        State = {};
+        localStorage.clear();
+    }
 };
 //alias
 var $SM = StateManager;
@@ -103,33 +125,22 @@ var Engine =
     gameInit:function()
     {
         Engine.loadGame();
-        $SCENE.init();
     },
 
-    loadGame: function() 
+    loadGame:function()
     {
-        try 
-        {
-            var savedState = JSON.parse(localStorage.gameState);
-            if(savedState) 
-            {
-                State = savedState;
-            }
-        } 
-        catch(e) 
-        {
-            State = {};
-        }
+        $SM.load();
         $ti.load();
         UB.Player.load(State);
+        $SCENE.init();
     },
 
     newGame:function()
     {
-        State = {};
-        localStorage.gameState = JSON.stringify(State);
+        $SM.new();
         $ti.reSet();
         UB.Player.load();
+        $SCENE.new();
     }
 };
 

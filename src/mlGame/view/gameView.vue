@@ -116,7 +116,7 @@ export default {
 		},
 		newGame:function()
 		{
-			EB.Engine.gameInit();
+			EB.Engine.newGame();
 			$addinfo("重新开始了游戏...");
 		},
 		equipWp1:function()
