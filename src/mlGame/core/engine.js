@@ -1,9 +1,5 @@
 
-import UB from '../../mlGame/core/unit.js'
-import TI from '../../mlGame/core/gTime.js'
-import SCE from '../../mlGame/core/sceneCtrl.js'
-var $ti = TI.gtime;
-var $SCENE = SCE.scene;
+var State = {};
 
 var StateManager = {
 
@@ -42,7 +38,7 @@ var StateManager = {
             $SM.createState(stateName, value);
         }
 
-        Engine.saveGame();
+        StateManager.save();
     },
 
     setArray:function(k,id)
@@ -92,23 +88,7 @@ var StateManager = {
         }
     },
 
-    new:function()
-    {
-        State = {};
-        localStorage.clear();
-    }
-};
-//alias
-var $SM = StateManager;
-
-var State = {};
-
-var Engine = 
-{
-
-    ready:false,
-
-    saveGame: function() 
+    save: function() 
     {
         if(typeof Storage != 'undefined' && localStorage) 
         {
@@ -122,25 +102,32 @@ var Engine =
         }
     },
 
+    new:function()
+    {
+        State = {};
+        localStorage.clear();
+    }
+};
+
+
+var $SM = StateManager;
+
+var Engine = 
+{
+    ready:false,
     gameInit:function()
     {
-        Engine.loadGame();
+        Engine.load();
     },
 
-    loadGame:function()
+    load:function()
     {
         $SM.load();
-        $ti.load();
-        UB.Player.load(State);
-        $SCENE.init();
     },
 
-    newGame:function()
+    new:function()
     {
         $SM.new();
-        $ti.reSet();
-        UB.Player.load();
-        $SCENE.new();
     }
 };
 
@@ -175,7 +162,5 @@ var info={
         //}
     }
 };
-
-
 
 export default { Engine , StateManager , info,State }; 

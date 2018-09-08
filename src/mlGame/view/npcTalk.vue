@@ -5,7 +5,7 @@
 		<div class="box bframe">
 			<h2>{{npcName}}</h2>
 			<div class="psbBox">
-				<div class="desc green">[{{desc}}]</div>
+				<div class="desc green">{{desc}}</div>
 				<div class="desc green">{{emot}}<span class="black">{{npcAns}}</span></div>
 				<div class="desc green"></div>
 			</div>
@@ -26,11 +26,8 @@
 
 import ACT from '../../mlGame/core/npcActive.js'
 import WP from '../../mlGame/core/weapon.js'
-
 var $wp = WP.wp;
 var $npcTalk = ACT.npcTalk;
-
-
 
 export default {
 	name:"npcTalk",
@@ -93,7 +90,7 @@ export default {
 	left: 0em;
 	top:2em;
 	h2{
-		margin: 2em 0 .3em 0;
+		margin: 1em 0 .3em 0;
 	}
 }
 
@@ -128,7 +125,7 @@ export default {
 	position: absolute;
 	margin: 3em 0 1em 0;
 	width: 44em;
-	bottom: 2em;
+	bottom: 10em;
 	.op{
 		margin: 0 0 .5em 0;
 	}

@@ -1,6 +1,6 @@
 var kc = 
 {
-	at:3,
+	at:1,
 	lvls : 
 	[
 		{npc:100},

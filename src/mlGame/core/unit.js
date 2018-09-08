@@ -257,11 +257,11 @@ class Unit
         }
     }
 
-    fight(u)
+    fight(u,callback)
     {
         if(Fight.over==0)
         {
-            Fight.start(this,u);
+            Fight.start(this,u,callback);
         }
     }
 
@@ -328,7 +328,7 @@ class Ply extends Unit
 
     fightName()
     {
-        return "[ "+this.attr.name+" ]";
+        return " [ 你 ] ";
     }
 
     load(State)
@@ -394,10 +394,10 @@ class Npc extends Unit
     {
         var lvl = this.getAttr('lvl');
         var q = this.qulity;
-        var hp = lvl*(5+qulity)+100+10*qulity;
-        var mp = lvl*(5+qulity)+100+10*qulity;
-        var str = 20+lvl*(1+qulity)+2*qulity;
-        var def = lvl*(1+qulity)+2*qulity;
+        var hp = lvl*(5+this.qulity)+10+10*this.qulity;
+        var mp = lvl*(5+this.qulity)+10+10*this.qulity;
+        var str = 20+lvl*(1+this.qulity)+2*this.qulity;
+        var def = lvl*(1+this.qulity)+2*this.qulity;
         this.setAttrMax('hp',hp);
         this.setAttr('hp',hp);
         this.setAttrMax('mp',mp);

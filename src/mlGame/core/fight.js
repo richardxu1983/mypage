@@ -1,8 +1,6 @@
-import EB from '../../mlGame/core/engine.js'
 import SK from '../../mlGame/data/skill.js'
 import WPD from '../../mlGame/data/wpData.js'
 var $wp = WPD.wp;
-var $addinfo = EB.info.addInfo;
 var skl = SK.SKL;
 var $ac = SK.AC;
 
@@ -28,14 +26,21 @@ function addMsg(v)
 	}
 }
 
-function HPCheck(u)
+function HPCheck()
 {
-	if(u.hp()<=0)
+	if(Fight.left.hp()<=0)
     {
-		addMsg(u.target.fightName()+"胜利了");
-		$addinfo(u.target.name()+"胜利了");
+		addMsg(Fight.left.target.fightName()+"胜利了");
+        Fight.callBackParam=2;
 		Fight.over = 1;
 		return 1;
+    }
+    if(Fight.right.hp()<=0)
+    {
+        addMsg(Fight.right.target.fightName()+"胜利了");
+        Fight.callBackParam=1;
+        Fight.over = 1;
+        return 1;
     }
     return 0;
 }
@@ -256,7 +261,7 @@ var Fight = {
         Fight.over = 0;
     },
 
-    init:function(left,right)
+    init:function(left,right,callback)
     {
     	Fight.left=left;
         Fight.right = right;
@@ -276,6 +281,8 @@ var Fight = {
         Fight.right.fEnter = 0;
         Fight.dis = Fight.right.fpos - Fight.left.fpos;
         Fight.t=0;
+        Fight.callback = callback==undefined?undefined:callback;
+        Fight.callBackParam=0;
     },
 
     absDis:function()
@@ -284,12 +291,11 @@ var Fight = {
     	return Math.abs(Fight.dis);
     },
 
-    start:function(left,right)
+    start:function(left,right,callback)
     {
-    	Fight.init(left,right);
-        Fight.fightTimer = setInterval(Fight.step,350);
+    	Fight.init(left,right,callback);
+        Fight.fightTimer = setInterval(Fight.step,250);
         addMsg(Fight.left.fightName()+"与"+Fight.right.fightName()+"的战斗即将开始，双方距离："+Fight.absDis()+"米。");
-        $addinfo(Fight.left.name()+"与"+Fight.right.name()+"发生了争斗，胜利将鹿死谁手？");
     },
 
     step:function()
@@ -301,14 +307,18 @@ var Fight = {
             clearInterval(Fight.fightTimer);
             Fight.showClose.v = true;
             Fight.over = 0;
+            if(Fight.callback!=undefined)
+            {
+                Fight.callback(Fight.callBackParam);
+            }
         }
         else
         {
-        	if(HPCheck(Fight.left)==1||HPCheck(Fight.right)==1)
+        	if(HPCheck()==1)
         		return;
             Move(Fight.left);
             Act(Fight.left);
-            if(HPCheck(Fight.left)==1||HPCheck(Fight.right)==1)
+            if(HPCheck()==1)
                 return;
             Move(Fight.right);
             Act(Fight.right);

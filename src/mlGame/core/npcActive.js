@@ -33,7 +33,7 @@ function ShowNpc()
 {
 	var expr = $ans[actData.ansId][actData.ntIndex].expr;
 	if(expr)
-		actData.psByEmot = "["+expr+"]";
+		actData.psByEmot = "（"+expr+"）";
 }
 
 var npcTalk = {
@@ -51,7 +51,6 @@ var npcTalk = {
 			actData.npcId = -1;
 			actData.psByEmot="";
 		}
-		npcTalk.refreshCtn();
 	},
 
 	clear:function()
@@ -64,27 +63,33 @@ var npcTalk = {
 			$addinfo(actData.ntInfo);
 			actData.ntInfo="";
 		}
+		if(actData.callback!=undefined)
+		{
+			actData.callback(actData.choice);
+		}
 	},
 
-	talk:function(npcId)
+	talk:function(npcId,callback)
 	{
+		var frd = $npc[npcId].frd;
+		var d = $npc[npcId].dlg;
+		var dlgId = d.dlg;
 		actData.npcTalk = true;
 		actData.npcId = npcId;
-		var frd = $npc[npcId].frd;
-		actData.ansId = $npc[npcId].dlg.ans[frd];
-		actData.dlg = actData.ansId;
+		actData.ansId = d.ans[frd];
+		actData.dlg = dlgId;
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
-		actData.plyId = $npc[npcId].dlg.ply;
-		actData.ntIndex = DLG.npcDlg[actData.ansId].start;
+		actData.plyId = d.ply;
+		actData.ntIndex = DLG.npcDlg[dlgId].start;
 		actData.to = $ans[actData.ansId][actData.ntIndex].t;
 		actData.ntInfo="";
 		actData.plyOp=false;
 		actData.plySaid = {};
-
-		$ti.addHour($dt.npcTkTime);
-
+		actData.choice="";
+		actData.callback = callback==undefined?undefined:callback;
 		ShowNpc();
+		npcTalk.refreshCtn();
 	},
 
 	refreshCtn:function()
@@ -122,13 +127,15 @@ var npcTalk = {
 		{
 			var d = $npc[actData.npcId].desc;
 			var wp = $npc[actData.npcId].wp;
+			if(d)
+				d+="，"
 			if(wp<=0)
 			{
-				d+="，没有装备什么武器";
+				d+="（没有装备什么武器）";
 			}
 			else
 			{
-				d+="，带了一"+WP.wpL[wp]+WP.wpQ[$wp[wp].quality]+"的"+WP.wpType[$wp[wp].type];
+				d+="（带了一"+WP.wpL[wp]+WP.wpQ[$wp[wp].quality]+"的"+WP.wpType[$wp[wp].type]+"）";
 			}
 			return d;				
 		}
@@ -158,9 +165,12 @@ var npcTalk = {
 		var dlgId = actData.dlg;
 		actData.plySaid[index] = 0;
 		actData.ntIndex = DLG.npcDlg[dlgId].pair[index];
+		if(actData.ntIndex<0)
+			npcTalk.clear();
 		actData.ntStep = 0;
 		actData.ntSeg = 0;
 		actData.plyOp=false;
+		actData.choice = index;
 		if($ans[actData.ansId][actData.ntIndex].i)
 			actData.ntInfo = $ans[actData.ansId][actData.ntIndex].i;
 		ShowNpc();
@@ -207,9 +217,10 @@ var npcTalk = {
 							{
 								npcTalk.segNext();
 							}
-							else{
+							else
+							{
 								npcTalk.StepNext();
-							}							
+							}
 						}
 						else
 						{
@@ -230,7 +241,7 @@ var npcTalk = {
 			else
 			{
 				npcTalk.clear();
-			}			
+			}
 		}
 		else
 		{

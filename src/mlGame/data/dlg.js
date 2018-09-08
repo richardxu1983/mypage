@@ -4,7 +4,9 @@ plyAsk[0] = [];
 plyAsk[0][0] = [{w:"你好",once:false},{w:"打扰了",once:false}];
 plyAsk[0][1] = [{w:"请问，你知道恶龙在哪里吗",once:true},{w:"请问，你知道哪里有旅馆吗",once:true},{w:"我没问题了，再见",once:false}];
 plyAsk[0][2] = [{w:"太感谢了，我还有个问题",once:false},{w:"非常感谢，再见了，我的朋友",once:false}];
-plyAsk[0][3] = [{w:"好吧，我还有个问题",once:false},{w:"好吧，那再见了",once:false}];
+
+plyAsk[1] = [];
+plyAsk[1][0] = [{w:"我将代表圣光制裁你！",once:false}];
 
 var npcAns = [];
 npcAns[0] = [];
@@ -16,15 +18,7 @@ npcAns[0][4] = {expr:"友善地看着你",dlg:["你好"],t:1};
 npcAns[0][5] = {expr:"挥了挥手",dlg:["再见"],t:-1};
 
 npcAns[1] = [];
-npcAns[1][0] = {expr:"面无表情地",t:0};
-npcAns[1][1] = {expr:"面无表情地",dlg:["恶龙？那只是传说吧，我不知道在哪里。"],t:3};
-npcAns[1][2] = {expr:"面无表情地",dlg:["有个叫“最后的酒馆”的，在镇中心"],t:3};
-npcAns[1][3] = {expr:"面无表情地",dlg:["什么问题？"],t:1};
-npcAns[1][4] = {expr:"面无表情地",dlg:["你好"],t:1};
-npcAns[1][5] = {expr:"挥了挥手",dlg:["再见"],t:-1};
-
-npcAns[2] = [];
-npcAns[2][0] = {expr:"匆匆离开，没有看你一眼",t:-1};
+npcAns[1][0] = {expr:"凶狠地看着你",dlg:["这个矿是我的，去死吧！"],t:0};
 
 var npcDlg = [];
 npcDlg[0] = {
@@ -40,25 +34,14 @@ npcDlg[0] = {
 		"21":5,
 	}
 };
+
 npcDlg[1] = {
 	start:0,
 	step:0,
 	pair:{
-		"00":4,
-		"01":5,
-		"10":1,
-		"11":2,
-		"12":5,
-		"30":3,
-		"31":5,
+		"00":-1,
 	}
 };
-npcDlg[2] = {
-	start:0,
-	step:0,
-	pair:{
-		"00":0,
-	}
-};
+
 
 export default { plyAsk,npcAns,npcDlg}; 

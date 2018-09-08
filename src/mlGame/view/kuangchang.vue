@@ -7,6 +7,7 @@
 			<div v-else-if="cellStatus(index+1)==1" class="kcCell active">
 				<div>第{{index+1}}层：未占领</div><p>
 				<div>守卫：{{npcName(item.npc)}}</div>
+				<button class="captureBtn" @click="capture(index)">占领</button>
 			</div>
 			<div v-else class="kcCell disable">
 				<div>第{{index+1}}层：未占领</div><p>
@@ -57,6 +58,11 @@ export default {
 		npcName:function(id)
 		{
 			return $unitCtrl.npcName(id);
+		},
+
+		capture:function(n)
+		{
+			$kctrl.capture(n);
 		}
 	}
 }
@@ -68,6 +74,15 @@ export default {
 
 	.left{
 		float: left;
+	}
+	
+	.captureBtn{
+		position: relative;
+		top: -2em;
+		right: -10em;
+		width: 4em;
+		height: 2em;
+		color: black;
 	}
 
 	.cell{

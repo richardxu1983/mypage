@@ -1,23 +1,46 @@
 
 import sdt from '../../mlGame/data/scene.js'
+var sData = {};
 var scene = {
 
     to:function(n)
     {
         sdt.dt.cnt = n;
+        sData.cnt = sdt.dt.cnt;
+        scene.save();
         scene.refresh();
     },
 
     new:function()
     {
     	sdt.dt.cnt = 0;
+        sData.cnt = sdt.dt.cnt;
+        scene.save();
     	scene.refresh();
     },
 
-    init:function()
+    load:function()
     {
-    	sdt.dt.cnt = 0;
+        try
+        {
+            var sc = JSON.parse(localStorage.scene);
+            if(sc)
+            {
+                sdt.dt.cnt = sc.cnt;
+            }
+        }
+        catch(e)
+        {
+            sdt.dt.cnt = 0;
+        }
+        sData.cnt = sdt.dt.cnt;
+        scene.save();
     	scene.refresh();
+    },
+
+    save:function()
+    {
+        localStorage.scene = JSON.stringify(sData);
     },
 
     refresh:function()

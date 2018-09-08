@@ -13,7 +13,7 @@
 				<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
 			</div>
 			<div class="dis">双方距离：{{ dis }}米</div>
-			<textarea name="" id = "ftMsg" class="msg" rows="17" readonly>{{info.v}}</textarea>
+			<textarea name="" id = "ftMsg" class="msg" rows="13" readonly>{{info.v}}</textarea>
 			<button class="close" v-if="showClose.v" @click="close" >关闭</button>					
 		</div>
 	</div>
@@ -119,7 +119,7 @@ export default {
 		top: 40px;
 		background-color: #F5F5DC;
 		width: 650px;
-		height: 460px;
+		height: 27em;
 		z-index:100;
 		.top{
 			position: absolute;
