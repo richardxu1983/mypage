@@ -68,12 +68,14 @@ export default {
 	},
 	created:function()
 	{
-
+		console.log("gameView vue created");
+		EB.Engine.gameInit();
+		$ctrl.start();
 	},
 	mounted:function()
 	{
-		EB.Engine.gameInit();
-		$ctrl.start();
+		console.log("gameView vue mounted");
+		$ctrl.refresh();
 	},
 	methods:
 	{

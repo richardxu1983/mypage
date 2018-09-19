@@ -35,7 +35,6 @@ var scene = {
         }
         sData.cnt = sdt.dt.cnt;
         scene.save();
-    	scene.refresh();
     },
 
     save:function()

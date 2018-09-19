@@ -9,7 +9,7 @@
 			<vhome></vhome>
 			<vkuangchang></vkuangchang>
 			<vteacher></vteacher>
-			<vtiejiang></vtiejiang>
+			<vmaoxian></vmaoxian>
 		</div>		
 	</div>
 </template>
@@ -19,7 +19,7 @@
 import vhome from '../../mlGame/view/home.vue'
 import vkuangchang from '../../mlGame/view/kuangchang.vue'
 import vteacher from '../../mlGame/view/teacher.vue'
-import vtiejiang from '../../mlGame/view/tiejiang.vue'
+import vmaoxian from '../../mlGame/view/maoxian.vue'
 import sdt from '../../mlGame/data/scene.js'
 import sce from '../../mlGame/core/sceneCtrl.js'
 
@@ -38,7 +38,7 @@ export default {
 	  vhome,
 	  vkuangchang,
 	  vteacher,
-	  vtiejiang,
+	  vmaoxian,
 	},
 	methods:
 	{
