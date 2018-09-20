@@ -13,9 +13,7 @@
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<div class="infoBox" id="info"></div>
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
-		<div class="bottomBar">
-			[&ensp;{{ player.name }}&ensp;]：等级&ensp;{{ player.lvl.value }}
-		</div>
+		<bottomBar></bottomBar>
 		<div class="tool">
 			<button class="right" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="right" @click="test">金币+1</button>
@@ -40,6 +38,7 @@ import areaGo from '../../mlGame/view/areaGo.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
 import sceneView from '../../mlGame/view/scene.vue'
 import CT from '../../mlGame/core/ctrls.js'
+import bottomBar from '../../mlGame/view/bottomBar.vue'
 var $ctrl = CT.c;
 var $ply = UnitBundle.Player;
 var $addinfo = EB.info.addInfo;
@@ -65,6 +64,7 @@ export default {
 	  areaGo,
 	  ntk,
 	  sceneView,
+	  bottomBar,
 	},
 	created:function()
 	{
@@ -139,7 +139,7 @@ export default {
 	.infoBox{
 		position: absolute;
 		width: 100%;
-		bottom: 4em;
+		bottom: 5em;
 		padding: 0.3em 0 0.3em 1em;
 		box-sizing: border-box;
 		overflow-y: hidden;
@@ -160,18 +160,7 @@ export default {
 		bottom: -2em;
 		left: 0;
 	}
-	.bottomBar{
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		background-color:#554837;
-		height: 4em;
-		padding: 1.2em .5em 0em 1em;
-		box-sizing: border-box;
-		color: #eee;
-		border: outset 0.2em #CDB38B;
-		font-size: 1.05em;
-	}
+
 	.mlBoard{
 		width: 700px;
 		height: 550px;
@@ -181,5 +170,7 @@ export default {
 		font-size: 90%;
 		background-color: #333;
 	}
+
+
 
 </style>
