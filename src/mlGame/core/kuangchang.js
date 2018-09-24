@@ -71,7 +71,7 @@ var kcCtrl = {
 	onTalkFinish:function(ans)
 	{
 		var npcid = kcCtrl.npcid;
-		var npc = new UB.Npc(nd.npc[npcid],npcid,0,0);
+		var npc = new UB.Npc(npcid,0,0);
 		$ply.fight(npc,kcCtrl.onFightOver);
 	},
 

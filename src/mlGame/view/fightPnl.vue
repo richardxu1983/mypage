@@ -3,16 +3,17 @@
 		<div class="md bd">
 		</div>
 		<div class="fp bframe">
+			<!--
 			<div class="top">
-				<div class="ply nameTag"><div class="right">{{ lftN }}</div></div>
+				<div class="ply nameTag"><div class="right"></div></div>
 				<div class="hp1 plyhp hpbar" ></div>
 				<div class="plyhp hpbar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 				<div class="vs">对阵</div>
 				<div class="hp1 enmhp hpbar" ></div>
 				<div class="enmhp hpbar" :style="{width:enmhpw+'px','background-color':enmhpc}"></div>
-				<div class="enm nameTag"><div class="left">{{ rgtN }}</div></div>
+				<div class="enm nameTag"><div class="left"></div></div>
 			</div>
-			<div class="dis">双方距离：{{ dis }}米</div>
+			-->
 			<textarea name="" id = "ftMsg" class="msg" rows="13" readonly>{{info.v}}</textarea>
 			<button class="close" v-if="showClose.v" @click="close" >关闭</button>					
 		</div>
@@ -23,7 +24,6 @@
 
 import UnitBundle from '../../mlGame/core/unit.js'
 import FT from '../../mlGame/core/fight.js'
-
 var $ply = UnitBundle.Player;
 var $fight = FT.Fight;
 
@@ -56,44 +56,6 @@ export default {
 	},
 	computed: {
 	    // a computed getter
-	    left:function()
-	    {
-	    	return this.fight.left.attr;
-	    },
-	    dis:function()
-	    {
-	    	return this.fight.absDis();
-	    },
-	    plyhpw:function()
-	    {
-    	    var len;
-	    	len = Math.floor((this.left['hp'].value/this.left['hp'].max)*130);
-	    	return len;		
-	    },
-	    plyhpc:function()
-	    {
-    		var p = (this.left['hp'].value/this.left['hp'].max);
-    		return getColor(p);	
-	    },
-	    enmhpc:function()
-	    {
-	    	var p = (this.fight.right.hp()/this.fight.right.getAttrMax('hp'));
-	    	return getColor(p);
-	    },
-	    enmhpw:function()
-	    {
-    		var len;
-	    	len = Math.floor(this.fight.right.hp()/this.fight.right.getAttrMax('hp')*130);
-	    	return len;
-	    },
-	    lftN:function()
-	    {
-			return this.fight.left.name();    	
-	    },
-	    rgtN: function () 
-	    {
-			return this.fight.right.name(); 
-	    },
 	},
 	methods:
 	{
@@ -111,14 +73,16 @@ export default {
 
 	.bframe{
 		padding: 0;
+		border: solid 0.4em #CDB38B;
+		border-radius: 1em;
 	}
 
 	.fp{
 		position: absolute;
 		left: 25px;
 		top: 40px;
-		background-color: #F5F5DC;
-		width: 650px;
+		background-color: white;
+		width: 45em;
 		height: 27em;
 		z-index:100;
 		.top{

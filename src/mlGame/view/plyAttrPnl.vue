@@ -8,10 +8,9 @@
 			<div class="cel">
 				<p>生命：{{ player.attr['hp'].value }}</p>
 				<p>法力：{{ player.attr['mp'].value }}</p>
-				<p>强壮：{{ player.attr['str'].value }}</p>
-				<p>敏捷：{{ player.attr['agi'].value }}</p>
+				<p>攻击：{{ player.attr['atk'].value }}</p>
 				<p>防御力：{{ player.attr['def'].value }}</p>
-				<p>战斗移动速度：{{ player.attr['spd'].value }}米/秒</p>	
+				<p>速度：{{ player.attr['spd'].value }}</p>	
 			</div>
 			<div class="cel">
 				<p >武器：<label @click="opWp" class="lk">[&ensp;{{wpName}}&ensp;]</label></p>

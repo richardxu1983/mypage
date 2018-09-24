@@ -171,9 +171,12 @@ var npcTalk = {
 		actData.ntSeg = 0;
 		actData.plyOp=false;
 		actData.choice = index;
-		if($ans[actData.ansId][actData.ntIndex].i)
-			actData.ntInfo = $ans[actData.ansId][actData.ntIndex].i;
-		ShowNpc();
+		if(actData.ntIndex>0)
+		{
+			if($ans[actData.ansId][actData.ntIndex].i)
+				actData.ntInfo = $ans[actData.ansId][actData.ntIndex].i;
+			ShowNpc();
+		}
 		npcTalk.refreshCtn();
 	},
 

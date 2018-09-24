@@ -21,7 +21,7 @@
 			<button class="right" @click="newGame">新游戏</button>
 			<button class="right" @click="equipWp1">装备匕首</button>
 			<button class="right" @click="equipWp2">装备弓箭</button>
-			<button class="right" @click="upEquip">卸下武器</button>
+			<button class="right" @click="upEquip">+经验</button>
 		</div>
 	</div>
 </template>
@@ -97,17 +97,9 @@ export default {
 		},
 		fight:function()
 		{
-			var u = new UnitBundle.Unit({
-				hp:300,
-				maxhp:300,
-				mp:0,
-				str:20,
-				def:0,
-				agi:20,
-				spd:1,
-				name:"强盗",
-			},1);
-			$ply.fight(u);
+			var npc1 = new UnitBundle.Npc(100,0,0);
+			var npc2 = new UnitBundle.Npc(100,0,0);
+			$ply.fight([npc2,0,npc1]);
 		},
 		newGame:function()
 		{
@@ -125,7 +117,7 @@ export default {
 		},
 		upEquip:function()
 		{
-			$ply.unEquipWp(1);
+			$ply.expAdd(1000);
 		},
 	}
 }
