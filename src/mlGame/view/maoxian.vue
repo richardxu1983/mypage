@@ -35,7 +35,6 @@ export default {
 	},
 	mounted:function()
 	{
-		console.log("maoxian vue mounted");
 	},
 	methods:
 	{

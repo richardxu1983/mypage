@@ -39,9 +39,11 @@ import ntk from '../../mlGame/view/npcTalk.vue'
 import sceneView from '../../mlGame/view/scene.vue'
 import CT from '../../mlGame/core/ctrls.js'
 import bottomBar from '../../mlGame/view/bottomBar.vue'
+import zxModule from '../../mlGame/core/zhenxing.js'
 var $ctrl = CT.c;
 var $ply = UnitBundle.Player;
 var $addinfo = EB.info.addInfo;
+var zxCtrl = zxModule.zxCtrl;
 
 export default {
 	name:"gameView",
@@ -68,13 +70,11 @@ export default {
 	},
 	created:function()
 	{
-		console.log("gameView vue created");
 		EB.Engine.gameInit();
 		$ctrl.start();
 	},
 	mounted:function()
 	{
-		console.log("gameView vue mounted");
 		$ctrl.refresh();
 	},
 	methods:
@@ -99,7 +99,7 @@ export default {
 		{
 			var npc1 = new UnitBundle.Npc(100,0,0);
 			var npc2 = new UnitBundle.Npc(100,0,0);
-			$ply.fight([npc2,0,npc1]);
+			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()
 		{

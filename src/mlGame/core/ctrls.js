@@ -3,11 +3,13 @@ import UB from '../../mlGame/core/unit.js'
 import TI from '../../mlGame/core/gTime.js'
 import SCE from '../../mlGame/core/sceneCtrl.js'
 import MX from '../../mlGame/core/maoxianCtrl.js'
+import ZXModule from '../../mlGame/core/zhenxing.js'
 var $kctrl = ktrl.kcCtrl;
 var $ti = TI.gtime;
 var $scene = SCE.scene;
 var $ply = UB.Player;
 var $maoxian = MX.maoxianCtrl;
+var $zxCtrl = ZXModule.zxCtrl;
 
 var c = {
 
@@ -23,12 +25,14 @@ var c = {
         $ply.load();
         $maoxian.new();
         $scene.new();
+        $zxCtrl.new();
 	},
 
 	load:function()
 	{
         $ti.load();
         $ply.load();
+        $zxCtrl.load();
         $maoxian.load();
         $scene.load();
         $kctrl.load();

@@ -133,7 +133,10 @@ class Unit
     {
         return this.attr.name;
     }
-
+    lvl()
+    {
+        return this.getAttr('lvl');
+    }
     atkDis()
     {
         return $wp[this.weapon.id].atkDis;
@@ -256,14 +259,6 @@ class Unit
         }
     }
 
-    fight(t,callback)
-    {
-        if(Fight.over)
-        {
-            Fight.start([this,0,0],t,callback);
-        }
-    }
-
     arriveAt(i)
     {
         Player.setAttr('pos',i);
@@ -333,11 +328,6 @@ class Ply extends Unit
         }
     }
 
-    lvl()
-    {
-        return this.getAttr('lvl');
-    }
-
     lvlUp()
     {
         var lvl = this.lvl();
@@ -375,7 +365,7 @@ class Ply extends Unit
 
     fightName()
     {
-        return " [ 你 ] ";
+        return "你";
     }
 
     load(State)

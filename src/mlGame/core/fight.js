@@ -12,16 +12,18 @@ var MAX_ROUND = 10;
 
 var Side1 = 
 [
-{unit:0,pos:0,done:false},{unit:0,pos:1,done:false},{unit:0,pos:2,done:false},
+{unit:0,pos:0,done:false,w:"后"},{unit:0,pos:1,done:false,w:"中"},{unit:0,pos:2,done:false,w:"前"},
 ];
 
 var Side2 = 
 [
-{unit:0,pos:3,done:false},{unit:0,pos:4,done:false},{unit:0,pos:5,done:false},
+{unit:0,pos:3,done:false,w:"前"},{unit:0,pos:4,done:false,w:"中"},{unit:0,pos:5,done:false,w:"后"},
 ];
 
-var currentTargetSide = 0;
-
+var TargetSide = 0;
+var EnemySide = 0;
+var playerSide = 0;
+var zhenrongMsg = "";
 var targetList = [];
 
 function unpdateFMsg()
@@ -30,6 +32,38 @@ function unpdateFMsg()
     if(el)
     {
         el.scrollTop = el.scrollHeight;
+    }
+}
+
+function zhenrongMsgFormat()
+{
+    zhenrongMsg = "我方阵容\n";
+    var u;
+    var i=0;
+    for(i=playerSide.length-1;i>=0;i--)
+    {
+        u = playerSide[i].unit;
+        if(u==0)
+        {
+            zhenrongMsg = zhenrongMsg + "\t"+playerSide[i].w + "：无\n";
+        }
+        else
+        {
+            zhenrongMsg = zhenrongMsg + "\t"+playerSide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"剩余生命："+u.hp()+"\n";
+        }
+    }
+    zhenrongMsg = zhenrongMsg+"敌方阵容\n";
+    for(i=0;i<EnemySide.length;i++)
+    {
+        u = EnemySide[i].unit;
+        if(u==0)
+        {
+            zhenrongMsg = zhenrongMsg + "\t"+EnemySide[i].w + "：无\n";
+        }
+        else
+        {
+            zhenrongMsg = zhenrongMsg + "\t"+EnemySide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"剩余生命："+u.hp()+"\n";
+        }
     }
 }
 
@@ -44,6 +78,19 @@ function addMsg(v)
 	        Fight.info.slice(-500);
 	    }
 	}
+}
+
+function insertMsg(v)
+{
+    if(v!="")
+    {
+        Fight.info.v = v + "\n" + Fight.info.v;
+        //unpdateFMsg();
+        if(Fight.info.length>1000)
+        {
+            Fight.info.slice(-500);
+        }
+    } 
 }
 
 function getDis(u1,u2)
@@ -70,12 +117,15 @@ var Fight = {
     info:{v:""},
     showClose:{v:false},
     over:true,
+
     init:function(left,right,callback)
     {
         Fight.info.v = "";
 
         Fight.showClose.v = false;
         Fight.showPnl.v=true;
+
+        zhenrongMsg = "";
 
         Fight.callback = callback==undefined?undefined:callback;
         Fight.callBackParam=0;
@@ -116,7 +166,11 @@ var Fight = {
                     Side1[fid].unit.side =1;
                     Fight.side1++;
                     if(Side1[fid].unit.Type==99)
+                    {
+                        playerSide = Side1;
                         ply = Side1[fid].unit;
+                        EnemySide = Side2;
+                    }
                 }
             }
             if(right[i]!=0)
@@ -129,14 +183,23 @@ var Fight = {
                     Side2[i].unit.side = 2;
                     Fight.side2++;
                     if(Side2[i].unit.Type==99)
+                    {
+                        playerSide = Side2;
                         ply = Side2[i].unit;
+                        EnemySide = Side1;
+                    }
                 }
             }
         }
+
+
     },
 
     start:function(left,right,callback)
     {
+        if(!Fight.over)
+            return;
+
         Fight.init(left,right,callback);
         if(Fight.side1<=0||Fight.side2<=0)
         {
@@ -147,7 +210,6 @@ var Fight = {
             return;
         }
 
-        addMsg(">>>> 战斗即将开始 <<<<");
         //准备环节
         Fight.beforeRound();
         //回合开始
@@ -163,22 +225,23 @@ var Fight = {
     {
         while(Fight.round<=MAX_ROUND) 
         {
-            addMsg("\n---- 第 "+Fight.round+" 回合开始 ----");
+            addMsg("\n---- 第 "+Fight.round+" 回合开始 ----\n");
             Fight.over = Fight.roundStep();
             if(Fight.over)
                 break;
-            addMsg("---- 第 "+Fight.round+" 回合结束 ----");
             Fight.round++;
         }
 
         addMsg("\n---- 战斗结束 ----");
+        zhenrongMsgFormat();
+        insertMsg(zhenrongMsg);
         if(Fight.playerWin)
         {
-            addMsg("\n你胜利了");
+            insertMsg("[ 我方胜利 ]\n");
         }
         else
         {
-            addMsg("\n你被击败了");
+            insertMsg("[ 敌方胜利 ]\n");
         }
 
         Fight.fightOver();
@@ -187,7 +250,6 @@ var Fight = {
     fightOver:function()
     {
         //unpdateFMsg();
-        setTimeout(unpdateFMsg,200);
         Fight.showClose.v = true;
         targetList = [];
         ply = 0;
@@ -252,7 +314,6 @@ var Fight = {
             
             if(liveCheck())
             {
-                console.log("退出");
                 return true;
             }
 
@@ -321,7 +382,7 @@ function findHero()
     var side = 0;
     var tmpU;
 
-    currentTargetSide = 0
+    TargetSide = 0
 
     for(i=0;i<3;i++)
     {
@@ -360,12 +421,12 @@ function findHero()
         if(side==1)
         {
             Side1[u.fid].done = true;
-            currentTargetSide = Side2;
+            TargetSide = Side2;
         }
         else
         {
             Side2[u.fid].done = true;
-            currentTargetSide = Side1;
+            TargetSide = Side1;
         }
     }
     return u;
@@ -373,13 +434,12 @@ function findHero()
 
 function findTarget(u)
 {
-    console.log(u);
     var dis = u.atkDis();
     targetList = [];
     var t = 0;
     for(var i=0;i<3;i++)
     {
-        t = currentTargetSide[i].unit;
+        t = TargetSide[i].unit;
         if(t!=0)
         {
             if(t.hp()>0&&getDis(u,t)<=dis)
