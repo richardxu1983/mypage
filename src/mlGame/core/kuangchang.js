@@ -4,10 +4,12 @@ import UB from '../../mlGame/core/unit.js'
 import nd from '../../mlGame/data/npc.js'
 import EB from '../../mlGame/core/engine.js'
 import ACT from '../../mlGame/core/npcActive.js'
+import zxModule from '../../mlGame/core/zhenxing.js'
 var $npcTalk = ACT.npcTalk;
 var $addinfo = EB.info.addInfo;
 var $ply = UB.Player;
 var $kc = kk.kc;
+var zxCtrl = zxModule.zxCtrl;
 
 var kcData = {
 	at:0,
@@ -58,26 +60,43 @@ var kcCtrl = {
 
 	capture:function(n)
 	{
-		var npcid = $kc.lvls[n].npc;
-		kcCtrl.captuering = n;
-		kcCtrl.npcid = npcid;
-		$npcTalk.talk(npcid,kcCtrl.onTalkFinish);
-
-		//kcCtrl.captuering = n;
-		//var npc = new UB.Npc(nd.npc[npcid],npcid,0,0);
-		//$ply.fight(npc,kcCtrl.onFightOver);
+		if($ply.hp()>0)
+		{
+			var npcid = $kc.lvls[n].npc;
+			kcCtrl.captuering = n;
+			kcCtrl.npcid = npcid;
+			$npcTalk.talk(npcid,kcCtrl.onTalkFinish);
+		}
+		else
+		{
+			$addinfo("你已经挂了，不能进行战斗了")
+		}
 	},
 
 	onTalkFinish:function(ans)
 	{
 		var npcid = kcCtrl.npcid;
-		var npc = new UB.Npc(npcid,0,0);
-		$ply.fight(npc,kcCtrl.onFightOver);
+		var id = kcCtrl.captuering;
+		var array = [];
+		var npc;
+		for(var i=0;i<3;i++)
+		{
+			npc = $kc.lvls[id].emy[i];
+			if(npc>=0)
+			{
+				array[i] = new UB.Npc(npc,0);
+			}
+			else
+			{
+				array[i] = 0;
+			}
+		}
+		zxCtrl.fight(array,kcCtrl.onFightOver);
 	},
 
-	onFightOver:function(n)
+	onFightOver:function(v)
 	{
-		if(n==1)
+		if(v)
 		{
 			kcCtrl.indexSet(kcCtrl.captuering+2);
 			$addinfo("你占领了第"+(kcCtrl.captuering+1)+"层矿场");

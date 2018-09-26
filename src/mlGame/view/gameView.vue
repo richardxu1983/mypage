@@ -19,7 +19,7 @@
 			<button class="right" @click="test">金币+1</button>
 			<button class="right" @click="fight">战斗</button>
 			<button class="right" @click="newGame">新游戏</button>
-			<button class="right" @click="equipWp1">装备匕首</button>
+			<button class="right" @click="equipWp1">显示战斗记录</button>
 			<button class="right" @click="equipWp2">装备弓箭</button>
 			<button class="right" @click="upEquip">+经验</button>
 		</div>
@@ -40,6 +40,7 @@ import sceneView from '../../mlGame/view/scene.vue'
 import CT from '../../mlGame/core/ctrls.js'
 import bottomBar from '../../mlGame/view/bottomBar.vue'
 import zxModule from '../../mlGame/core/zhenxing.js'
+import FT from '../../mlGame/core/fight.js'
 var $ctrl = CT.c;
 var $ply = UnitBundle.Player;
 var $addinfo = EB.info.addInfo;
@@ -97,8 +98,8 @@ export default {
 		},
 		fight:function()
 		{
-			var npc1 = new UnitBundle.Npc(100,0,0);
-			var npc2 = new UnitBundle.Npc(100,0,0);
+			var npc1 = new UnitBundle.Npc(100,0);
+			var npc2 = new UnitBundle.Npc(100,0);
 			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()
@@ -109,7 +110,7 @@ export default {
 		},
 		equipWp1:function()
 		{
-			$ply.equipWp(1);
+			FT.Fight.showRecord();
 		},
 		equipWp2:function()
 		{

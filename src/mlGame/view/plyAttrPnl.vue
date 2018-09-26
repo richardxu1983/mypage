@@ -6,8 +6,8 @@
 			<h1 class="pn">{{ player.attr['name'] }}</h1>
 			<p>拥有金币：{{ player.attr['gold'].value }}</p>
 			<div class="cel">
-				<p>生命：{{ player.attr['hp'].value }}</p>
-				<p>法力：{{ player.attr['mp'].value }}</p>
+				<p>当前生命：{{ player.attr['hp'].value }}</p>
+				<p>最大生命：{{ player.attr['hpmax'].value }}</p>
 				<p>攻击：{{ player.attr['atk'].value }}</p>
 				<p>防御力：{{ player.attr['def'].value }}</p>
 				<p>速度：{{ player.attr['spd'].value }}</p>	

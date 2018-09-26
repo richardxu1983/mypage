@@ -22,7 +22,7 @@ var c = {
 	{
 		$kctrl.new();
 		$ti.reSet();
-        $ply.load();
+        $ply.new();
         $maoxian.new();
         $scene.new();
         $zxCtrl.new();
@@ -30,6 +30,7 @@ var c = {
 
 	load:function()
 	{
+		console.log("load");
         $ti.load();
         $ply.load();
         $zxCtrl.load();

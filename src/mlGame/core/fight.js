@@ -45,11 +45,11 @@ function zhenrongMsgFormat()
         u = playerSide[i].unit;
         if(u==0)
         {
-            zhenrongMsg = zhenrongMsg + "\t"+playerSide[i].w + "：无\n";
+            zhenrongMsg = zhenrongMsg + "  "+playerSide[i].w + "：无\n";
         }
         else
         {
-            zhenrongMsg = zhenrongMsg + "\t"+playerSide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"剩余生命："+u.hp()+"\n";
+            zhenrongMsg = zhenrongMsg + "  "+playerSide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"生命："+u.hp()+"\n";
         }
     }
     zhenrongMsg = zhenrongMsg+"敌方阵容\n";
@@ -58,11 +58,11 @@ function zhenrongMsgFormat()
         u = EnemySide[i].unit;
         if(u==0)
         {
-            zhenrongMsg = zhenrongMsg + "\t"+EnemySide[i].w + "：无\n";
+            zhenrongMsg = zhenrongMsg + "  "+EnemySide[i].w + "：无\n";
         }
         else
         {
-            zhenrongMsg = zhenrongMsg + "\t"+EnemySide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"剩余生命："+u.hp()+"\n";
+            zhenrongMsg = zhenrongMsg + "  "+EnemySide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"生命："+u.hp()+"\n";
         }
     }
 }
@@ -72,11 +72,6 @@ function addMsg(v)
 	if(v!="")
 	{
         Fight.info.v = Fight.info.v + v + "\n";
-	    //unpdateFMsg();
-	    if(Fight.info.length>1000)
-	    {
-	        Fight.info.slice(-500);
-	    }
 	}
 }
 
@@ -191,7 +186,7 @@ var Fight = {
                 }
             }
         }
-
+        zhenrongMsgFormat();
 
     },
 
@@ -233,7 +228,7 @@ var Fight = {
         }
 
         addMsg("\n---- 战斗结束 ----");
-        zhenrongMsgFormat();
+        
         insertMsg(zhenrongMsg);
         if(Fight.playerWin)
         {
@@ -254,19 +249,10 @@ var Fight = {
         targetList = [];
         ply = 0;
         var i=0;
-        //list init
-        for(i=0;i<3;i++)
-        {
-            Side1[i].unit = 0;
-            Side1[i].pos = i;
-            Side1[i].done = false;
-            Side2[i].unit = 0;
-            Side2[i].pos = i+3;
-            Side2[i].done = false;
-        }
+
         if(Fight.callback!=undefined)
         {
-            Fight.callback(Fight.callBackParam);
+            Fight.callback(Fight.playerWin);
         }
     },
 
@@ -294,6 +280,7 @@ var Fight = {
                 if(targetList.length<=0)
                 {
                     //攻击距离内没有目标，尝试移动
+                    addMsg(u.fightName()+"攻击距离不足");
                     if(u.side==1)
                     {
                         Side1[u.fid].pos++;
@@ -328,6 +315,12 @@ var Fight = {
     {
         Fight.showPnl.v=false;
     },
+
+    showRecord:function()
+    {
+        Fight.showPnl.v=true;
+        Fight.showClose.v = true;
+    }
 };
 
 //普通攻击
@@ -335,10 +328,11 @@ function Attack(u,t)
 {
     var dmg = u.getAtk();
     t.damage(dmg);
-    addMsg(u.fightName()+"对"+t.fightName()+"进行了普通攻击，造成了"+dmg+"的伤害");
+    addMsg(u.fightName()+"对"+t.fightName()+"进行了普通攻击");
+    addMsg("  "+t.fightName()+"损失了30生命"+"("+t.hp()+")");
     if(t.hp()<=0)
     {
-        addMsg(t.fightName()+"被击倒了");
+        addMsg("  "+t.fightName()+"被击倒了");
     }
 }
 

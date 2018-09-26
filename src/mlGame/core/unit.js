@@ -21,31 +21,37 @@ class Unit
     {
         this.attr = {
             'name':attr.name || "",
-            'hp' : {
+            'hp' : 
+            {
                 'value':attr.hp || 0,
-                'max':attr.maxhp || 0
             },
-            'mp' : {
-                'value': attr.mp || 0,
-                'max':attr.mp || 0
+            'hpmax' : 
+            {
+                'value':attr.hp || 0,
             },
             'atk' : {
                 'value':0,
             },
             'atkBase' : {
-                'value':attr.atk || 0,
+                'value':attr.atkBase || 0,
             },
             'def' : {
-                'value':attr.def || 0,
+                'value':0,
+            },
+            'defBase' : {
+                'value':attr.defBase || 0,
             },
             'mtk' : {
                 'value':0,
             },
             'mtkBase' : {
-                'value':attr.mtk || 0,
+                'value':attr.mtkBase || 0,
             },
             'spd' : {
-                'value':attr.spd || 0,
+                'value':0,
+            },
+            'spdBase' : {
+                'value':attr.spdBase || 0,
             },
             'lvl':{
                 'value':attr.lvl || 1,
@@ -77,6 +83,8 @@ class Unit
     {
         this.setAttr('atk', $wp[this.weapon.id].atk +this.attr['atkBase'].value);
         this.setAttr('mtk', $wp[this.weapon.id].mtk +this.attr['mtkBase'].value);
+        this.setAttr('spd', this.attr['spdBase'].value);
+        this.setAttr('def', this.attr['defBase'].value);
     }
 
     addSkToFight(id)
@@ -131,7 +139,7 @@ class Unit
 
     fightName()
     {
-        return this.attr.name;
+        return "【"+this.attr.name+"】";
     }
     lvl()
     {
@@ -174,62 +182,13 @@ class Unit
 
     setAttr(attr , val)
     {
-        var newVal = val;
-        var maxVal = this.getAttrMax(attr);
-        var minVal = this.getAttrMin(attr);
-        if(newVal < 0) newVal = 0;
-        if(maxVal!=undefined&&maxVal>0)
-        {
-            if(newVal > maxVal) newVal = maxVal;
-        }
-        if(minVal!=undefined&&minVal>0)
-        {
-            if(newVal < maxVal) newVal = maxVal;
-        }
-        this.attr[attr].value = newVal;
-        this.onSetAttr(attr ,newVal);
+        this.attr[attr].value = val;
+        this.onSetAttr(attr ,val);
     }
     
     atkWord()
     {
         return $wp[this.weapon.id].atkWord;
-    }
-
-    getAttrMax(attr)
-    {
-        var val = this.attr[attr];
-        return this.attr[attr].max;
-    }
-
-    setAttrMax(attr,v)
-    {
-        this.attr[attr].max = v;
-    }
-
-    hpMaxAdd(v)
-    {
-        var hpmax = this.getAttrMax('hp');
-        hpmax+=v;
-        var hp = this.hp();
-        hp+=v;
-        this.setAttrMax('hp', hpmax);
-        this.setAttr('hp', hp);
-    }
-
-    mpMaxAdd(v)
-    {
-        var mpmax = this.getAttrMax('mp');
-        mpmax+=v;
-        var mp = this.getAttr('mp');
-        mp+=v;
-        this.setAttrMax('mp', mpmax);
-        this.setAttr('mp', mp);
-    }
-
-    getAttrMin(attr)
-    {
-        var val = this.attr[attr];
-        return this.attr[attr].min;
     }
 
     startAtkWrd()
@@ -276,7 +235,7 @@ class Ply extends Unit
         super(attr,weaponid); 
         this.attr.gold = 
         {
-            'value':attr.gold || 0,
+            'value':$dt.plyBeginGold,
         };
         this.attr.exp = 
         {
@@ -313,7 +272,6 @@ class Ply extends Unit
                 break;
 
             nextExp = (nextLvl*nextLvl)*75;
-            console.log("nextExp="+nextExp+" , exp="+exp);
             
             if(exp>=nextExp)
             {
@@ -335,14 +293,22 @@ class Ply extends Unit
         {
             lvl++;
             this.setAttr('lvl', lvl);
-            this.hpMaxAdd($dt.plyLvlUpAdd.hp);
-            this.mpMaxAdd($dt.plyLvlUpAdd.mp);
-            var v = this.getAttr('atkBase');
-            v+=$dt.plyLvlUpAdd.atk;
-            this.setAttr('atkBase', v);
-            v = this.getAttr('mtkBase');
-            v+=$dt.plyLvlUpAdd.mtk;
-            this.setAttr('mtkBase', v);
+
+            var hpBase = $dt.plyInit.hpmax;
+            var atkBase = $dt.plyInit.atkBase;
+            var mtkBase = $dt.plyInit.mtkBase;
+            var spdBase = $dt.plyInit.spdBase;
+
+            var hpmax = $dt.plyLvlUpAdd.hp*(lvl-1) + hpBase;
+            var atk = $dt.plyLvlUpAdd.atk*(lvl-1) + atkBase;
+            var mtk = $dt.plyLvlUpAdd.mtk*(lvl-1) + mtkBase;
+            var spd = $dt.plyLvlUpAdd.spd*(lvl-1) + spdBase;
+
+            this.setAttr('hpmax', hpmax);
+            this.setAttr('hp', this.hp()+$dt.plyLvlUpAdd.hp);
+            this.setAttr('atkBase', atk);
+            this.setAttr('mtkBase', mtk);
+            this.setAttr('spdBase', spd);
         }
         this.attrCheck();
     }
@@ -360,12 +326,33 @@ class Ply extends Unit
     }
 
     onUnEqWp(){
-        $SM.set('player.weapon' ,undefined);
+        $SM.set('player.weapon' ,0);
     }
 
     fightName()
     {
-        return "你";
+        return "【你】";
+    }
+
+    new()
+    {
+        var hpBase = $dt.plyInit.hpmax;
+        var atkBase = $dt.plyInit.atkBase;
+        var mtkBase = $dt.plyInit.mtkBase;
+        var spdBase = $dt.plyInit.spdBase;
+        var defBase = $dt.plyInit.defBase;
+        this.setAttr('hp', hpBase);
+        this.setAttr('hpmax', hpBase);
+        this.setAttr('atkBase', atkBase);
+        this.setAttr('mtkBase', mtkBase);
+        this.setAttr('spdBase', spdBase);
+        this.setAttr('defBase', defBase);
+        this.setAttr('lvl', 1);
+        this.setAttr('exp', $dt.plyBeginExp);
+        this.setAttr('gold', $dt.plyBeginGold);
+        this.equipWp(0);
+        this.sk = [];   //全部学习技能
+        this.skf = [];  //携带到战斗的技能
     }
 
     load(State)
@@ -374,7 +361,7 @@ class Ply extends Unit
         for(v in this.attr)
         {
             if(typeof(this.attr[v])=="object")
-                this.attr[v].value = this.getAttr(v);
+                this.attr[v].value = this.loadAttr(v);
         }
 
         //load weapon
@@ -397,42 +384,29 @@ class Ply extends Unit
         this.attrCheck();
     }
 
-    getAttr(attr)
+    loadAttr(v)
     {
-        var ret = $SM.get('player.'+attr);
+        var ret = $SM.get('player.'+v);
         if(ret == undefined)
         {
-            var val = this.attr[attr];
-            if(val!=undefined)
-            {
-                $SM.set('player.'+attr , $dt.plyInit[attr]);
-            }
-            else
-            {
-                $SM.set('player.'+attr , 0);
-            }
+            ret = this.attr[v].value;
+            $SM.set('player.'+v , ret);
         }
-        //alert(attr + ' : ' + $SM.get('player.'+attr));
-        return $SM.get('player.'+attr);
+        return $SM.get('player.'+v);
     }
 
-    getLoot()
+    getAttr(attr)
     {
-        var loot = $npc[this.target.id].loot;
-        var gold = loot.gold;
-        var exp = loot.exp;
-        this.expAdd(exp);
-        this.addAttr('gold',gold);
+        return this.attr[attr].value;
     }
 }
 
 class Npc extends Unit 
 { 
-    constructor(id,qulity,weaponid)
+    constructor(id,weaponid)
     { 
         super({},weaponid);
         this.id = id;
-        this.qulity = qulity;
         this.attr.lvl.value = $npc[id].lvl;
         this.attrInitByLvl();
         this.attrCheck();
@@ -442,20 +416,20 @@ class Npc extends Unit
     attrInitByLvl()
     {
         var lvl = this.getAttr('lvl');
-        var q = this.qulity;
-        var hp = lvl*(15+q)+20+20*q;
-        var mp = lvl*(15+q)+20+20*q;
-        var atk = 5+lvl*(10+q)+10*q;
-        var mtk = 5+lvl*(10+q)+10*q;
-        var def = lvl*(1+q)+2*q;
-        this.setAttrMax('hp',hp);
+        var id = this.id;
+        var base = $npc[id].attr.base;
+        var up = $npc[id].attr.up;
+        var hp = base.hp+lvl*(up.hp);
+        var atk = base.atk+lvl*(up.atk);
+        var mtk = base.mtk+lvl*(up.mtk);
+        var def = base.def+lvl*(up.def);
+        var spd = base.spd+lvl*(up.spd);
+        this.setAttr('hpmax',hp);
         this.setAttr('hp',hp);
-        this.setAttrMax('mp',mp);
-        this.setAttr('mp',mp);
         this.setAttr('atkBase',atk);
-        this.setAttr('mtk',mtk);
-        this.setAttr('spd',80);
-        this.setAttr('def',def);
+        this.setAttr('mtkBase',mtk);
+        this.setAttr('spdBase',spd);
+        this.setAttr('defBase',def);
     }
 }
 
@@ -468,4 +442,4 @@ var unitCtrl = {
     }
 }
 
-export default { Player , Unit , Npc,unitCtrl}; 
+export default { Player , Unit , Npc,unitCtrl};

@@ -83,7 +83,7 @@ export default {
 		top: 40px;
 		background-color: white;
 		width: 45em;
-		height: 27em;
+		height: 31em;
 		z-index:100;
 		.top{
 			position: absolute;
@@ -139,14 +139,15 @@ export default {
 			border: solid 1px #aaaaaa;
 			padding: 5px;
 			resize: none;
-			width: 575px;
-			left: 25px;
-			top:80px;
+			width: 45em;
+			left: 1em;
+			top:6em;
 			overflow-y: scroll;
 			background: #424242;
 			color: white;
-			line-height: 1.5;
 			padding-left: 15px;
+			font-family: Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei;
+			line-height: 1.75;
 		}
 		.close{
 			position: absolute;

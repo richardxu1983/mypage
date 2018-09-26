@@ -3,8 +3,8 @@
 		<img class="player_head" src="/static/img/mlGame/player_head.png">
 		<div class="lv bantou"></div>
 		<div class="lv">{{ player.lvl.value }}</div>
-		<div class="hpBar" :style="{width:'55px','background-color':'black'}"></div>
-		<div class="hpBar" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
+		<div class="hpBar z1" :style="{width:'55px','background-color':'black'}"></div>
+		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 		<div class="attrs">属性</div>
 	</div>
 </template>
@@ -40,13 +40,12 @@ export default {
 	computed:{
 		plyhpw:function()
 	    {
-    	    var len;
-	    	len = Math.floor((this.player['hp'].value/this.player['hp'].max)*55);
+	    	var len = Math.floor((this.player['hp'].value/this.player['hpmax'].value)*55);
 	    	return len;		
 	    },
 	    plyhpc:function()
 	    {
-    		var p = (this.player['hp'].value/this.player['hp'].max);
+    		var p = (this.player['hp'].value/this.player['hpmax'].value);
     		return getColor(p);	
 	    },
 	},
@@ -70,6 +69,12 @@ export default {
 		box-sizing: border-box;
 		color: #eee;
 		border: outset 0.1em #CDB38B;
+	}
+	.z1{
+		z-index:1;
+	}
+	.z2{
+		z-index:2;
 	}
 	.player_head{
 		position: absolute;
