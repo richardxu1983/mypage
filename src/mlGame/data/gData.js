@@ -1,33 +1,25 @@
 
 
-var data = {
+var data = 
+{
     timeLimit:200,
-    npcTkTime:0.5,
-    plyBeginExp:75,
-    plyBeginGold:10,
-    plyBeginWp:0,
-    plyMaxLevel:30,
-    plyLvlupPnts:3,
-    plyLvlUpAdd:{
-    	'hp':3,
-        'atk':2,
-        'mtk':1,
-        'spd':1,
-        'def':0,
-    },
-    plyInit:{
-	    hp : 100,
-        hpmax : 100,
-	    atkBase : 50,
-        mtkBase : 20,
-	    defBase : 0,
-	    agi : 3,
-	    spdBase : 60,
-	    lvl:1,
-        exp:75,
-	    name:"冒险者",
-    },
-    currentScene:0,
 };
 
-export default { data }; 
+var role = 
+{
+    new:
+    {
+        hp:100,
+        atkBase : 50,
+        defBase : 0,
+        fireBase:0,
+        iceBase:0,
+        poisBase:0,
+        spdBase:50,
+        lvl:1,
+        exp:0,
+        name:'冒险者',
+    },
+}
+
+export default { data,role }; 
