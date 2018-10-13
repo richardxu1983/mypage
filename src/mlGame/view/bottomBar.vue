@@ -1,8 +1,6 @@
 <template>
 	<div class="bottomBar">
 		<img class="player_head" src="/static/img/mlGame/player_head.png">
-		<div class="lv bantou"></div>
-		<div class="lv">{{ player.lvl.value }}</div>
 		<div class="hpBar z1" :style="{width:'55px','background-color':'black'}"></div>
 		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 		<div class="attrs">属性</div>
@@ -10,8 +8,8 @@
 </template>
 
 <script>
-import UB from '../../mlGame/core/unit.js'
-var $ply = UB.Player;
+import RO from '../../mlGame/core/role.js'
+var $ply = RO.role;
 
 function getColor(p)
 {
@@ -34,18 +32,18 @@ export default {
 	data:function()
 	{
 		return{
-			player:$ply.attr,
+			player:$ply,
 		}
 	},
 	computed:{
 		plyhpw:function()
 	    {
-	    	var len = Math.floor((this.player['hp'].value/this.player['hpmax'].value)*55);
+	    	var len = Math.floor((this.player.hp()/this.player.getAttr('hpmax'))*55);
 	    	return len;		
 	    },
 	    plyhpc:function()
 	    {
-    		var p = (this.player['hp'].value/this.player['hpmax'].value);
+    		var p = (this.player.hp()/this.player.getAttr('hpmax'));
     		return getColor(p);	
 	    },
 	},

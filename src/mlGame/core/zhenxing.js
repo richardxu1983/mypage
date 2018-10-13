@@ -1,9 +1,7 @@
-import UB from '../../mlGame/core/unit.js'
+import RO from '../../mlGame/core/role.js'
 import FT from '../../mlGame/core/fight.js'
-import EB from '../../mlGame/core/engine.js'
-var $addinfo = EB.info.addInfo;
 var $fight = FT.Fight;
-var $ply = UB.Player;
+var $ply = RO.role;
 
 //玩家阵型数据
 var zhenxing = [
@@ -49,10 +47,9 @@ var zxCtrl = {
 	{
 		if($ply.hp()<=0)
 		{
-			$addinfo("你已经挂了，无法出战");
 			return;
 		}
-		$fight.start([zhenxing[0].u,zhenxing[1].u,zhenxing[2].u],enemy,callback);
+		$fight.start({left:[zhenxing[0].u,zhenxing[1].u,zhenxing[2].u],right:enemy,plySide:1},callback);
 	}
 }
 

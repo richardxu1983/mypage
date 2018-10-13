@@ -14,7 +14,7 @@
 				<div class="enm nameTag"><div class="left"></div></div>
 			</div>
 			-->
-			<textarea name="" id = "ftMsg" class="msg" rows="13" readonly>{{info.v}}</textarea>
+			<textarea name="" id = "ftMsg" class="msg" rows="13" readonly>{{info.log}}</textarea>
 			<button class="close" v-if="showClose.v" @click="close" >关闭</button>					
 		</div>
 	</div>
@@ -22,9 +22,11 @@
 
 <script>
 
-import UnitBundle from '../../mlGame/core/unit.js'
+import RO from '../../mlGame/core/role.js'
 import FT from '../../mlGame/core/fight.js'
-var $ply = UnitBundle.Player;
+import FTD from '../../mlGame/data/fightData.js'
+var $record = FTD.fightRecord;
+var $ply = RO.role;
 var $fight = FT.Fight;
 
 function getColor(p)
@@ -49,19 +51,24 @@ export default {
 	{
 		return {
 			showClose:$fight.showClose,
-			fight:$fight,
-			info:$fight.info,
+			info:$record,
 			show:$fight.showPnl
 		}
 	},
-	computed: {
-	    // a computed getter
+	computed: 
+	{
+	},
+	created:function()
+	{
+	},
+	mounted:function()
+	{
 	},
 	methods:
 	{
 		close:function()
 		{
-			$fight.close();
+			$fight.closeUI();
 		}
 	}
 }
@@ -146,7 +153,6 @@ export default {
 			background: #424242;
 			color: white;
 			padding-left: 15px;
-			font-family: Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei;
 			line-height: 1.75;
 		}
 		.close{

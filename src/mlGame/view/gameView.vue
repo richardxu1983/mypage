@@ -3,10 +3,9 @@
 	<div class="mlBoard nosel">
 		<div class="topBar" >
 			<tiv class="left"></tiv>
-			<div class="right">您拥有：&ensp;{{ player['gold'].value }}&ensp;金</div>
+			<div class="right">您拥有：&ensp;{{ gold }}&ensp;金</div>
 		</div>
 		<sceneView></sceneView>
-		<plyAttrPnl v-if="plyAttrPnlShow" @closeplyAttrPnl="oncloseplyAttrPnl" @opWp="opWp"></plyAttrPnl>
 		<fightPnl></fightPnl>
 		<areaGo></areaGo>
 		<ntk></ntk>
@@ -15,26 +14,22 @@
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
 		<bottomBar></bottomBar>
 		<div class="tool">
-			<button class="right" @click="plyAttrPnlShow = !plyAttrPnlShow">{{ btnAttrTxt }}</button>
 			<button class="right" @click="test">金币+1</button>
 			<button class="right" @click="fight">战斗</button>
 			<button class="right" @click="newGame">新游戏</button>
 			<button class="right" @click="equipWp1">显示战斗记录</button>
 			<button class="right" @click="equipWp2">装备弓箭</button>
-			<button class="right" @click="upEquip">+经验</button>
 		</div>
 	</div>
 </template>
 
 <script>
 
-import UnitBundle from '../../mlGame/core/unit.js'
-import EB from '../../mlGame/core/engine.js'
-import plyAttrPnl from '../../mlGame/view/plyAttrPnl.vue'
+import UB from '../../mlGame/core/unit.js'
+import RO from '../../mlGame/core/role.js'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import tiv from '../../mlGame/view/tiv.vue'
-import areaGo from '../../mlGame/view/areaGo.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
 import sceneView from '../../mlGame/view/scene.vue'
 import CT from '../../mlGame/core/ctrls.js'
@@ -42,8 +37,7 @@ import bottomBar from '../../mlGame/view/bottomBar.vue'
 import zxModule from '../../mlGame/core/zhenxing.js'
 import FT from '../../mlGame/core/fight.js'
 var $ctrl = CT.c;
-var $ply = UnitBundle.Player;
-var $addinfo = EB.info.addInfo;
+var $ply = RO.role;
 var zxCtrl = zxModule.zxCtrl;
 
 export default {
@@ -51,27 +45,29 @@ export default {
 	data:function()
 	{
 		return {
-			btnAttrTxt:"人物",
-			player:$ply.attr,
+			player:$ply,
 			plyAttrPnlShow:false,
 			wpDesc:false,
-			info:EB.info.txt,
+		}
+	},
+	computed:
+	{
+		gold:function()
+		{
+			return this.player.gold();
 		}
 	},
 	components: 
 	{
-	  plyAttrPnl,
 	  fightPnl,
 	  wpDesc,
 	  tiv,
-	  areaGo,
 	  ntk,
 	  sceneView,
 	  bottomBar,
 	},
 	created:function()
 	{
-		EB.Engine.gameInit();
 		$ctrl.start();
 	},
 	mounted:function()
@@ -80,10 +76,6 @@ export default {
 	},
 	methods:
 	{
-		oncloseplyAttrPnl:function()
-		{
-			this.plyAttrPnlShow = !this.plyAttrPnlShow;
-		},
 		clsWp:function()
 		{
 			this.wpDesc=false;
@@ -94,19 +86,17 @@ export default {
 		},
 		test:function()
 		{
-			$ply.addAttr('gold',1);
+
 		},
 		fight:function()
 		{
-			var npc1 = new UnitBundle.Npc(100,0);
-			var npc2 = new UnitBundle.Npc(100,0);
+			var npc1 = new UB.Npc(100,0);
+			var npc2 = new UB.Npc(100,0);
 			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()
 		{
-			EB.Engine.new();
 			$ctrl.new();
-			$addinfo("重新开始了游戏...");
 		},
 		equipWp1:function()
 		{
@@ -115,10 +105,6 @@ export default {
 		equipWp2:function()
 		{
 			$ply.equipWp(2);
-		},
-		upEquip:function()
-		{
-			$ply.expAdd(1000);
 		},
 	}
 }

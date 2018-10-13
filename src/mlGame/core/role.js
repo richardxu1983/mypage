@@ -86,7 +86,7 @@ class _role extends $Unit
     	localStorage.role = JSON.stringify(this.attr);
     }
 
-    load(State)
+    load()
     {
     	try 
         {
@@ -104,6 +104,6 @@ class _role extends $Unit
     }
 }
 
-var Role = new _role();
+var role = new _role();
 
-export default { Role};
+export default { role};

@@ -1,317 +1,122 @@
 import SK from '../../mlGame/data/skill.js'
-import WPD from '../../mlGame/data/wpData.js'
-var $wp = WPD.wp;
-var skl = SK.SKL;
-var $ac = SK.AC;
+import FTD from '../../mlGame/data/fightData.js'
 
-
-var ply=0;
-
-//最大回合数
-var MAX_ROUND = 10;
-
-var Side1 = 
-[
-{unit:0,pos:0,done:false,w:"后"},{unit:0,pos:1,done:false,w:"中"},{unit:0,pos:2,done:false,w:"前"},
-];
-
-var Side2 = 
-[
-{unit:0,pos:3,done:false,w:"前"},{unit:0,pos:4,done:false,w:"中"},{unit:0,pos:5,done:false,w:"后"},
-];
-
-var TargetSide = 0;
-var EnemySide = 0;
-var playerSide = 0;
-var zhenrongMsg = "";
-var targetList = [];
-
-function unpdateFMsg()
+var $record = FTD.fightRecord;
+var SIDE = [];
+var MAX_ROUND=10;
+SIDE[1]=[];
+SIDE[2]=[];
+var info = 
 {
-    var el = document.getElementById('ftMsg');
-    if(el)
-    {
-        el.scrollTop = el.scrollHeight;
-    }
-}
+    log:"",
+};
 
-function zhenrongMsgFormat()
-{
-    zhenrongMsg = "我方阵容\n";
-    var u;
-    var i=0;
-    for(i=playerSide.length-1;i>=0;i--)
-    {
-        u = playerSide[i].unit;
-        if(u==0)
-        {
-            zhenrongMsg = zhenrongMsg + "  "+playerSide[i].w + "：无\n";
-        }
-        else
-        {
-            zhenrongMsg = zhenrongMsg + "  "+playerSide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"生命："+u.hp()+"\n";
-        }
-    }
-    zhenrongMsg = zhenrongMsg+"敌方阵容\n";
-    for(i=0;i<EnemySide.length;i++)
-    {
-        u = EnemySide[i].unit;
-        if(u==0)
-        {
-            zhenrongMsg = zhenrongMsg + "  "+EnemySide[i].w + "：无\n";
-        }
-        else
-        {
-            zhenrongMsg = zhenrongMsg + "  "+EnemySide[i].w + "："+u.fightName()+"(Lv."+u.lvl()+")"+"\t"+"生命："+u.hp()+"\n";
-        }
-    }
-}
-
-function addMsg(v)
-{
-	if(v!="")
-	{
-        Fight.info.v = Fight.info.v + v + "\n";
-	}
-}
-
-function insertMsg(v)
-{
-    if(v!="")
-    {
-        Fight.info.v = v + "\n" + Fight.info.v;
-        //unpdateFMsg();
-        if(Fight.info.length>1000)
-        {
-            Fight.info.slice(-500);
-        }
-    } 
-}
-
-function getDis(u1,u2)
-{
-    var p1;
-    var p2;
-
-    if(u1.side==1)
-    {
-        p1 = Side1[u1.fid].pos;
-        p2 = Side2[u2.fid].pos;
-    }
-    else
-    {
-        p1 = Side2[u1.fid].pos;
-        p2 = Side1[u2.fid].pos;
-    }
-    return Math.abs(p1-p2);
-}
 
 var Fight = {
 
     showPnl:{v:false},
-    info:{v:""},
     showClose:{v:false},
     over:true,
 
-    init:function(left,right,callback)
-    {
-        Fight.info.v = "";
-
-        Fight.showClose.v = false;
-        Fight.showPnl.v=true;
-
-        zhenrongMsg = "";
-
-        Fight.callback = callback==undefined?undefined:callback;
-        Fight.callBackParam=0;
-        Fight.playerWin = false;
-        Fight.over = false;
-        Fight.side1 = 0;
-        Fight.side2 = 0;
-        ply=0;
-
-        var i=0
-
-        //list init
-        for(i=0;i<3;i++)
-        {
-            Side1[i].unit = 0;
-            Side1[i].pos = i;
-            Side1[i].done = false;
-            Side2[i].unit = 0;
-            Side2[i].pos = i+3;
-            Side2[i].done = false;
-        }
-
-        //回合数
-        Fight.round=1;
-        var fid;
-
-        //left init
-        for(i=0;i<3;i++)
-        {
-            if(left[i]!=0)
-            {
-                if(left[i].hp()>0)
-                {
-                    fid = 2-i;
-                    Side1[fid].unit = left[i];
-                    Side1[fid].unit.initSk();
-                    Side1[fid].unit.fid = fid;
-                    Side1[fid].unit.side =1;
-                    Fight.side1++;
-                    if(Side1[fid].unit.Type==99)
-                    {
-                        playerSide = Side1;
-                        ply = Side1[fid].unit;
-                        EnemySide = Side2;
-                    }
-                }
-            }
-            if(right[i]!=0)
-            {
-                if(right[i].hp()>0)
-                {
-                    Side2[i].unit = right[i];
-                    Side2[i].unit.initSk();
-                    Side2[i].unit.fid = i;
-                    Side2[i].unit.side = 2;
-                    Fight.side2++;
-                    if(Side2[i].unit.Type==99)
-                    {
-                        playerSide = Side2;
-                        ply = Side2[i].unit;
-                        EnemySide = Side1;
-                    }
-                }
-            }
-        }
-        zhenrongMsgFormat();
-
-    },
-
-    start:function(left,right,callback)
+    start:function(data,callback)
     {
         if(!Fight.over)
             return;
 
-        Fight.init(left,right,callback);
-        if(Fight.side1<=0||Fight.side2<=0)
-        {
-            addMsg("战斗人数不足，战斗结束");
-            //unpdateFMsg();
-            Fight.showClose.v = true;
-            ply = 0;
-            return;
-        }
+        Fight.init(data,callback);
 
-        //准备环节
         Fight.beforeRound();
-        //回合开始
+
         Fight.roundStart();
+
+        Fight.roundOver();
     },
 
+    //初始化
+    init:function(data,callback)
+    {
+        info = {log:"",};
+        Fight.callback = callback==undefined?undefined:callback;
+        Fight.callBackParam=0;
+        Fight.round = 1;
+        Fight.over = false;
+        Fight.plySide = data.plySide;
+        Fight.winSide=1;
+        sideInit(1,data.left);
+        sideInit(2,data.right);
+    },
+
+    //准备阶段
     beforeRound:function()
     {
-        //准备环节
+        //重置行动
+        sideReset();
+
+        var u;//当前行动单位
+
+        //不断寻找速度最快的单位
+        while(true)
+        {
+            u = findHero();
+
+            if(u==0)
+                break;//找不到了
+            else
+                castZhiHui(u);  //找到了，释放指挥技能
+        }
     },
 
+    //战斗阶段
     roundStart:function()
     {
         while(Fight.round<=MAX_ROUND) 
         {
             addMsg("\n---- 第 "+Fight.round+" 回合开始 ----\n");
-            Fight.over = Fight.roundStep();
+            sideReset();
+            Fight.over = Fight.ARound();
             if(Fight.over)
                 break;
             Fight.round++;
         }
+    },
 
+    //战斗结束
+    roundOver:function()
+    {
         addMsg("\n---- 战斗结束 ----");
-        
-        insertMsg(zhenrongMsg);
-        if(Fight.playerWin)
-        {
-            insertMsg("[ 我方胜利 ]\n");
-        }
-        else
-        {
-            insertMsg("[ 敌方胜利 ]\n");
-        }
 
-        Fight.fightOver();
-    },
+        $record.log = info.log;
 
-    fightOver:function()
-    {
-        //unpdateFMsg();
-        Fight.showClose.v = true;
-        targetList = [];
-        ply = 0;
-        var i=0;
+        console.log($record);
 
-        if(Fight.callback!=undefined)
+        if(Fight.callback)
         {
-            Fight.callback(Fight.playerWin);
+            Fight.callback();
         }
     },
 
-    roundStep:function()
+    //一轮
+    ARound:function()
     {
-        
-        var i=0;
-        for(i=0;i<3;i++)
-        {
-            Side1[i].done = false;
-            Side2[i].done = false;
-        }
-        //寻找谁先出手
         var u;
-        var t;
+
+        //不断寻找速度最快的单位
         while(true)
         {
             u = findHero();
 
-            if(u!=0)
-            {
-                //寻找目标
-                findTarget(u);
-
-                if(targetList.length<=0)
-                {
-                    //攻击距离内没有目标，尝试移动
-                    addMsg(u.fightName()+"攻击距离不足");
-                    if(u.side==1)
-                    {
-                        Side1[u.fid].pos++;
-                    }
-                    else
-                    {
-                        Side2[u.fid].pos--;
-                    }
-                    addMsg(u.fightName()+"向前移动");
-                }
-                else
-                {
-                    //有目标，尝试攻击
-                    var t = targetList[Math.floor(Math.random()*targetList.length)];
-                    Attack(u,t);
-                }
-            }
-            
-            if(liveCheck())
-            {
-                return true;
-            }
-
             if(u==0)
-                break;
+                return false;  //找不到了
+            else
+            {
+                if(Act(u)==1)  //找到了，单位行动，如果结束判断成立则结束
+                    return true;
+            }
         }
-
         return false;
     },
 
-    close:function()
+    closeUI:function()
     {
         Fight.showPnl.v=false;
     },
@@ -323,125 +128,257 @@ var Fight = {
     }
 };
 
-//普通攻击
-function Attack(u,t)
+function addMsg(v)
 {
-    var dmg = u.getAtk();
-    t.damage(dmg);
-    addMsg(u.fightName()+"对"+t.fightName()+"进行了普通攻击");
-    addMsg("  "+t.fightName()+"损失了30生命"+"("+t.hp()+")");
-    if(t.hp()<=0)
+    if(v!="")
     {
-        addMsg("  "+t.fightName()+"被击倒了");
+        info.log = info.log + v + "\n";
     }
 }
 
-function liveCheck()
+function insertMsg(v)
 {
-    if(ply.hp()<=0)
+    if(v!="")
     {
-        Fight.playerWin = false;
-        return true;
+        info.log = v + "\n" + info.log;
     }
-    var another=Side1;
-    if(ply.side==1)
-        another=Side2;
+}
 
-    var n=0;
+function sideInit(s,v)
+{
+    var pos;
     var t;
+    console.log(s);
+    console.log(v);
     for(var i=0;i<3;i++)
     {
-        t = another[i].unit;
-        if(t!=0)
+        SIDE[s][i]={};
+        SIDE[s][i].u = v[i];
+        if(s==1)
         {
-            if(t.hp()>0)
+            pos=-1*i+3;
+            t=2;
+        }
+        else
+        {
+            pos=i+4;
+            t=1;
+        }
+        SIDE[s][i].pos = pos;
+        SIDE[s][i].done = false;   //本轮是否已经行动
+        if(SIDE[s][i].u!=0)
+        {
+            SIDE[s][i].u.side = s;
+            SIDE[s][i].u.t = t;
+            SIDE[s][i].u.idx = i;
+        }
+    }
+}
+
+function sideReset()
+{
+    for(var i=1;i<=2;i++)
+    {
+        for(var j=0;j<3;j++)
+        {
+            SIDE[i][j].done = false;
+        }
+    }
+}
+
+function overCheck()
+{
+    if(sdOverChk(1)==0)
+    {
+        Fight.winSide = 2;
+        return 1;
+    }
+    if(sdOverChk(2)==0)
+    {
+        Fight.winSide = 1;
+        return 1;
+    }
+    return 0;
+}
+
+function sdOverChk(side)
+{
+    var i=0;
+    var live = 0;
+    var u;
+    for(var i=0;i<3;i++)
+    {
+        u = SIDE[side][i].u;
+        if(u!=0)
+        {
+            if(u.hp()>0)
             {
-                n++;
+                live++;
+                break;
             }
         }
     }
-    if(n<=0)
-    {
-        Fight.playerWin = true;
+    return live;
+}
+
+//角色行动
+function Act(u)
+{
+    var t;
+
+    //主动技能释放
+    if(castZhudong(u)==1)
         return true;
+
+    //寻找目标
+    t = findTarget_1(u);
+    if(t!=0)
+    {
+        if(nmlAtk(u,t)==1)  //找到目标，普通攻击
+            return true;
     }
+    else
+    {
+        addMsg("【"+u.name()+"】攻击距离内没有目标");
+        move(u);    //向前移动
+    }
+
     return false;
 }
 
+function move(u)
+{
+    addMsg("  【"+u.name()+"】移动");
+    var side = u.side;
+    var index = u.idx;
+    var pos = SIDE[side][index].pos;
+    if(side==1)
+        pos++;
+    else
+        pos--;
+    SIDE[side][index].pos = pos;
+}
+
+function nmlAtk(u,t)
+{
+    addMsg("【"+u.name()+"】对【"+t.name()+"】发动攻击");
+
+    if(nmlAtkChk(t))    //检测是否命中、规避等
+    {
+        var dmg = u.atk();
+        dmg = dmgChk(t,dmg);    //是否有吸收等
+        var def = t.def();
+        dmg = Math.ceil(dmg*(150/(150+def)));   //攻防计算
+        t.damage(dmg);          //造成伤害
+        addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
+        if(t.hp()<=0)
+            addMsg("  【"+t.name()+"】被击倒");
+        Zhuiji(u,t);    //追击技能
+    }
+
+    return overCheck();
+}
+
+function castZhudong(u)
+{
+    addMsg("【"+u.name()+"】尝试释放主动技能");
+    return overCheck();
+}
+
+function castZhiHui(u)
+{
+    //
+    addMsg("【"+u.name()+"】尝试释放指挥技能");
+}
+
+function nmlAtkChk(t)
+{
+    return true;
+}
+
+function Zhuiji(u,t)
+{
+
+}
+
+function dmgChk(t,dmg)
+{
+    var d = dmg;
+    return d;
+}
+
+//寻找速度最快的英雄
 function findHero()
 {
     var u=0;
-    var spd = -1;
-    var i=0;
-    var side = 0;
     var tmpU;
+    var tmpSpd=-1;
 
-    TargetSide = 0
-
-    for(i=0;i<3;i++)
+    for(var i=1;i<=2;i++)
     {
-        tmpU = Side1[i].unit;
-        if(tmpU!=0)
+        for(var j=0;j<3;j++)
         {
-            if(tmpU.hp()>0&&Side1[i].done==false)
+            tmpU = SIDE[i][j].u;
+            if(tmpU!=0&&SIDE[i][j].done==false)
             {
-                if(tmpU.getAttr('spd')>spd)
+                if(tmpU.hp()>0&&tmpU.getAttr('spd')>tmpSpd)
                 {
-                    u=tmpU;
-                    spd = tmpU.getAttr('spd');
-                    side = 1;
-                }
-            }
-        }
-    }
-    for(i=0;i<3;i++)
-    {
-        tmpU = Side2[i].unit;
-        if(tmpU!=0)
-        {
-            if(tmpU.hp()>0&&Side2[i].done==false)
-            {
-                if(tmpU.getAttr('spd')>spd)
-                {
-                    u=tmpU;
-                    spd = tmpU.getAttr('spd');
-                    side = 2;
+                    u = tmpU;
+                    tmpSpd = tmpU.getAttr('spd');
                 }
             }
         }
     }
     if(u!=0)
     {
-        if(side==1)
-        {
-            Side1[u.fid].done = true;
-            TargetSide = Side2;
-        }
-        else
-        {
-            Side2[u.fid].done = true;
-            TargetSide = Side1;
-        }
+        SIDE[u.side][u.idx].done = true;
     }
     return u;
 }
 
-function findTarget(u)
+//寻找普通攻击目标
+function findTarget_1(u)
 {
-    var dis = u.atkDis();
-    targetList = [];
-    var t = 0;
+    var r = u.atkDis();
+    return findTInRange(u,r);
+}
+
+//寻找符合距离的目标
+function findTInRange(u,r)
+{
+    var t=0;
+
+    var side = u.side;
+    var index = u.idx;
+    var uPos = SIDE[side][index].pos;
+    var tside = u.t;
+    var tArray = [];
+    var tmpT;
+    var tPos;
+
     for(var i=0;i<3;i++)
     {
-        t = TargetSide[i].unit;
-        if(t!=0)
+        tmpT = SIDE[tside][i].u;
+        tPos = SIDE[tside][i].pos;
+        if(tmpT!=0)
         {
-            if(t.hp()>0&&getDis(u,t)<=dis)
+            if(tmpT.hp()>0)
             {
-                targetList.push(t);
+                if(r>=Math.abs(uPos-tPos))
+                {
+                    tArray.push(tmpT);
+                }
             }
         }
     }
+
+    if(tArray.length>0)
+    {
+        var index = Math.floor((Math.random()*tArray.length));
+        t = tArray[index];
+    }
+
+    return t;
 }
 
 export default {Fight};

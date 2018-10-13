@@ -118,12 +118,12 @@ class Unit
 
     attrCheck()
     {
-        this.setAttr('atk', $wp[this.weapon()].atk +this.attr['atkBase'].value);
-        this.setAttr('spd', this.attr['spdBase'].value);
-        this.setAttr('def', this.attr['defBase'].value);
-        this.setAttr('fire', this.attr['fireBase'].value);
-        this.setAttr('ice', this.attr['iceBase'].value);
-        this.setAttr('pois', this.attr['poisBase'].value);
+        this.setAttr('atk', $wp[this.weapon()].atk +this.attr['atkBase']);
+        this.setAttr('spd', this.attr['spdBase']);
+        this.setAttr('def', this.attr['defBase']);
+        this.setAttr('fire', this.attr['fireBase']);
+        this.setAttr('ice', this.attr['iceBase']);
+        this.setAttr('pois', this.attr['poisBase']);
     }
 
     addSkToFight(id)

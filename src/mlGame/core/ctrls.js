@@ -1,5 +1,5 @@
 import ktrl from '../../mlGame/core/kuangchang.js'
-import UB from '../../mlGame/core/unit.js'
+import RO from '../../mlGame/core/role.js'
 import TI from '../../mlGame/core/gTime.js'
 import SCE from '../../mlGame/core/sceneCtrl.js'
 import MX from '../../mlGame/core/maoxianCtrl.js'
@@ -7,7 +7,7 @@ import ZXModule from '../../mlGame/core/zhenxing.js'
 var $kctrl = ktrl.kcCtrl;
 var $ti = TI.gtime;
 var $scene = SCE.scene;
-var $ply = UB.Player;
+var $ply = RO.role;
 var $maoxian = MX.maoxianCtrl;
 var $zxCtrl = ZXModule.zxCtrl;
 
