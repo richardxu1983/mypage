@@ -92,6 +92,7 @@ export default {
 		{
 			var npc1 = new UB.Npc(100,0);
 			var npc2 = new UB.Npc(100,0);
+			$ply.addSkToFight(0);
 			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()

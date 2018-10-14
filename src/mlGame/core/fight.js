@@ -1,7 +1,8 @@
 import SK from '../../mlGame/data/skill.js'
 import FTD from '../../mlGame/data/fightData.js'
-
+var skl = SK.FSKL;
 var $record = FTD.fightRecord;
+
 var SIDE = [];
 var MAX_ROUND=10;
 SIDE[1]=[];
@@ -87,8 +88,6 @@ var Fight = {
 
         $record.log = info.log;
 
-        console.log($record);
-
         if(Fight.callback)
         {
             Fight.callback();
@@ -148,8 +147,7 @@ function sideInit(s,v)
 {
     var pos;
     var t;
-    console.log(s);
-    console.log(v);
+
     for(var i=0;i<3;i++)
     {
         SIDE[s][i]={};
@@ -261,7 +259,7 @@ function move(u)
 
 function nmlAtk(u,t)
 {
-    addMsg("【"+u.name()+"】对【"+t.name()+"】发动攻击");
+    addMsg("【"+u.name()+"】普通攻击");
 
     if(nmlAtkChk(t))    //检测是否命中、规避等
     {
@@ -281,14 +279,143 @@ function nmlAtk(u,t)
 
 function castZhudong(u)
 {
-    addMsg("【"+u.name()+"】尝试释放主动技能");
-    return overCheck();
+
+    //遍历主动技能
+    var fskl = u.fskl();
+    var len = fskl.length;
+    var id,lvl;
+
+    if(len>0)
+    {
+        for(var i=0;i<len;i++)
+        {
+            id = fskl[i].id;
+            lvl = fskl[i].lvl;
+            if(zhudong(u,id,lvl)==1)
+                return 1;
+        }
+    }
+    else
+    {
+        return 0;
+    }
 }
+
+function zhudong(u,id,lvl)
+{
+    //概率判断
+    var probAdd = skl[id].probAdd;
+    var prob = skl[id].prob+(lvl-1)*probAdd;
+    var p = Math.random();
+
+    if(p>prob)
+        return;
+
+    //目标判断
+    var tType = skl[id].target;
+
+    if(tType==0)
+    {
+        return zd_0(u,id,lvl)
+    }
+    else if(tType==1)
+    {
+        return zd_1(u,id,lvl)
+    }
+    else if(tType==2)
+    {
+        return zd_2(u,id,lvl)
+    }
+    else if(tType==3)
+    {
+        return zd_3(u,id,lvl)
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+function zd_0(u,id,lvl)
+{
+
+}
+
+function zd_1(u,id,lvl)
+{
+    
+}
+
+function zd_2(u,id,lvl)
+{
+    var r = skl[id].range;
+    var n = skl[id].targetNum;
+    var Num = skl[id].num + (lvl-1)*skl[id].numAdd;
+    var NumType = skl[id].numType;
+    var tArray = fdTInRgNum(u,r,n);
+    var t;
+    var len = tArray.length;
+    var eff;
+    var def,d;
+    var dmg;
+
+    switch (NumType)
+    {
+        case 0:
+            eff = u.atk();
+            def = 'def';
+            break;
+        case 1:
+            eff = u.mtk();
+            def = 'fire';
+            break;
+        case 2:
+            eff = u.mtk();
+            def = 'ice';
+            break;
+        case 3:
+            eff = u.mtk();
+            def = 'pois';
+            break;
+        default:
+            break;
+    }
+
+    eff = Math.ceil(eff*Num);
+
+    if(len>0)
+    {
+        addMsg("【"+u.name()+"】 发动 ["+skl[id].name+"] !!");
+
+        for(var i=0;i<len;i++)
+        {
+            t = tArray[i];
+            d = t.getAttr(def);
+            dmg = eff;
+            dmg = Math.ceil(dmg*(150/(150+d)));
+            t.damage(dmg);
+            addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
+            if(t.hp()<=0)
+                addMsg("  【"+t.name()+"】被击倒");
+            if(overCheck()==1)
+                return 1;
+        }
+    }
+    else
+        return 0;
+}
+
+
+function zd_3(u,id,lvl)
+{
+    
+}
+
 
 function castZhiHui(u)
 {
     //
-    addMsg("【"+u.name()+"】尝试释放指挥技能");
 }
 
 function nmlAtkChk(t)
@@ -379,6 +506,42 @@ function findTInRange(u,r)
     }
 
     return t;
+}
+
+//寻找符合距离的所有目标
+function fdTInRgNum(u,r,n)
+{
+    var side = u.side;
+    var index = u.idx;
+    var uPos = SIDE[side][index].pos;
+    var tside = u.t;
+    var tArray = [];
+    var tmpT;
+    var tPos;
+
+    for(var i=0;i<3;i++)
+    {
+        tmpT = SIDE[tside][i].u;
+        tPos = SIDE[tside][i].pos;
+        if(tmpT!=0)
+        {
+            if(tmpT.hp()>0)
+            {
+                if(r>=Math.abs(uPos-tPos))
+                {
+                    tArray.push(tmpT);
+                }
+            }
+        }
+    }
+
+    while(tArray.length>n)
+    {
+        index = Math.floor((Math.random()*tArray.length));
+        tArray = tArray.splice(index, 1);
+    }
+
+    return tArray;
 }
 
 export default {Fight};

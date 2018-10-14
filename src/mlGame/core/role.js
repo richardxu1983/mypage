@@ -61,14 +61,16 @@ class _role extends $Unit
     {
         var hpBase = $role.new.hp;
         var atkBase = $role.new.atkBase;
+        var mtkBase = $role.new.mtkBase;
         var spdBase = $role.new.spdBase;
         var defBase = $role.new.defBase;
         var fireBase = $role.new.fire;
         var iceBase = $role.new.ice;
         var poisBase = $role.new.pois;
         this.setAttr('hp', hpBase);
-        this.setAttr('hpmax', hpBase);
+        this.setAttr('hpmaxBase', hpBase);
         this.setAttr('atkBase', atkBase);
+        this.setAttr('mtkBase', mtkBase);
         this.setAttr('spdBase', spdBase);
         this.setAttr('defBase', defBase);
         this.setAttr('fireBase', fireBase);

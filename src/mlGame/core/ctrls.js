@@ -30,7 +30,6 @@ var c = {
 
 	load:function()
 	{
-		console.log("load");
         $ti.load();
         $ply.load();
         $zxCtrl.load();

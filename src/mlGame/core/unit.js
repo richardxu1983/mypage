@@ -6,7 +6,7 @@ import DT from '../../mlGame/data/gData.js'
 import NPCD from '../../mlGame/data/npc.js'
 var Fight = FT.Fight;
 var $wp = WPD.wp;
-var skl = SK.SKL;
+var skl = SK.FSKL;
 var $npc = NPCD.npc;
 
 class Unit
@@ -23,12 +23,15 @@ class Unit
             'hp' : 0,
             'hpmax' : 0,
             'atkBase' : 0,
+            'mtkBase' : 0,
             'defBase' : 0,
             'fireBase' : 0,
             'iceBase' : 0,
             'poisBase' : 0,
             'spdBase' : 0,
+            'hpmaxBase':0,
             'atk':0,
+            'mtk':0,
             'spd':0,
             'def':0,
             'fire':0,
@@ -119,6 +122,8 @@ class Unit
     attrCheck()
     {
         this.setAttr('atk', $wp[this.weapon()].atk +this.attr['atkBase']);
+        this.setAttr('mtk', this.attr['mtkBase']);
+        this.setAttr('hpmax', this.attr['hpmaxBase']);
         this.setAttr('spd', this.attr['spdBase']);
         this.setAttr('def', this.attr['defBase']);
         this.setAttr('fire', this.attr['fireBase']);
@@ -134,10 +139,30 @@ class Unit
         if(this.attr.fskl.length>=3)
             return;
 
-        if(this.attr.fskl.includes(id))
+        var len = this.attr.fskl.length;
+
+        for(var i=0;i<len;i++)
+        {
+            if(this.attr.fskl[i].id==id)
+                return;
+        }
+
+        this.attr.fskl.push({'id':id,lvl:1});
+    }
+
+    fsklLvlUp(index)
+    {
+        if(!this.attr.fskl[index])
             return;
 
-        this.attr.fskl.push(id);
+        var lvl = this.attr.fskl[index].lvl;
+        var id = this.attr.fskl[index].id;
+        var max = skl[id].maxLvl;
+
+        if(lvl>=max)
+            return;
+
+        this.attr.fskl[index].lvl++;
     }
 
     getAttr(v)
@@ -159,6 +184,11 @@ class Unit
     atk()
     {
         return this.getAttr('atk');
+    }
+
+    mtk()
+    {
+        return this.getAttr('mtk');
     }
 
     def()
@@ -229,11 +259,13 @@ class Npc extends Unit
         var base = $npc[id].attr;
         var hp = base.hp;
         var atk = base.atk;
+        var mtk = base.mtk;
         var def = base.def;
         var spd = base.spd;
-        this.setAttr('hpmax',hp);
         this.setAttr('hp',hp);
+        this.setAttr('hpmaxBase',hp);
         this.setAttr('atkBase',atk);
+        this.setAttr('mtkBase',mtk);
         this.setAttr('spdBase',spd);
         this.setAttr('defBase',def);
         this.setAttr('fireBase',0);

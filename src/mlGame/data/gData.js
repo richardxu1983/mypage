@@ -9,8 +9,9 @@ var role =
 {
     new:
     {
-        hp:100,
+        hp:500,
         atkBase : 50,
+        mtkBase : 5,
         defBase : 0,
         fireBase:0,
         iceBase:0,
