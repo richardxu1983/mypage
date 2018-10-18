@@ -16,6 +16,7 @@ class Unit
     {
         this.attr = {
             'id':0,
+            'head':"",
             'name':"",
             'lvl':1,
             'type':0,
@@ -39,6 +40,49 @@ class Unit
             'pois':0,
             'fskl':[],
         };
+
+        //战斗中的状态数值
+        this.ft = 
+        {
+            t:0,
+            eff:[],
+            'atk':0,
+            'mtk':0,
+            'spd':0,
+            'def':0,
+            'fire':0,
+            'ice':0,
+            'pois':0,
+            'atkp':0,
+            'mtkp':0,
+            'spdp':0,
+            'defp':0,
+            'firep':0,
+            'icep':0,
+            'poisp':0,
+        };
+
+        this.ftOn = false;
+    }
+
+    ftInit()
+    {
+        this.ft.t=0;
+        this.eff=[];
+        this.ft.atk=0;
+        this.ft.mtk=0;
+        this.ft.spd=0;
+        this.ft.def=0;
+        this.ft.fire=0;
+        this.ft.ice=0;
+        this.ft.pois=0;
+        this.ft.atkp=0;
+        this.ft.mtkp=0;
+        this.ft.spdp=0;
+        this.ft.defp=0;
+        this.ft.firep=0;
+        this.ft.icep=0;
+        this.ft.poisp=0;
     }
 
     id(v)
@@ -74,6 +118,18 @@ class Unit
         else
         {
             return this.getAttr('weapon');
+        }
+    }
+
+    head(v)
+    {
+        if(v)
+        {
+            this.setAttr('head', v)
+        }
+        else
+        {
+            return this.getAttr('head');
         }
     }
 
@@ -121,14 +177,43 @@ class Unit
 
     attrCheck()
     {
-        this.setAttr('atk', $wp[this.weapon()].atk +this.attr['atkBase']);
-        this.setAttr('mtk', this.attr['mtkBase']);
-        this.setAttr('hpmax', this.attr['hpmaxBase']);
-        this.setAttr('spd', this.attr['spdBase']);
-        this.setAttr('def', this.attr['defBase']);
-        this.setAttr('fire', this.attr['fireBase']);
-        this.setAttr('ice', this.attr['iceBase']);
-        this.setAttr('pois', this.attr['poisBase']);
+        var atk = $wp[this.weapon()].atk +this.attr['atkBase'];
+        var mtk = this.attr['mtkBase'];
+        var hpmax = this.attr['hpmaxBase'];
+        var spd = this.attr['spdBase'];
+        var def = this.attr['defBase'];
+        var fire = this.attr['fireBase'];
+        var ice = this.attr['iceBase'];
+        var pois = this.attr['poisBase'];
+
+        if(this.ftOn)
+        {
+            atk+=this.ft.atk;
+            mtk+=this.ft.mtk;
+            spd+=this.ft.spd;
+            def+=this.ft.def;
+            fire+=this.ft.fire;
+            ice+=this.ft.ice;
+            pois+=this.ft.pois;
+
+            atk*=(1+this.ft.atkp/100);
+            mtk*=(1+this.ft.mtkp/100);
+            spd*=(1+this.ft.spdp/100);
+            def*=(1+this.ft.defp/100);
+            fire*=(1+this.ft.firep/100);
+            ice*=(1+this.ft.icep/100);
+            pois*=(1+this.ft.poisp/100);
+
+        }
+
+        this.setAttr('atk', atk);
+        this.setAttr('mtk', mtk);
+        this.setAttr('hpmax', hpmax);
+        this.setAttr('spd', spd);
+        this.setAttr('def', def);
+        this.setAttr('fire', fire);
+        this.setAttr('ice', ice);
+        this.setAttr('pois', pois);
     }
 
     addSkToFight(id)

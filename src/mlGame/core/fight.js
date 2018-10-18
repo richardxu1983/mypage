@@ -2,6 +2,7 @@ import SK from '../../mlGame/data/skill.js'
 import FTD from '../../mlGame/data/fightData.js'
 var skl = SK.FSKL;
 var $record = FTD.fightRecord;
+var effT = SK.EFF;
 
 var SIDE = [];
 var MAX_ROUND=10;
@@ -73,11 +74,11 @@ var Fight = {
         while(Fight.round<=MAX_ROUND) 
         {
             addMsg("\n---- 第 "+Fight.round+" 回合开始 ----\n");
+            Fight.round++;
             sideReset();
             Fight.over = Fight.ARound();
             if(Fight.over)
                 break;
-            Fight.round++;
         }
     },
 
@@ -85,7 +86,18 @@ var Fight = {
     roundOver:function()
     {
         addMsg("\n---- 战斗结束 ----");
-
+        var u;
+        for(var i=1;i<=2;i++)
+        {
+            for(var j=0;j<3;j++)
+            {
+                u = SIDE[i][j].u;
+                if(u!=0)
+                {
+                    u.ftInit();
+                }
+            }
+        }
         $record.log = info.log;
 
         if(Fight.callback)
@@ -169,17 +181,26 @@ function sideInit(s,v)
             SIDE[s][i].u.side = s;
             SIDE[s][i].u.t = t;
             SIDE[s][i].u.idx = i;
+            SIDE[s][i].u.ftOn = true;
+            SIDE[s][i].u.ftInit();
         }
     }
 }
 
 function sideReset()
 {
+    var u;
     for(var i=1;i<=2;i++)
     {
         for(var j=0;j<3;j++)
         {
+            u = SIDE[i][j].u;
             SIDE[i][j].done = false;
+            if(u!=0)
+            {
+                if(u.hp()>0)
+                    effCheck(u);
+            }
         }
     }
 }
@@ -267,7 +288,11 @@ function nmlAtk(u,t)
         dmg = dmgChk(t,dmg);    //是否有吸收等
         var def = t.def();
         dmg = Math.ceil(dmg*(150/(150+def)));   //攻防计算
-        t.damage(dmg);          //造成伤害
+        if(dmg>0)
+        {
+            t.ft.t = t;
+            t.damage(dmg);          //造成伤害
+        }
         addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
         if(t.hp()<=0)
             addMsg("  【"+t.name()+"】被击倒");
@@ -279,8 +304,7 @@ function nmlAtk(u,t)
 
 function castZhudong(u)
 {
-
-    //遍历主动技能
+    //遍历技能
     var fskl = u.fskl();
     var len = fskl.length;
     var id,lvl;
@@ -290,9 +314,12 @@ function castZhudong(u)
         for(var i=0;i<len;i++)
         {
             id = fskl[i].id;
-            lvl = fskl[i].lvl;
-            if(zhudong(u,id,lvl)==1)
-                return 1;
+            if(skl[id].type==1) //类型为主动技能
+            {
+                lvl = fskl[i].lvl;
+                if(zhudong(u,id,lvl)==1)
+                    return 1;
+            }
         }
     }
     else
@@ -415,7 +442,307 @@ function zd_3(u,id,lvl)
 
 function castZhiHui(u)
 {
-    //
+    //遍历技能
+    var fskl = u.fskl();
+    var len = fskl.length;
+    var id,lvl;
+    var tArray;
+    var t;
+
+    if(len>0)
+    {
+        for(var i=0;i<len;i++)
+        {
+            id = fskl[i].id;
+            if(skl[id].type==0) //类型为主动技能
+            {
+                lvl = fskl[i].lvl;
+                var tType = skl[id].target;
+                var r = skl[id].range;
+                var n = skl[id].targetNum;
+                tArray = fSearch(u,r,n,tType);
+                var len = tArray.length;
+                if(len>0)
+                {
+                    addMsg("【"+u.name()+"】 发动 ["+skl[id].name+"] !!");
+                    var eff = skl[id].effect;
+                    for(var j=0;j<len;j++)
+                    {
+                        t = tArray[j];
+                        addEff(t,eff,lvl);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+function addEff(t,eff,lvl)
+{
+    t.ft.eff.push({id:eff,lv:(lvl-1),t:Fight.round});
+    var v = effT[eff];
+    var add = v.add*(lvl-1);
+    var res=0;
+    var p = v.per;
+    var pw=(p==1)?" %":"";
+    if(v.atk!=0)
+    {
+        res = v.atk+add;
+
+        if(p==1)
+            t.ft.atkp+=res;
+        else
+            t.ft.atk+=res;
+
+        if(v.atk>0)
+            addMsg("  【"+t.name()+"】 的攻击力提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的攻击力降低了 "+res+pw);
+    }
+    if(v.mtk!=0)
+    {
+        res = v.mtk+add;
+        
+        if(p==1)
+            t.ft.mtkp+=res;
+        else
+            t.ft.mtk+=res;
+
+        if(v.mtk>0)
+            addMsg("  【"+t.name()+"】 的仙法提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的仙法降低了 "+res+pw);
+    }
+    if(v.def!=0)
+    {
+        res = v.def+add;
+        
+        if(p==1)
+            t.ft.defp+=res;
+        else
+            t.ft.def+=res;
+
+        if(v.def>0)
+            addMsg("  【"+t.name()+"】 的防御提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的防御降低了 "+res+pw);
+    }
+    if(v.spd!=0)
+    {
+        res = v.spd+add;
+        
+        if(p==1)
+            t.ft.spdp+=res;
+        else
+            t.ft.spd+=res;
+
+        if(v.spd>0)
+            addMsg("  【"+t.name()+"】 的速度提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的速度降低了 "+res+pw);
+    }
+    if(v.fire!=0)
+    {
+        res = v.fire+add;
+        
+        if(p==1)
+            t.ft.firep+=res;
+        else
+            t.ft.fire+=res;
+
+        if(v.fire>0)
+            addMsg("  【"+t.name()+"】 的火焰抵抗提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的火焰抵抗降低了 "+res+pw);
+    }
+    if(v.ice!=0)
+    {
+        res = v.ice+add;
+        
+        if(p==1)
+            t.ft.icep+=res;
+        else
+            t.ft.ice+=res;
+
+        if(v.ice>0)
+            addMsg("  【"+t.name()+"】 的寒冷抵抗提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的寒冷抵抗降低了 "+res+pw);
+    }
+    if(v.pois!=0)
+    {
+        res = v.pois+add;
+        
+        if(p==1)
+            t.ft.poisp+=res;
+        else
+            t.ft.pois+=res;
+
+        if(v.pois>0)
+            addMsg("  【"+t.name()+"】 的毒性抵抗提升了 "+res+pw);
+        else
+            addMsg("  【"+t.name()+"】 的毒性抵抗降低了 "+res+pw);
+    }
+
+    t.attrCheck();
+}
+
+function effCheck(u)
+{
+    var len = u.ft.eff.length;
+    var id;
+    var v;
+    var t;
+    var i=0;
+
+    if(len>0)
+    {
+        while(true)
+        {
+            if(i>=u.ft.eff.length)
+                break;
+            console.log("i="+i);
+            v = u.ft.eff[i];
+            console.log(u.ft.eff);
+            id=v.id;
+            t = v.t;
+            if(Fight.round-t>effT[id].time)
+            {
+                removeEff(u,id,i);
+            }
+            i++;
+        }
+    }
+}
+
+function removeEff(t,eff,index)
+{
+    var v = effT[eff];
+    var add = v.add*t.ft.eff[eff].lv;
+    var res=0;
+    var p = v.per;
+
+    t.ft.eff.splice(index,1);
+
+    addMsg("【"+t.name()+"】 的"+ v.name+"效果消失了");
+
+    if(v.atk!=0)
+    {
+        res = v.atk+add;
+
+        if(p==1)
+            t.ft.atkp-=res;
+        else
+            t.ft.atk-=res;
+    }
+    if(v.mtk!=0)
+    {
+        res = v.mtk+add;
+        
+        if(p==1)
+            t.ft.mtkp-=res;
+        else
+            t.ft.mtk-=res;
+    }
+    if(v.def!=0)
+    {
+        res = v.def+add;
+        
+        if(p==1)
+            t.ft.defp-=res;
+        else
+            t.ft.def-=res;
+    }
+    if(v.spd!=0)
+    {
+        res = v.spd+add;
+        
+        if(p==1)
+            t.ft.spdp-=res;
+        else
+            t.ft.spd-=res;
+    }
+    if(v.fire!=0)
+    {
+        res = v.fire+add;
+        
+        if(p==1)
+            t.ft.firep-=res;
+        else
+            t.ft.fire-=res;
+    }
+    if(v.ice!=0)
+    {
+        res = v.ice+add;
+        
+        if(p==1)
+            t.ft.icep-=res;
+        else
+            t.ft.ice-=res;
+    }
+    if(v.pois!=0)
+    {
+        res = v.pois+add;
+        
+        if(p==1)
+            t.ft.poisp-=res;
+        else
+            t.ft.pois-=res;
+    }
+
+    t.attrCheck();
+}
+
+function fSearch(u,r,n,tType)
+{
+    var tArray=[];
+
+    if(tType==0)
+    {
+        tArray.push(u);
+        return tArray;
+    }
+    else if(tType==1||tType==2)
+    {
+        var index = u.idx;
+        var uPos = SIDE[u.side][index].pos;
+        var side = tType==2?u.t:u.side;
+        var tmpT;
+        var tPos;
+
+        for(var i=0;i<3;i++)
+        {
+            tmpT = SIDE[side][i].u;
+            tPos = SIDE[side][i].pos;
+            if(tmpT!=0)
+            {
+                if(tmpT.hp()>0)
+                {
+                    if(r>=Math.abs(uPos-tPos))
+                    {
+                        tArray.push(tmpT);
+                    }
+                }
+            }
+        }
+
+        while(tArray.length>n)
+        {
+            index = Math.floor((Math.random()*tArray.length));
+            tArray = tArray.splice(index, 1);
+        }
+
+        return tArray;
+    }
+    else
+    {
+        if(u.ft.t!=0)
+        {
+            tArray.push(u.ft.t);
+            return tArray;
+        }
+    }
 }
 
 function nmlAtkChk(t)
