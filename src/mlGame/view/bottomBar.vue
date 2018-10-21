@@ -3,7 +3,6 @@
 		<img class="player_head" src="/static/img/mlGame/player_head.png">
 		<div class="hpBar z1" :style="{width:'55px','background-color':'black'}"></div>
 		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
-		<div class="attrs">属性</div>
 	</div>
 </template>
 
@@ -61,12 +60,9 @@ export default {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		background-color:#554837;
 		height: 5em;
 		padding: .4em .4em 0em .7em;
 		box-sizing: border-box;
-		color: #eee;
-		border: outset 0.1em #CDB38B;
 	}
 	.z1{
 		z-index:1;
@@ -88,27 +84,5 @@ export default {
 		left: 0.7em;
 		bottom:0.1em;
 		height: .4em;
-	}
-	.attrs{
-		position: absolute;
-		left: 5.5em;
-		top:0.3em;
-		height: 3em;
-		width: 8em;
-		background-color: gray;
-	}
-	.lv
-	{
-		position: absolute;
-		left: .8em;
-		top:3.7em;
-		font-size: .1em;
-		width: 1.5em;
-		height: 1.2em;
-		text-align: center;
-	}
-	.bantou{
-		background-color: black;
-		opacity: 0.7;
 	}
 </style>

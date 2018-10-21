@@ -84,6 +84,7 @@ export default {
 		{
 			//console.log(JSON.parse(NG.NG[0].attr));
 			//console.log($ply.hpmax());
+			
 		},
 		fight:function()
 		{
@@ -91,6 +92,12 @@ export default {
 			var npc2 = new UB.Npc(100,0);
 			$ply.addSkToFight(0);
 			$ply.addSkToFight(1);
+			$ply.addNg(0,1);
+			//$ply.ngAddLv(0);
+			//$ply.ngAddLv(0);
+			//$ply.ngAddLv(0);
+			//$ply.ngAddLv(0);
+			//$ply.ngAddLv(0);
 			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()
@@ -140,8 +147,8 @@ export default {
 	}
 
 	.mlBoard{
-		width: 700px;
-		height: 550px;
+		width: 800px;
+		height: 600px;
 		margin: 0;
 		border: solid 1px #ccc;
 		position: relative;

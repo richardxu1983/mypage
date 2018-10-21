@@ -3,11 +3,14 @@ import FT from '../../mlGame/core/fight.js'
 import SK from '../../mlGame/data/skill.js'
 import WPD from '../../mlGame/data/wpData.js'
 import DT from '../../mlGame/data/gData.js'
+import NG from '../../mlGame/data/ng.js'
 import NPCD from '../../mlGame/data/npc.js'
 var Fight = FT.Fight;
 var $wp = WPD.wp;
 var skl = SK.FSKL;
 var $npc = NPCD.npc;
+var $ng = NG.NG;
+
 
 class Unit
 {
@@ -287,6 +290,87 @@ class Unit
             return;
 
         this.attr.fskl[index].lvl++;
+    }
+
+    addNg(id,plv)
+    {
+        var len=this.attr.ng.length;
+        var i=0;
+        var v;
+        console.log("addNg");
+        for(i=0;i<len;i++)
+        {
+            v = this.attr.ng[i];
+            console.log("v.id="+v.id+" , id="+id+" , i="+i);
+            if(v.id==id)
+                return;
+        }
+        var lvl=plv>$ng[id].max?$ng[id].max:plv;
+        this.attr.ng.push({"id":id,"lv":lvl});
+        this.ngRecal();
+    }
+
+    ngInit()
+    {
+        var key;
+        for(key in this.ng)
+        {
+            this.ng[key]=0;
+        }       
+    }
+
+    ngAddLv(id)
+    {
+        var i=0;
+        var v;
+        var lv;
+        var maxLv;
+        var len=this.attr.ng.length;
+        for(i=0;i<len;i++)
+        {
+            v = this.attr.ng[i];
+            lv = v.lv;
+            if(v.id==id)
+            {
+                maxLv = $ng[id].max;
+                if(lv<maxLv)
+                {
+                    this.attr.ng[i].lv++;
+                    this.ngRecal();
+                    return;
+                }
+            }
+        }        
+    }
+
+    ngRecal()
+    {
+        var len=this.attr.ng.length;
+        if(len<=0)
+            return;
+
+        this.ngInit();
+
+        var i=0;
+        var v;
+        var id;
+        var lv;
+        var attr;
+        var add=0;
+        var key;
+        for(i=0;i<len;i++)
+        {
+            v=this.attr.ng[i];
+            id=v.id;
+            lv=v.lv;
+            attr = JSON.parse($ng[id].attr);
+            add = (lv-1)*$ng[id].add;
+            for(key in attr)
+            {
+                this.ng[key]+=attr[key];
+                this.ng[key]+=add;
+            }
+        }
     }
 
     getAttr(v)
