@@ -38,12 +38,12 @@ export default {
 	computed:{
 		plyhpw:function()
 	    {
-	    	var len = Math.floor((this.player.hp()/this.player.getAttr('hpmax'))*55);
+	    	var len = Math.floor((this.player.hp()/this.player.hpmax())*55);
 	    	return len;		
 	    },
 	    plyhpc:function()
 	    {
-    		var p = (this.player.hp()/this.player.getAttr('hpmax'));
+    		var p = (this.player.hp()/this.player.hpmax());
     		return getColor(p);	
 	    },
 	},

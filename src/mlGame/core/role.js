@@ -25,38 +25,6 @@ class _role extends $Unit
     	}
     }
 
-    expAdd(v)
-    {
-        if(v<=0)
-            return;
-
-        var exp = this.exp();
-        exp+=v;
-        var lvl = this.lvl();
-        var nextLvl = lvl+1;
-        var nextExp = 0;
-        this.setExp(exp);
-
-        while(true)
-        {
-            if(this.lvl()>=$dt.plyMaxLevel)
-                break;
-
-            nextExp = (nextLvl*nextLvl)*75;
-            
-            if(exp>=nextExp)
-            {
-                lvl++;
-                this.lvlUp();
-                nextLvl = lvl+1;
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
     new()
     {
         var hpBase = $role.new.hp;
@@ -77,9 +45,11 @@ class _role extends $Unit
         this.setAttr('iceBase', iceBase);
         this.setAttr('poisBase', poisBase);
         this.name($role.new.name);
-        this.lvl($role.new.lvl);
         this.gold($role.new.gold);
         this.setAttr('fskl', []);
+        this.setAttr('ffskl', []);
+        this.setAttr('tx', []);
+        this.setAttr('ng', []);
         this.attrCheck();
     }
 

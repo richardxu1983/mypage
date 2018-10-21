@@ -5,9 +5,7 @@
 			<tiv class="left"></tiv>
 			<div class="right">您拥有：&ensp;{{ gold }}&ensp;金</div>
 		</div>
-		<sceneView></sceneView>
 		<fightPnl></fightPnl>
-		<areaGo></areaGo>
 		<ntk></ntk>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<div class="infoBox" id="info"></div>
@@ -31,7 +29,6 @@ import fightPnl from '../../mlGame/view/fightPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import tiv from '../../mlGame/view/tiv.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
-import sceneView from '../../mlGame/view/scene.vue'
 import CT from '../../mlGame/core/ctrls.js'
 import bottomBar from '../../mlGame/view/bottomBar.vue'
 import zxModule from '../../mlGame/core/zhenxing.js'
@@ -63,7 +60,6 @@ export default {
 	  wpDesc,
 	  tiv,
 	  ntk,
-	  sceneView,
 	  bottomBar,
 	},
 	created:function()
@@ -86,7 +82,8 @@ export default {
 		},
 		test:function()
 		{
-
+			//console.log(JSON.parse(NG.NG[0].attr));
+			//console.log($ply.hpmax());
 		},
 		fight:function()
 		{

@@ -380,7 +380,7 @@ function zd_2(u,id,lvl)
     var n = skl[id].targetNum;
     var Num = skl[id].num + (lvl-1)*skl[id].numAdd;
     var NumType = skl[id].numType;
-    var tArray = fdTInRgNum(u,r,n);
+    var tArray = fSearch(u,r,n,2);
     var t;
     var len = tArray.length;
     var eff;
@@ -418,7 +418,7 @@ function zd_2(u,id,lvl)
         for(var i=0;i<len;i++)
         {
             t = tArray[i];
-            d = t.getAttr(def);
+            d = t.def();
             dmg = eff;
             dmg = Math.ceil(dmg*(150/(150+d)));
             t.damage(dmg);
@@ -775,10 +775,10 @@ function findHero()
             tmpU = SIDE[i][j].u;
             if(tmpU!=0&&SIDE[i][j].done==false)
             {
-                if(tmpU.hp()>0&&tmpU.getAttr('spd')>tmpSpd)
+                if(tmpU.hp()>0&&tmpU.spd()>tmpSpd)
                 {
                     u = tmpU;
-                    tmpSpd = tmpU.getAttr('spd');
+                    tmpSpd = tmpU.spd();
                 }
             }
         }
@@ -834,41 +834,4 @@ function findTInRange(u,r)
 
     return t;
 }
-
-//寻找符合距离的所有目标
-function fdTInRgNum(u,r,n)
-{
-    var side = u.side;
-    var index = u.idx;
-    var uPos = SIDE[side][index].pos;
-    var tside = u.t;
-    var tArray = [];
-    var tmpT;
-    var tPos;
-
-    for(var i=0;i<3;i++)
-    {
-        tmpT = SIDE[tside][i].u;
-        tPos = SIDE[tside][i].pos;
-        if(tmpT!=0)
-        {
-            if(tmpT.hp()>0)
-            {
-                if(r>=Math.abs(uPos-tPos))
-                {
-                    tArray.push(tmpT);
-                }
-            }
-        }
-    }
-
-    while(tArray.length>n)
-    {
-        index = Math.floor((Math.random()*tArray.length));
-        tArray = tArray.splice(index, 1);
-    }
-
-    return tArray;
-}
-
-export default {Fight};
+export default { Fight}; 

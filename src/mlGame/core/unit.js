@@ -14,15 +14,15 @@ class Unit
     //构造函数
     constructor()
     {
-        this.attr = {
+        //保存属性
+        this.attr = 
+        {
             'id':0,
             'head':"",
             'name':"",
-            'lvl':1,
             'type':0,
             'weapon':0,
             'hp' : 0,
-            'hpmax' : 0,
             'atkBase' : 0,
             'mtkBase' : 0,
             'defBase' : 0,
@@ -31,6 +31,16 @@ class Unit
             'poisBase' : 0,
             'spdBase' : 0,
             'hpmaxBase':0,
+            'fskl':[],  //上阵战斗技能
+            'ffskl':[], //所有战斗技能
+            'tx':[],    //特性
+            'ng':[],    //所掌握内功
+        };
+
+        //计算属性
+        this.cal = 
+        {
+            'hpmax' : 0,
             'atk':0,
             'mtk':0,
             'spd':0,
@@ -38,7 +48,25 @@ class Unit
             'fire':0,
             'ice':0,
             'pois':0,
-            'fskl':[],
+        };
+
+        //内功附加数值
+        this.ng = 
+        {
+            'atk':0,
+            'mtk':0,
+            'spd':0,
+            'def':0,
+            'fire':0,
+            'ice':0,
+            'pois':0,
+            'atkp':0,
+            'mtkp':0,
+            'spdp':0,
+            'defp':0,
+            'firep':0,
+            'icep':0,
+            'poisp':0,
         };
 
         //战斗中的状态数值
@@ -158,18 +186,6 @@ class Unit
         }
     }
 
-    lvl(v)
-    {
-        if(v)
-        {
-            this.setAttr('lvl', v)
-        }
-        else
-        {
-            return this.getAttr('lvl');
-        }
-    }
-
     fskl()
     {
         return this.getAttr('fskl');
@@ -177,7 +193,8 @@ class Unit
 
     attrCheck()
     {
-        var atk = $wp[this.weapon()].atk +this.attr['atkBase'];
+        //基础属性
+        var atk = this.attr['atkBase'];
         var mtk = this.attr['mtkBase'];
         var hpmax = this.attr['hpmaxBase'];
         var spd = this.attr['spdBase'];
@@ -186,6 +203,27 @@ class Unit
         var ice = this.attr['iceBase'];
         var pois = this.attr['poisBase'];
 
+        //武器属性
+        atk +=$wp[this.weapon()].atk;
+
+        //内功属性
+        atk+=this.ng.atk;
+        mtk+=this.ng.mtk;
+        spd+=this.ng.spd;
+        def+=this.ng.def;
+        fire+=this.ng.fire;
+        ice+=this.ng.ice;
+        pois+=this.ng.pois;
+
+        atk*=(1+this.ng.atkp/100);
+        mtk*=(1+this.ng.mtkp/100);
+        spd*=(1+this.ng.spdp/100);
+        def*=(1+this.ng.defp/100);
+        fire*=(1+this.ng.firep/100);
+        ice*=(1+this.ng.icep/100);
+        pois*=(1+this.ng.poisp/100);
+
+        //战斗属性
         if(this.ftOn)
         {
             atk+=this.ft.atk;
@@ -206,14 +244,15 @@ class Unit
 
         }
 
-        this.setAttr('atk', atk);
-        this.setAttr('mtk', mtk);
-        this.setAttr('hpmax', hpmax);
-        this.setAttr('spd', spd);
-        this.setAttr('def', def);
-        this.setAttr('fire', fire);
-        this.setAttr('ice', ice);
-        this.setAttr('pois', pois);
+        //最终属性
+        this.setCal('atk', atk);
+        this.setCal('mtk', mtk);
+        this.setCal('hpmax', hpmax);
+        this.setCal('spd', spd);
+        this.setCal('def', def);
+        this.setCal('fire', fire);
+        this.setCal('ice', ice);
+        this.setCal('pois', pois);
     }
 
     addSkToFight(id)
@@ -261,6 +300,17 @@ class Unit
         this.onSetAttr(attr ,val);
     }
 
+    getCal(v)
+    {
+        return this.cal[v];
+    }
+
+    setCal(k , v)
+    {
+        this.cal[k] = v;
+        this.onSetcal(k ,v);
+    }
+
     atkDis()
     {
         return $wp[this.weapon()].atkDis;
@@ -268,17 +318,42 @@ class Unit
 
     atk()
     {
-        return this.getAttr('atk');
+        return this.getCal('atk');
     }
 
     mtk()
     {
-        return this.getAttr('mtk');
+        return this.getCal('mtk');
     }
 
     def()
     {
-        return this.getAttr('def');
+        return this.getCal('def');
+    }
+
+    spd()
+    {
+        return this.getCal('spd');
+    }
+
+    hpmax()
+    {
+        return this.getCal('hpmax');
+    }
+
+    fire()
+    {
+        return this.getCal('fire');
+    }
+
+    ice()
+    {
+        return this.getCal('ice');
+    }
+
+    pois()
+    {
+        return this.getCal('pois');
     }
 
     damage(val)
@@ -324,6 +399,7 @@ class Unit
     onEqWp(id){}
     onUnEqWp(){}
     onSetAttr(attr ,newVal){}
+    onSetcal(k,v){}
 }
 
 class Npc extends Unit 
