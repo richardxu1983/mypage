@@ -10,7 +10,7 @@ var $wp = WPD.wp;
 var skl = SK.FSKL;
 var $npc = NPCD.npc;
 var $ng = NG.NG;
-
+var $js = NG.JS;
 
 class Unit
 {
@@ -38,6 +38,7 @@ class Unit
             'ffskl':[], //所有战斗技能
             'tx':[],    //特性
             'ng':[],    //所掌握内功
+            'cl':{type:-1,index:0},    //正在练习的技能
         };
 
         //计算属性
@@ -292,21 +293,43 @@ class Unit
         this.attr.fskl[index].lvl++;
     }
 
-    addNg(id,plv)
+    absorbJS(id)
+    {
+        var js = $js[id];
+        if(js)
+        {
+            //学习技能类型
+            var st = js.stype;
+            //内功
+            if(st==0)
+            {
+                var sid = js.skill;//内功id
+                if(findNg(sid)>=0)  //已存在
+                    return;
+                this.addNg(sid);
+            }
+        }
+    }
+
+    findNg(sid)
     {
         var len=this.attr.ng.length;
         var i=0;
         var v;
-        console.log("addNg");
         for(i=0;i<len;i++)
         {
             v = this.attr.ng[i];
-            console.log("v.id="+v.id+" , id="+id+" , i="+i);
-            if(v.id==id)
-                return;
+            if(v.id==sid)
+                return i;
         }
-        var lvl=plv>$ng[id].max?$ng[id].max:plv;
-        this.attr.ng.push({"id":id,"lv":lvl});
+        return -1;
+    }
+
+    addNg(id)
+    {
+        if(this.findNg(id)>=0)
+            return;
+        this.attr.ng.push({"id":id,"lv":1,"study":0});
         this.ngRecal();
     }
 
@@ -316,31 +339,19 @@ class Unit
         for(key in this.ng)
         {
             this.ng[key]=0;
-        }       
+        }
     }
 
     ngAddLv(id)
     {
-        var i=0;
-        var v;
-        var lv;
-        var maxLv;
-        var len=this.attr.ng.length;
-        for(i=0;i<len;i++)
+        var index = this.findNg(id);
+        if(index>=0)
         {
-            v = this.attr.ng[i];
-            lv = v.lv;
-            if(v.id==id)
-            {
-                maxLv = $ng[id].max;
-                if(lv<maxLv)
-                {
-                    this.attr.ng[i].lv++;
-                    this.ngRecal();
-                    return;
-                }
-            }
-        }        
+            var ng = this.attr.ng[index];
+            ng.lv++;
+            ng.study = 0;
+            this.ngRecal();
+        }
     }
 
     ngRecal()
@@ -369,6 +380,29 @@ class Unit
             {
                 this.ng[key]+=attr[key];
                 this.ng[key]+=add;
+            }
+        }
+    }
+
+    //月份加一
+    onMonthStep()
+    {
+        var cl = this.attr.cl;
+
+        //如果正在练习内功
+        if(cl.type==0)
+        {
+            var index=cl.index;
+            var ng = this.attr.ng[index];
+            ng.study++;
+            var lv = ng.lv;
+            var id = ng.id;
+            var lb = $ng[id].lb;
+            var lbp = $ng[id].lbp;
+            var next = Math.ceil(lb+Math.pow(lbp,lv));
+            if(ng.study>=next)
+            {
+                this.ngAddLv(id);
             }
         }
     }
