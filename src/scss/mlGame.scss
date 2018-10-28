@@ -1,6 +1,6 @@
 
 .bframe{
-	border: ridge 0.4em #CDB38B;
+	border: ridge 0.2em #CDB38B;
 	padding: 0 0px 25px 25px;
 }
 
@@ -31,15 +31,15 @@
 }
 
 .md{
-position: relative;
-background-color: black;
-z-index: 90;
-opacity:0.5;
+	position: relative;
+	background-color: black;
+	z-index: 90;
+	opacity:0.5;
 }
 
 .bd{
-	width: 700px;
-	height: 550px;
+	width: 800px;
+	height: 600px;
 }
 
 .bx{

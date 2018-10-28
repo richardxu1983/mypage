@@ -6,17 +6,19 @@
 			<div class="right">您拥有：&ensp;{{ gold }}&ensp;金</div>
 		</div>
 		<fightPnl></fightPnl>
+		<plyPnl></plyPnl>
 		<ntk></ntk>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<div class="infoBox" id="info"></div>
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
 		<bottomBar></bottomBar>
 		<div class="tool">
-			<button class="right" @click="test">金币+1</button>
+			<button class="right" @click="test">添加物品</button>
 			<button class="right" @click="fight">战斗</button>
 			<button class="right" @click="newGame">新游戏</button>
 			<button class="right" @click="equipWp1">显示战斗记录</button>
-			<button class="right" @click="equipWp2">装备弓箭</button>
+			<button class="right" @click="equipWp2">人物</button>
+			<button class="right" @click="test1">测试</button>
 		</div>
 	</div>
 </template>
@@ -26,6 +28,7 @@
 import UB from '../../mlGame/core/unit.js'
 import RO from '../../mlGame/core/role.js'
 import fightPnl from '../../mlGame/view/fightPnl.vue'
+import plyPnl from '../../mlGame/view/plyAttrPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import tiv from '../../mlGame/view/tiv.vue'
 import ntk from '../../mlGame/view/npcTalk.vue'
@@ -42,16 +45,14 @@ export default {
 	data:function()
 	{
 		return {
-			player:$ply,
-			plyAttrPnlShow:false,
-			wpDesc:false,
+			ply:$ply,
 		}
 	},
 	computed:
 	{
 		gold:function()
 		{
-			return this.player.gold();
+			return this.ply.gold();
 		}
 	},
 	components: 
@@ -61,6 +62,7 @@ export default {
 	  tiv,
 	  ntk,
 	  bottomBar,
+	  plyPnl,
 	},
 	created:function()
 	{
@@ -74,30 +76,22 @@ export default {
 	{
 		clsWp:function()
 		{
-			this.wpDesc=false;
+
 		},
 		opWp:function()
 		{
-			this.wpDesc=true;
+
 		},
 		test:function()
 		{
 			//console.log(JSON.parse(NG.NG[0].attr));
 			//console.log($ply.hpmax());
-			
+			$ply.bagAddItem(0);
 		},
 		fight:function()
 		{
 			var npc1 = new UB.Npc(100,0);
 			var npc2 = new UB.Npc(100,0);
-			$ply.addSkToFight(0);
-			$ply.addSkToFight(1);
-			$ply.addNg(0,1);
-			//$ply.ngAddLv(0);
-			//$ply.ngAddLv(0);
-			//$ply.ngAddLv(0);
-			//$ply.ngAddLv(0);
-			//$ply.ngAddLv(0);
 			zxCtrl.fight([npc1,0,npc2]);
 		},
 		newGame:function()
@@ -110,8 +104,13 @@ export default {
 		},
 		equipWp2:function()
 		{
-			$ply.equipWp(2);
+			if(!RO.ui.pnl)
+				RO.ui.pnl=true;
 		},
+		test1:function()
+		{
+			console.log($ply.atk());
+		}
 	}
 }
 

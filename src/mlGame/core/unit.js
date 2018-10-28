@@ -2,15 +2,15 @@
 import FT from '../../mlGame/core/fight.js'
 import SK from '../../mlGame/data/skill.js'
 import WPD from '../../mlGame/data/wpData.js'
-import DT from '../../mlGame/data/gData.js'
 import NG from '../../mlGame/data/ng.js'
+import ITM from '../../mlGame/data/item.js'
 import NPCD from '../../mlGame/data/npc.js'
 var Fight = FT.Fight;
 var $wp = WPD.wp;
 var skl = SK.FSKL;
 var $npc = NPCD.npc;
+var $item = ITM.item;
 var $ng = NG.NG;
-var $js = NG.JS;
 
 class Unit
 {
@@ -295,20 +295,22 @@ class Unit
 
     absorbJS(id)
     {
-        var js = $js[id];
+        var js = $item[id];
         if(js)
         {
             //学习技能类型
-            var st = js.stype;
+            var st = js.data1;
             //内功
             if(st==0)
             {
-                var sid = js.skill;//内功id
-                if(findNg(sid)>=0)  //已存在
-                    return;
+                var sid = js.data2;//内功id
+                if(this.findNg(sid)>=0)  //已存在
+                    return -1;
                 this.addNg(sid);
+                return 1;
             }
         }
+        return -1;
     }
 
     findNg(sid)
@@ -331,6 +333,7 @@ class Unit
             return;
         this.attr.ng.push({"id":id,"lv":1,"study":0});
         this.ngRecal();
+        this.attrCheck();
     }
 
     ngInit()
@@ -351,6 +354,8 @@ class Unit
             ng.lv++;
             ng.study = 0;
             this.ngRecal();
+            this.attrCheck();
+            return ng.lv;
         }
     }
 
@@ -405,6 +410,13 @@ class Unit
                 this.ngAddLv(id);
             }
         }
+    }
+
+    //改变学习内容
+    changeStudy(t,index)
+    {
+        this.attr.cl.index = index;
+        this.attr.cl.type = t;
     }
 
     getAttr(v)
@@ -480,11 +492,10 @@ class Unit
         hp = hp - val;
         if(hp<=0)
         {
-            hp = 0;
-            this.setAttr('hp',hp);
+            this.hp(0);
             return -1;
         }
-        this.setAttr('hp',hp);
+        this.hp(hp);
         return 1;
     }
 

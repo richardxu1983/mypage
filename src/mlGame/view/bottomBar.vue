@@ -1,6 +1,6 @@
 <template>
 	<div class="bottomBar">
-		<img class="player_head" src="/static/img/mlGame/player_head.png">
+		<img class="player_head" src="/static/img/mlGame/player_head.png" @click="showPnl()">
 		<div class="hpBar z1" :style="{width:'55px','background-color':'black'}"></div>
 		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 	</div>
@@ -48,7 +48,11 @@ export default {
 	},
 	methods:
 	{
-
+		showPnl:function()
+		{
+			if(!RO.ui.pnl)
+				RO.ui.pnl=true;
+		},
 	}
 }
 
