@@ -29,9 +29,6 @@ class Unit
             'atkBase' : 0,
             'mtkBase' : 0,
             'defBase' : 0,
-            'fireBase' : 0,
-            'iceBase' : 0,
-            'poisBase' : 0,
             'spdBase' : 0,
             'hpmaxBase':0,
             'fskl':[],  //上阵战斗技能
@@ -49,9 +46,6 @@ class Unit
             'mtk':0,
             'spd':0,
             'def':0,
-            'fire':0,
-            'ice':0,
-            'pois':0,
         };
 
         //内功附加数值
@@ -61,16 +55,10 @@ class Unit
             'mtk':0,
             'spd':0,
             'def':0,
-            'fire':0,
-            'ice':0,
-            'pois':0,
             'atkp':0,
             'mtkp':0,
             'spdp':0,
             'defp':0,
-            'firep':0,
-            'icep':0,
-            'poisp':0,
         };
 
         //战斗中的状态数值
@@ -82,16 +70,10 @@ class Unit
             'mtk':0,
             'spd':0,
             'def':0,
-            'fire':0,
-            'ice':0,
-            'pois':0,
             'atkp':0,
             'mtkp':0,
             'spdp':0,
             'defp':0,
-            'firep':0,
-            'icep':0,
-            'poisp':0,
         };
 
         this.ftOn = false;
@@ -105,16 +87,10 @@ class Unit
         this.ft.mtk=0;
         this.ft.spd=0;
         this.ft.def=0;
-        this.ft.fire=0;
-        this.ft.ice=0;
-        this.ft.pois=0;
         this.ft.atkp=0;
         this.ft.mtkp=0;
         this.ft.spdp=0;
         this.ft.defp=0;
-        this.ft.firep=0;
-        this.ft.icep=0;
-        this.ft.poisp=0;
     }
 
     id(v)
@@ -203,9 +179,6 @@ class Unit
         var hpmax = this.attr['hpmaxBase'];
         var spd = this.attr['spdBase'];
         var def = this.attr['defBase'];
-        var fire = this.attr['fireBase'];
-        var ice = this.attr['iceBase'];
-        var pois = this.attr['poisBase'];
 
         //武器属性
         atk +=$wp[this.weapon()].atk;
@@ -215,17 +188,11 @@ class Unit
         mtk+=this.ng.mtk;
         spd+=this.ng.spd;
         def+=this.ng.def;
-        fire+=this.ng.fire;
-        ice+=this.ng.ice;
-        pois+=this.ng.pois;
 
         atk*=(1+this.ng.atkp/100);
         mtk*=(1+this.ng.mtkp/100);
         spd*=(1+this.ng.spdp/100);
         def*=(1+this.ng.defp/100);
-        fire*=(1+this.ng.firep/100);
-        ice*=(1+this.ng.icep/100);
-        pois*=(1+this.ng.poisp/100);
 
         //战斗属性
         if(this.ftOn)
@@ -234,18 +201,11 @@ class Unit
             mtk+=this.ft.mtk;
             spd+=this.ft.spd;
             def+=this.ft.def;
-            fire+=this.ft.fire;
-            ice+=this.ft.ice;
-            pois+=this.ft.pois;
 
             atk*=(1+this.ft.atkp/100);
             mtk*=(1+this.ft.mtkp/100);
             spd*=(1+this.ft.spdp/100);
             def*=(1+this.ft.defp/100);
-            fire*=(1+this.ft.firep/100);
-            ice*=(1+this.ft.icep/100);
-            pois*=(1+this.ft.poisp/100);
-
         }
 
         //最终属性
@@ -254,9 +214,6 @@ class Unit
         this.setCal('hpmax', hpmax);
         this.setCal('spd', spd);
         this.setCal('def', def);
-        this.setCal('fire', fire);
-        this.setCal('ice', ice);
-        this.setCal('pois', pois);
     }
 
     addSkToFight(id)
@@ -471,21 +428,6 @@ class Unit
         return this.getCal('hpmax');
     }
 
-    fire()
-    {
-        return this.getCal('fire');
-    }
-
-    ice()
-    {
-        return this.getCal('ice');
-    }
-
-    pois()
-    {
-        return this.getCal('pois');
-    }
-
     damage(val)
     {
         var hp = this.hp();
@@ -558,9 +500,6 @@ class Npc extends Unit
         this.setAttr('mtkBase',mtk);
         this.setAttr('spdBase',spd);
         this.setAttr('defBase',def);
-        this.setAttr('fireBase',0);
-        this.setAttr('iceBase',0);
-        this.setAttr('poisBase',0);
     }
 }
 

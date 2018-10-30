@@ -1,6 +1,7 @@
 import SK from '../../mlGame/data/skill.js'
 import FTD from '../../mlGame/data/fightData.js'
 var skl = SK.FSKL;
+var $fsc = SK.FSC;
 var $record = FTD.fightRecord;
 var effT = SK.EFF;
 
@@ -338,29 +339,32 @@ function zhudong(u,id,lvl)
     if(p>prob)
         return;
 
-    //目标判断
-    var tType = skl[id].target;
+    //概率通过了
+    //遍历效果
+    var list = JSON.parse(skl[id].eff);
+    var len=list.length;
+    var id;
+    var t;
+    for(var i=0;i<len;i++)
+    {
+        id = list[i];
+        t = $fsc[id].target;
+        if(t==0)
+        {
+            zd_0(u,id,lvl);
+        }
+        if(t==1)
+        {
+            zd_1(u,id,lvl);
+        }
+        if(t==2)
+        {
+            if(zd_2(u,id,lvl)==1)
+                return 1;
+        }
+    }
 
-    if(tType==0)
-    {
-        return zd_0(u,id,lvl)
-    }
-    else if(tType==1)
-    {
-        return zd_1(u,id,lvl)
-    }
-    else if(tType==2)
-    {
-        return zd_2(u,id,lvl)
-    }
-    else if(tType==3)
-    {
-        return zd_3(u,id,lvl)
-    }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
 
 
@@ -376,40 +380,20 @@ function zd_1(u,id,lvl)
 
 function zd_2(u,id,lvl)
 {
-    var r = skl[id].range;
-    var n = skl[id].targetNum;
-    var Num = skl[id].num + (lvl-1)*skl[id].numAdd;
+    var r = $fsc[id].range;
+    var n = $fsc[id].targetNum;
+    var src = $fsc[id].src;
+    var base = $fsc[id].base;
+    var add = $fsc[id].add;
+    var Num = Math.ceil(u.getCal(src)*(base+(lvl-1)*add));
     var NumType = skl[id].numType;
+
     var tArray = fSearch(u,r,n,2);
     var t;
     var len = tArray.length;
-    var eff;
-    var def,d;
+    var def;
     var dmg;
-
-    switch (NumType)
-    {
-        case 0:
-            eff = u.atk();
-            def = 'def';
-            break;
-        case 1:
-            eff = u.mtk();
-            def = 'fire';
-            break;
-        case 2:
-            eff = u.mtk();
-            def = 'ice';
-            break;
-        case 3:
-            eff = u.mtk();
-            def = 'pois';
-            break;
-        default:
-            break;
-    }
-
-    eff = Math.ceil(eff*Num);
+    var list;
 
     if(len>0)
     {
@@ -418,13 +402,26 @@ function zd_2(u,id,lvl)
         for(var i=0;i<len;i++)
         {
             t = tArray[i];
-            d = t.def();
-            dmg = eff;
-            dmg = Math.ceil(dmg*(150/(150+d)));
-            t.damage(dmg);
-            addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
-            if(t.hp()<=0)
-                addMsg("  【"+t.name()+"】被击倒");
+            
+            //先处理伤害
+            if(Num!=0)
+            {
+                d = NumType==0?t.def():t.mkt();
+                dmg = Num;
+                dmg = Math.ceil(dmg*(150/(150+d)));
+                t.damage(dmg);
+                addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
+                if(t.hp()<=0)
+                    addMsg("  【"+t.name()+"】被击倒");
+            }
+
+            //处理状态
+            list = JSON.parse(skl[id].eff);
+            for(var j=0;j<list.length;j++)
+            {
+                addEff(t,list[j],lvl);
+            }
+
             if(overCheck()==1)
                 return 1;
         }
@@ -456,22 +453,7 @@ function castZhiHui(u)
             id = fskl[i].id;
             if(skl[id].type==0) //类型为主动技能
             {
-                lvl = fskl[i].lvl;
-                var tType = skl[id].target;
-                var r = skl[id].range;
-                var n = skl[id].targetNum;
-                tArray = fSearch(u,r,n,tType);
-                var len = tArray.length;
-                if(len>0)
-                {
-                    addMsg("【"+u.name()+"】 发动 ["+skl[id].name+"] !!");
-                    var eff = skl[id].effect;
-                    for(var j=0;j<len;j++)
-                    {
-                        t = tArray[j];
-                        addEff(t,eff,lvl);
-                    }
-                }
+                
             }
         }
     }
@@ -481,110 +463,6 @@ function castZhiHui(u)
 function addEff(t,eff,lvl)
 {
     t.ft.eff.push({id:eff,lv:(lvl-1),t:Fight.round});
-    var v = effT[eff];
-    var add = v.add*(lvl-1);
-    var res=0;
-    var p = v.per;
-    var pw=(p==1)?" %":"";
-    if(v.atk!=0)
-    {
-        res = v.atk+add;
-
-        if(p==1)
-            t.ft.atkp+=res;
-        else
-            t.ft.atk+=res;
-
-        if(v.atk>0)
-            addMsg("  【"+t.name()+"】 的攻击力提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的攻击力降低了 "+res+pw);
-    }
-    if(v.mtk!=0)
-    {
-        res = v.mtk+add;
-        
-        if(p==1)
-            t.ft.mtkp+=res;
-        else
-            t.ft.mtk+=res;
-
-        if(v.mtk>0)
-            addMsg("  【"+t.name()+"】 的仙法提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的仙法降低了 "+res+pw);
-    }
-    if(v.def!=0)
-    {
-        res = v.def+add;
-        
-        if(p==1)
-            t.ft.defp+=res;
-        else
-            t.ft.def+=res;
-
-        if(v.def>0)
-            addMsg("  【"+t.name()+"】 的防御提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的防御降低了 "+res+pw);
-    }
-    if(v.spd!=0)
-    {
-        res = v.spd+add;
-        
-        if(p==1)
-            t.ft.spdp+=res;
-        else
-            t.ft.spd+=res;
-
-        if(v.spd>0)
-            addMsg("  【"+t.name()+"】 的速度提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的速度降低了 "+res+pw);
-    }
-    if(v.fire!=0)
-    {
-        res = v.fire+add;
-        
-        if(p==1)
-            t.ft.firep+=res;
-        else
-            t.ft.fire+=res;
-
-        if(v.fire>0)
-            addMsg("  【"+t.name()+"】 的火焰抵抗提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的火焰抵抗降低了 "+res+pw);
-    }
-    if(v.ice!=0)
-    {
-        res = v.ice+add;
-        
-        if(p==1)
-            t.ft.icep+=res;
-        else
-            t.ft.ice+=res;
-
-        if(v.ice>0)
-            addMsg("  【"+t.name()+"】 的寒冷抵抗提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的寒冷抵抗降低了 "+res+pw);
-    }
-    if(v.pois!=0)
-    {
-        res = v.pois+add;
-        
-        if(p==1)
-            t.ft.poisp+=res;
-        else
-            t.ft.pois+=res;
-
-        if(v.pois>0)
-            addMsg("  【"+t.name()+"】 的毒性抵抗提升了 "+res+pw);
-        else
-            addMsg("  【"+t.name()+"】 的毒性抵抗降低了 "+res+pw);
-    }
-
     t.attrCheck();
 }
 
@@ -602,9 +480,9 @@ function effCheck(u)
         {
             if(i>=u.ft.eff.length)
                 break;
-            console.log("i="+i);
+
             v = u.ft.eff[i];
-            console.log(u.ft.eff);
+
             id=v.id;
             t = v.t;
             if(Fight.round-t>effT[id].time)
@@ -616,80 +494,15 @@ function effCheck(u)
     }
 }
 
-function removeEff(t,eff,index)
+function removeEff(t,id,index)
 {
-    var v = effT[eff];
+    var v = effT[id];
     var add = v.add*t.ft.eff[eff].lv;
-    var res=0;
     var p = v.per;
 
     t.ft.eff.splice(index,1);
 
     addMsg("【"+t.name()+"】 的"+ v.name+"效果消失了");
-
-    if(v.atk!=0)
-    {
-        res = v.atk+add;
-
-        if(p==1)
-            t.ft.atkp-=res;
-        else
-            t.ft.atk-=res;
-    }
-    if(v.mtk!=0)
-    {
-        res = v.mtk+add;
-        
-        if(p==1)
-            t.ft.mtkp-=res;
-        else
-            t.ft.mtk-=res;
-    }
-    if(v.def!=0)
-    {
-        res = v.def+add;
-        
-        if(p==1)
-            t.ft.defp-=res;
-        else
-            t.ft.def-=res;
-    }
-    if(v.spd!=0)
-    {
-        res = v.spd+add;
-        
-        if(p==1)
-            t.ft.spdp-=res;
-        else
-            t.ft.spd-=res;
-    }
-    if(v.fire!=0)
-    {
-        res = v.fire+add;
-        
-        if(p==1)
-            t.ft.firep-=res;
-        else
-            t.ft.fire-=res;
-    }
-    if(v.ice!=0)
-    {
-        res = v.ice+add;
-        
-        if(p==1)
-            t.ft.icep-=res;
-        else
-            t.ft.ice-=res;
-    }
-    if(v.pois!=0)
-    {
-        res = v.pois+add;
-        
-        if(p==1)
-            t.ft.poisp-=res;
-        else
-            t.ft.pois-=res;
-    }
 
     t.attrCheck();
 }
