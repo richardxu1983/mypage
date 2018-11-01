@@ -91,8 +91,10 @@ export default {
 		fight:function()
 		{
 			var npc1 = new UB.Npc(100,0);
-			var npc2 = new UB.Npc(100,0);
-			zxCtrl.fight([npc1,0,npc2]);
+			var npc2 = new UB.Npc(101,0);
+			var npc3 = new UB.Npc(102,0);
+			$ply.addSkToFight(0);
+			zxCtrl.fight([npc1,npc3,npc2]);
 		},
 		newGame:function()
 		{

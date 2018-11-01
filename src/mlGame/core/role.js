@@ -22,7 +22,7 @@ class _role extends $Unit
 
     gold(v)
     {
-    	if(v)
+    	if(v!=undefined)
     	{
     		this.setAttr('gold',v);
     	}

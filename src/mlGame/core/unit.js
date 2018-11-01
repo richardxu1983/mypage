@@ -95,7 +95,7 @@ class Unit
 
     id(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('id', v)
         }
@@ -107,7 +107,7 @@ class Unit
 
     type(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('type', v)
         }
@@ -119,7 +119,7 @@ class Unit
 
     weapon(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('weapon', v)
         }
@@ -131,7 +131,7 @@ class Unit
 
     head(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('head', v)
         }
@@ -144,7 +144,7 @@ class Unit
     //
     hp(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('hp', v)
         }
@@ -156,7 +156,7 @@ class Unit
 
     name(v)
     {
-        if(v)
+        if(v!=undefined)
         {
             this.setAttr('name', v)
         }
@@ -434,6 +434,7 @@ class Unit
         hp = hp - val;
         if(hp<=0)
         {
+            
             this.hp(0);
             return -1;
         }

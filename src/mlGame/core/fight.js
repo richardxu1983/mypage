@@ -335,35 +335,46 @@ function zhudong(u,id,lvl)
     var probAdd = skl[id].probAdd;
     var prob = skl[id].prob+(lvl-1)*probAdd;
     var p = Math.random();
+    console.log("prob="+prob+" , p="+p);
 
     if(p>prob)
         return;
 
-    //概率通过了
-    //遍历效果
-    var list = JSON.parse(skl[id].eff);
-    var len=list.length;
-    var id;
-    var t;
-    for(var i=0;i<len;i++)
+    //概率通过了，检测目标
+    var r = skl[id].range;
+    var tArray = fSearch(u,r,1,2);
+    var len = tArray.length;
+
+    //有目标
+    if(len>0)
     {
-        id = list[i];
-        t = $fsc[id].target;
-        if(t==0)
+        addMsg("【"+u.name()+"】 发动 ["+skl[id].name+"] !!");
+
+        //遍历效果
+        var list = JSON.parse(skl[id].eff);
+        var len=list.length;
+        var eid;
+        var t;
+
+        for(var i=0;i<len;i++)
         {
-            zd_0(u,id,lvl);
-        }
-        if(t==1)
-        {
-            zd_1(u,id,lvl);
-        }
-        if(t==2)
-        {
-            if(zd_2(u,id,lvl)==1)
-                return 1;
+            eid = list[i];
+            t = $fsc[eid].target;
+            if(t==0)
+            {
+                zd_0(u,eid,lvl);
+            }
+            if(t==1)
+            {
+                zd_1(u,eid,lvl);
+            }
+            if(t==2)
+            {
+                if(zd_2(u,eid,lvl)==1)
+                    return 1;
+            }
         }
     }
-
     return 0;
 }
 
@@ -383,30 +394,26 @@ function zd_2(u,id,lvl)
     var r = $fsc[id].range;
     var n = $fsc[id].targetNum;
     var src = $fsc[id].src;
-    var base = $fsc[id].base;
+    var base = $fsc[id].basic;
     var add = $fsc[id].add;
     var Num = Math.ceil(u.getCal(src)*(base+(lvl-1)*add));
-    var NumType = skl[id].numType;
-
+    var NumType = $fsc[id].numType;
     var tArray = fSearch(u,r,n,2);
     var t;
     var len = tArray.length;
-    var def;
+    var d;
     var dmg;
     var list;
 
     if(len>0)
     {
-        addMsg("【"+u.name()+"】 发动 ["+skl[id].name+"] !!");
-
         for(var i=0;i<len;i++)
         {
             t = tArray[i];
-            
             //先处理伤害
             if(Num!=0)
             {
-                d = NumType==0?t.def():t.mkt();
+                d = NumType==0?t.def():t.mtk();
                 dmg = Num;
                 dmg = Math.ceil(dmg*(150/(150+d)));
                 t.damage(dmg);
@@ -416,7 +423,7 @@ function zd_2(u,id,lvl)
             }
 
             //处理状态
-            list = JSON.parse(skl[id].eff);
+            list = JSON.parse($fsc[id].eff);
             for(var j=0;j<list.length;j++)
             {
                 addEff(t,list[j],lvl);
