@@ -6,11 +6,11 @@
 			<div class="btn" @click="psel(1)">
 				基本
 			</div>
-			<div class="btn" @click="psel(2)">
-				内功
-			</div>
 			<div class="btn" @click="psel(3)">
 				战法
+			</div>
+			<div class="btn" @click="psel(2)">
+				内功
 			</div>
 		</div>
 		<div class="box">
@@ -207,10 +207,9 @@ export default {
 				height: 7em;
 				vertical-align: middle;
 				display: table-cell;
-				position: absolute;
 				.pic
 				{
-					position: absolute;
+					position: relative;
 					width: 4em;
 					height: 4em;
 					top: 0em;
@@ -218,8 +217,8 @@ export default {
 				}
 				.name
 				{
-					position: absolute;
-					bottom: .2em;
+					position: relative;
+					bottom: 0em;
 					width: 6em;
 					overflow: hidden;
 					font-size: 50%;
@@ -264,10 +263,9 @@ export default {
 				vertical-align: middle;
 				display: table-cell;
 				background-color: #333;
-				position: absolute;
 				.pic
 				{
-					position: absolute;
+					position: relative;
 					width: 2em;
 					height: 2em;
 					top: .5em;
@@ -275,8 +273,8 @@ export default {
 				}
 				.name
 				{
-					position: absolute;
-					bottom: .2em;
+					position: relative;
+					bottom: -1em;
 					width: 100%;
 					height: 1.5em;
 					overflow: hidden;

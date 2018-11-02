@@ -64,7 +64,7 @@ class Unit
         //战斗中的状态数值
         this.ft = 
         {
-            t:0,
+            round:0,
             eff:[],
             'atk':0,
             'mtk':0,
@@ -81,8 +81,6 @@ class Unit
 
     ftInit()
     {
-        this.ft.t=0;
-        this.eff=[];
         this.ft.atk=0;
         this.ft.mtk=0;
         this.ft.spd=0;

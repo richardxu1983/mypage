@@ -59,7 +59,6 @@ class _role extends $Unit
 
         if(this.attr.bag.length>=64)
             return;
-
         this.attr.bag.push({'id':id,'stack':1});
     }
 
@@ -71,7 +70,6 @@ class _role extends $Unit
     bagUseItem(index)
     {
         var it=this.attr.bag[index];
-        console.log("index="+index);
         if(it)
         {
             var item=$item[it.id];

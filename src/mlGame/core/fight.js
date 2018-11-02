@@ -3,7 +3,7 @@ import FTD from '../../mlGame/data/fightData.js'
 var skl = SK.FSKL;
 var $fsc = SK.FSC;
 var $record = FTD.fightRecord;
-var effT = SK.EFF;
+var $eff = SK.EFF;
 
 var SIDE = [];
 var MAX_ROUND=10;
@@ -96,6 +96,8 @@ var Fight = {
                 if(u!=0)
                 {
                     u.ftInit();
+                    u.ft.round=0;
+                    u.ft.eff=[];
                 }
             }
         }
@@ -184,6 +186,8 @@ function sideInit(s,v)
             SIDE[s][i].u.idx = i;
             SIDE[s][i].u.ftOn = true;
             SIDE[s][i].u.ftInit();
+            SIDE[s][i].u.ft.round=0;
+            SIDE[s][i].u.ft.eff=[];
         }
     }
 }
@@ -309,6 +313,7 @@ function castZhudong(u)
     var fskl = u.fskl();
     var len = fskl.length;
     var id,lvl;
+    var probAdd,prob,p;
 
     if(len>0)
     {
@@ -318,8 +323,14 @@ function castZhudong(u)
             if(skl[id].type==1) //类型为主动技能
             {
                 lvl = fskl[i].lvl;
-                if(zhudong(u,id,lvl)==1)
-                    return 1;
+                probAdd = skl[id].probAdd;
+                prob = skl[id].prob+(lvl-1)*probAdd;
+                p = Math.random();
+                if(p<=prob)
+                {
+                    if(castSkill(u,id,lvl)==1)
+                        return 1;
+                }
             }
         }
     }
@@ -329,20 +340,12 @@ function castZhudong(u)
     }
 }
 
-function zhudong(u,id,lvl)
+function castSkill(u,id,lvl)
 {
-    //概率判断
-    var probAdd = skl[id].probAdd;
-    var prob = skl[id].prob+(lvl-1)*probAdd;
-    var p = Math.random();
-    console.log("prob="+prob+" , p="+p);
-
-    if(p>prob)
-        return;
-
-    //概率通过了，检测目标
+    //检测目标
     var r = skl[id].range;
-    var tArray = fSearch(u,r,1,2);
+    var ty = skl[id].target;
+    var tArray = fSearch(u,r,1,ty);
     var len = tArray.length;
 
     //有目标
@@ -359,46 +362,25 @@ function zhudong(u,id,lvl)
         for(var i=0;i<len;i++)
         {
             eid = list[i];
-            t = $fsc[eid].target;
-            if(t==0)
-            {
-                zd_0(u,eid,lvl);
-            }
-            if(t==1)
-            {
-                zd_1(u,eid,lvl);
-            }
-            if(t==2)
-            {
-                if(zd_2(u,eid,lvl)==1)
-                    return 1;
-            }
+            if(zd(u,eid,lvl,id)==1)
+                return 1;
         }
     }
     return 0;
 }
 
-
-function zd_0(u,id,lvl)
+function zd(u,id,lvl,sid)
 {
 
-}
-
-function zd_1(u,id,lvl)
-{
-    
-}
-
-function zd_2(u,id,lvl)
-{
     var r = $fsc[id].range;
     var n = $fsc[id].targetNum;
+    var ty = $fsc[id].target;
     var src = $fsc[id].src;
     var base = $fsc[id].basic;
     var add = $fsc[id].add;
     var Num = Math.ceil(u.getCal(src)*(base+(lvl-1)*add));
     var NumType = $fsc[id].numType;
-    var tArray = fSearch(u,r,n,2);
+    var tArray = fSearch(u,r,n,ty);
     var t;
     var len = tArray.length;
     var d;
@@ -411,11 +393,13 @@ function zd_2(u,id,lvl)
         {
             t = tArray[i];
             //先处理伤害
-            if(Num!=0)
+            if(Num!=0&&(skl[sid].type==1||skl[sid].type==3))
             {
                 d = NumType==0?t.def():t.mtk();
                 dmg = Num;
-                dmg = Math.ceil(dmg*(150/(150+d)));
+                if(ty!=1&&ty!=3)
+                    dmg = Math.ceil(dmg*(150/(150+d)));
+
                 t.damage(dmg);
                 addMsg("  【"+t.name()+"】受到"+dmg+"伤害("+t.hp()+")");
                 if(t.hp()<=0)
@@ -426,7 +410,7 @@ function zd_2(u,id,lvl)
             list = JSON.parse($fsc[id].eff);
             for(var j=0;j<list.length;j++)
             {
-                addEff(t,list[j],lvl);
+                addEff(t,list[j],lvl,u);
             }
 
             if(overCheck()==1)
@@ -436,13 +420,6 @@ function zd_2(u,id,lvl)
     else
         return 0;
 }
-
-
-function zd_3(u,id,lvl)
-{
-    
-}
-
 
 function castZhiHui(u)
 {
@@ -460,16 +437,19 @@ function castZhiHui(u)
             id = fskl[i].id;
             if(skl[id].type==0) //类型为主动技能
             {
-                
+                lvl = fskl[i].lvl;
+                castSkill(u,id,lvl);
             }
         }
     }
 }
 
 
-function addEff(t,eff,lvl)
+function addEff(t,id,lvl,u)
 {
-    t.ft.eff.push({id:eff,lv:(lvl-1),t:Fight.round});
+
+    t.ft.eff.push({id:id,lv:lvl,round:Fight.round,from:u});
+    effCal(t);
     t.attrCheck();
 }
 
@@ -478,7 +458,7 @@ function effCheck(u)
     var len = u.ft.eff.length;
     var id;
     var v;
-    var t;
+    var round;
     var i=0;
 
     if(len>0)
@@ -489,10 +469,9 @@ function effCheck(u)
                 break;
 
             v = u.ft.eff[i];
-
             id=v.id;
-            t = v.t;
-            if(Fight.round-t>effT[id].time)
+            round = v.round;
+            if(Fight.round-round>$eff[id].round)
             {
                 removeEff(u,id,i);
             }
@@ -501,16 +480,40 @@ function effCheck(u)
     }
 }
 
+function effCal(t)
+{
+    var source = t.ft.eff;
+    var len = source.length;
+    var i=0;
+    var id,lv;
+    var key;
+    var base,psrc,src,badd,padd;
+    var srcValue;
+    var value;
+
+    t.ftInit()
+
+    for(i=0;i<len;i++)
+    {
+        id = source[i].id;
+        lv = source[i].lv;
+        key = $eff[i].attr;
+        src = $eff[i].source;
+        base = $eff[i].base;
+        psrc = $eff[i].psrc;
+        badd = $eff[i].badd;
+        padd = $eff[i].padd;
+        srcValue = t.getCal(src)||1;
+        value = Math.ceil((base + (lv-1)*badd) + srcValue*(psrc + (lv-1)*padd));
+        t.ft[key] = t.ft[key] + value;
+    }
+}
+
 function removeEff(t,id,index)
 {
-    var v = effT[id];
-    var add = v.add*t.ft.eff[eff].lv;
-    var p = v.per;
-
+    addMsg("【"+t.name()+"】 来自 【"+ t.ft.eff[index].from.name() + "】 的 【" + $eff[t.ft.eff[index].id].name+" 】 效果消失了");
     t.ft.eff.splice(index,1);
-
-    addMsg("【"+t.name()+"】 的"+ v.name+"效果消失了");
-
+    effCal(t);
     t.attrCheck();
 }
 
