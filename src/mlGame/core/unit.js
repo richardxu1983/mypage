@@ -31,11 +31,12 @@ class Unit
             'defBase' : 0,
             'spdBase' : 0,
             'hpmaxBase':0,
-            'fskl':[],  //上阵战斗技能
-            'ffskl':[], //所有战斗技能
+            'fskl':[-1,-1,-1],  //上阵战法
+            'zf':[], //所有战法
             'tx':[],    //特性
             'ng':[],    //所掌握内功
             'cl':{type:-1,index:0},    //正在练习的技能
+            'pos':-1,   //位置
         };
 
         //计算属性
@@ -214,38 +215,64 @@ class Unit
         this.setCal('def', def);
     }
 
-    addSkToFight(id)
+    addToFtByIdx(idx)
     {
-        if(skl[id]==undefined)
+        if(this.attr.fskl.length>=3)
+            return;
+
+        if(this.attr.zf[idx]==undefined)
+            return;
+
+        for(var i=0;i<3;i++)
+        {
+            if(this.attr.fskl[i]<0)
+            {
+                this.attr.fskl[i] = idx;
+                return;
+            }
+        }
+    }
+
+    addToFtById(id)
+    {
+        if(!skl[id])
             return;
 
         if(this.attr.fskl.length>=3)
             return;
 
-        var len = this.attr.fskl.length;
+        var len = this.attr.zf.length;
+
+        if(len<1)
+            return;
+
+        var idx=-1;
 
         for(var i=0;i<len;i++)
         {
-            if(this.attr.fskl[i].id==id)
-                return;
+            if(this.attr.zf[i].id==id)
+            {
+                idx=i;
+                for(var j=0;j<3;j++)
+                {
+                    if(this.attr.fskl[j]<0)
+                    {
+                        this.attr.fskl[j] = idx;
+                        return;
+                    }
+                }
+            }
         }
-
-        this.attr.fskl.push({'id':id,lvl:1});
     }
 
-    fsklLvlUp(index)
+    delFtByIdx(idx)
     {
-        if(!this.attr.fskl[index])
-            return;
+        this.attr.fskl[idx]=-1;
+    }
 
-        var lvl = this.attr.fskl[index].lvl;
-        var id = this.attr.fskl[index].id;
-        var max = skl[id].maxLvl;
-
-        if(lvl>=max)
-            return;
-
-        this.attr.fskl[index].lvl++;
+    delFtByPos(pos)
+    {
+        this.attr.fskl[pos-1]=-1;
     }
 
     absorbJS(id)
@@ -264,6 +291,15 @@ class Unit
                 this.addNg(sid);
                 return 1;
             }
+            //战法
+            if(st==1)
+            {
+                var sid = js.data2;//战法id
+                if(this.findZf(sid)>=0)  //已存在
+                    return -1;
+                this.addZf(sid);
+                return 1;
+            }            
         }
         return -1;
     }
@@ -282,9 +318,37 @@ class Unit
         return -1;
     }
 
+    //寻找战法
+    findZf(id)
+    {
+        var len=this.attr.zf.length;
+        var i=0;
+        var v;
+        for(i=0;i<len;i++)
+        {
+            v = this.attr.zf[i];
+            if(v.id==id)
+                return i;
+        }
+        return -1;
+    }
+
+    //添加战法
+    addZf(id)
+    {
+        if(this.findZf(id)>=0)
+            return;
+        if(this.attr.zf.length>=20)
+            return;
+        this.attr.zf.push({"id":id,"lv":1,"study":0});
+    }
+
+    //添加内功
     addNg(id)
     {
         if(this.findNg(id)>=0)
+            return;
+        if(this.attr.ng.length>=32)
             return;
         this.attr.ng.push({"id":id,"lv":1,"study":0});
         this.ngRecal();
@@ -312,6 +376,20 @@ class Unit
             this.attrCheck();
             return ng.lv;
         }
+        return -1;
+    }
+
+    zfAddLv(id)
+    {
+        var index = this.findZf(id);
+        if(index>=0)
+        {
+            var zf = this.attr.zf[index];
+            zf.lv++;
+            zf.study = 0;
+            return zf.lv;
+        }
+        return -1;
     }
 
     ngRecal()
@@ -363,6 +441,22 @@ class Unit
             if(ng.study>=next)
             {
                 this.ngAddLv(id);
+            }
+        }
+        //如果正在练习战法
+        if(cl.type==1)
+        {
+            var index=cl.index;
+            var zf = this.attr.zf[index];
+            zf.study++;
+            var lv = zf.lv;
+            var id = zf.id;
+            var lb = skl[id].lb;
+            var lbp = skl[id].lbp;
+            var next = Math.ceil(lb+Math.pow(lbp,lv));
+            if(zf.study>=next)
+            {
+                this.zfAddLv(id);
             }
         }
     }

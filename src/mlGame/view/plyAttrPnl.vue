@@ -4,13 +4,13 @@
 		</div>
 		<div class="topBar">
 			<div class="btn" @click="psel(1)">
-				基本
+				基本信息
 			</div>
 			<div class="btn" @click="psel(3)">
-				战法
+				所有战法
 			</div>
 			<div class="btn" @click="psel(2)">
-				内功
+				技艺/内功
 			</div>
 		</div>
 		<div class="box">
@@ -28,6 +28,9 @@
 						<div :id="'bag_'+index" class="item">
 							<div class="picf">
 								<img class="pic" :src="itemIcon(index)">
+							</div>
+							<div class="num">
+								{{itemNum(index)}}
 							</div>
 							<div class="name">
 								{{itemName(index)}}
@@ -124,6 +127,12 @@ export default {
 			var id = bag[index].id;
 			return $item[id].name;
 		},
+		itemNum:function(index)
+		{
+			var bag = this.bag;
+			var num = bag[index].stack;
+			return num;
+		},
 		useItem:function(index)
 		{
 			this.player.bagUseItem(index);
@@ -169,7 +178,7 @@ export default {
 		.btn
 		{
 			float: left;
-			width: 3.5em;
+			width: 5.5em;
 			height: 100%m;
 			padding: 5px;
 			background-color: #333;
@@ -223,7 +232,6 @@ export default {
 					overflow: hidden;
 					font-size: 50%;
 					text-align: center;
-					background-color: #333;
 					color: white;
 				}
 			}
@@ -245,12 +253,12 @@ export default {
 		.bag
 		{
 			position: absolute;
-			right: 2em;
-			bottom: 4em;
-			width: 37em;
-			height: 14.8em;
+			right: 1em;
+			bottom: 3.5em;
+			width: 32em;
+			height: 10em;
 			border: solid 1px black;
-			background-color: gray;
+			background-color: #333;
 			overflow: scroll;
 			position: absolute;
 			.item
@@ -258,28 +266,38 @@ export default {
 				float: left;
 				margin: 2px;
 				width: 4em;
-				height: 4.5em;
-				border: solid 1px black;
+				height:4em;
 				vertical-align: middle;
 				display: table-cell;
-				background-color: #333;
 				.pic
 				{
 					position: relative;
 					width: 2em;
 					height: 2em;
 					top: .5em;
-					left:1em;
+					left:.7em;
 				}
 				.name
 				{
 					position: relative;
-					bottom: -1em;
+					bottom:.5em;
 					width: 100%;
 					height: 1.5em;
 					overflow: hidden;
 					font-size: 50%;
 					text-align: center;
+					color: white;
+				}
+				.num
+				{
+					position: relative;
+					bottom: 1em;
+					right:-3em;
+					width: 1.5em;
+					overflow: hidden;
+					font-size: 50%;
+					text-align: center;
+					background-color: #333;
 					color: white;
 				}
 			}

@@ -1,6 +1,6 @@
 <template>
 	<div class="">
-		<div>第&ensp;{{day}}&ensp;天&ensp;{{Math.floor(h)}}&ensp;时&ensp; [&ensp; 剩余：{{remain}}天 &ensp;]</div>
+		<div>第&ensp;{{year}}&ensp;年&ensp;{{Math.floor(m)}}&ensp;月&ensp;</div>
 	</div>
 </template>
 
@@ -21,17 +21,13 @@ export default {
 	},
 	computed:{
 
-		day:function()
+		year:function()
 		{
-			return this.ti.day;
+			return this.ti.year;
 		},
-		h:function()
+		m:function()
 		{
-			return this.ti.hour;
-		},
-		remain:function()
-		{
-			return ($dt.timeLimit-this.ti.day);
+			return this.ti.month;
 		},
 	},
 	methods:

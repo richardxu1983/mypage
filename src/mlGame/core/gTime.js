@@ -1,30 +1,28 @@
 
-const MAX_HOUR = 24;
+const MAX_HOUR = 12;
 
 var gT = {
-	day:600,
-	hour:8,
+	year:1,
+	month:1,
 }
 
 var gtime = {
 
 	init:function()
 	{
-		gT.day = 1;
-		gT.hour = 8;
-		gtime.set();
+		gT.year = 1;
+		gT.month = 1;
 	},
 
-	addHour:function(v)
+	addMonth:function(v)
 	{
-		gT.hour = gT.hour + v;
-		var add = Math.floor(gT.hour/MAX_HOUR);
+		gT.month = gT.month + v;
+		var add = Math.floor(gT.month/MAX_HOUR);
 		if(add>0)
 		{
-			gT.hour = gT.hour%MAX_HOUR;
-			gT.day = gT.day + add;
+			gT.month = gT.month%MAX_HOUR;
+			gT.year = gT.year + add;
 		}
-		gtime.set();
 	},
 
 	load:function()
@@ -44,12 +42,12 @@ var gtime = {
         }
 	},
 
-	reSet:function()
+	new:function()
 	{
 		gtime.init();
 	},
 
-	set:function()
+	save:function()
 	{
 		localStorage.gameTime = JSON.stringify(gT);
 	},

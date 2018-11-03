@@ -42,29 +42,38 @@ class _role extends $Unit
         var len = this.attr.bag.length;
         var i=0;
         var item;
-        var id;
+        var bid;
+
         for(i=0;i<len;i++)
         {
             item = this.attr.bag[i];
             if(item)
             {
-                id=item.id;
-                if($item[id].stack>item.stack)
+                bid=item.id;
+                if(bid==id)
                 {
-                    item.stack++;
-                    return;
+                    if($item[bid].stack>item.stack)
+                    {
+                        item.stack++;
+                        return;
+                    }
                 }
             }
         }
 
         if(this.attr.bag.length>=64)
             return;
+
         this.attr.bag.push({'id':id,'stack':1});
     }
 
     bagDelItem(index)
     {
-        this.attr.bag.splice(index,1);
+        var stack = this.attr.bag[index].stack;
+        if(stack>1)
+            this.attr.bag[index].stack--;
+        else
+            this.attr.bag.splice(index,1);
     }
 
     bagUseItem(index)
@@ -103,12 +112,41 @@ class _role extends $Unit
         this.setAttr('defBase', defBase);
         this.name($role.new.name);
         this.gold($role.new.gold);
-        this.setAttr('fskl', []);
-        this.setAttr('ffskl', []);
+        this.setAttr('fskl', [-1,-1,-1]);
+        this.setAttr('zf', []);
         this.setAttr('tx', []);
         this.setAttr('ng', []);
         this.setAttr('bag', []);
         this.attr.cl = {type:-1,index:0};    //正在练习的技能
+        //内功附加数值
+        this.ng = 
+        {
+            'atk':0,
+            'mtk':0,
+            'spd':0,
+            'def':0,
+            'atkp':0,
+            'mtkp':0,
+            'spdp':0,
+            'defp':0,
+        };
+
+        //战斗中的状态数值
+        this.ft = 
+        {
+            round:0,
+            eff:[],
+            'atk':0,
+            'mtk':0,
+            'spd':0,
+            'def':0,
+            'atkp':0,
+            'mtkp':0,
+            'spdp':0,
+            'defp':0,
+        };
+
+        this.ftOn = false;
         this.attrCheck();
     }
 

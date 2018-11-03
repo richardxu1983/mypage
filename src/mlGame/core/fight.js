@@ -314,22 +314,27 @@ function castZhudong(u)
     var len = fskl.length;
     var id,lvl;
     var probAdd,prob,p;
+    var index;
 
     if(len>0)
     {
         for(var i=0;i<len;i++)
         {
-            id = fskl[i].id;
-            if(skl[id].type==1) //类型为主动技能
+            index = fskl[i];
+            if(index>=0)
             {
-                lvl = fskl[i].lvl;
-                probAdd = skl[id].probAdd;
-                prob = skl[id].prob+(lvl-1)*probAdd;
-                p = Math.random();
-                if(p<=prob)
+                id = u.attr.zf[index].id;
+                if(skl[id].type==1) //类型为主动技能
                 {
-                    if(castSkill(u,id,lvl)==1)
-                        return 1;
+                    lvl = u.attr.zf[index].lvl;
+                    probAdd = skl[id].probAdd;
+                    prob = skl[id].prob+(lvl-1)*probAdd;
+                    p = Math.random();
+                    if(p<=prob)
+                    {
+                        if(castSkill(u,id,lvl)==1)
+                            return 1;
+                    }
                 }
             }
         }
@@ -429,16 +434,21 @@ function castZhiHui(u)
     var id,lvl;
     var tArray;
     var t;
+    var index;
 
     if(len>0)
     {
         for(var i=0;i<len;i++)
         {
-            id = fskl[i].id;
-            if(skl[id].type==0) //类型为主动技能
+            index = fskl[i];
+            if(index>=0)
             {
-                lvl = fskl[i].lvl;
-                castSkill(u,id,lvl);
+                id = u.attr.zf[index].id;
+                if(id>=0&&skl[id].type==0) //类型为主动技能
+                {
+                    lvl = u.attr.zf[index].lvl;
+                    castSkill(u,id,lvl);
+                }
             }
         }
     }

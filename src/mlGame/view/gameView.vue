@@ -86,15 +86,20 @@ export default {
 		{
 			//console.log(JSON.parse(NG.NG[0].attr));
 			//console.log($ply.hpmax());
-			$ply.bagAddItem(0);
+			var r = Math.random();
+
+			if(r>0.5)
+				$ply.bagAddItem(0);
+			else
+				$ply.bagAddItem(1);
 		},
 		fight:function()
 		{
 			var npc1 = new UB.Npc(100,0);
 			var npc2 = new UB.Npc(101,0);
 			var npc3 = new UB.Npc(102,0);
-			$ply.addSkToFight(0);
-			$ply.addSkToFight(1);
+			//$ply.addSkToFight(0);
+			//$ply.addSkToFight(1);
 			zxCtrl.fight([npc1,npc3,npc2]);
 		},
 		newGame:function()
