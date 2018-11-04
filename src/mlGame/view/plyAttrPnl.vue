@@ -3,13 +3,13 @@
 		<div class="md bd">
 		</div>
 		<div class="topBar">
-			<div class="btn" @click="psel(1)">
+			<div class="btn" :class="{active:(sel==1)}" @click="psel(1)">
 				基本信息
 			</div>
-			<div class="btn" @click="psel(3)">
+			<div class="btn" :class="{active:(sel==3)}" @click="psel(3)">
 				所有战法
 			</div>
-			<div class="btn" @click="psel(2)">
+			<div class="btn" :class="{active:(sel==2)}" @click="psel(2)">
 				技艺/内功
 			</div>
 		</div>
@@ -20,8 +20,32 @@
 					<p>当前生命：{{ hp }}</p>
 					<p>最大生命：{{ hpmax }}</p>
 					<p>攻击：{{ atk }}</p>
+					<p>仙法：{{ mtk }}</p>
+					<p>速度：{{ spd }}</p>
 					<p>防御力：{{ def }}</p>
-					<p>速度：{{ spd }}</p>	
+					<p>悟性：0</p>
+				</div>
+				<div class="szzf">
+					上阵战法：
+				</div>
+				<div class="cl">
+					<div class="title">
+						研习：
+					</div>
+					<div class="content">
+						<div v-if="learning">
+							<img class="pic" :src="clIcon()">
+							<div class="time">
+								{{clTime}}
+							</div>
+						</div>
+						<div class="txt" v-else>
+							空
+						</div>
+					</div>
+				</div>
+				<div class="bagttl">
+					背包
 				</div>
 				<div class="bag">
 					<div v-for="(item,index) in bag" :key="index" class="left" @click="useItem(index)">
@@ -42,7 +66,7 @@
 			
 			<div v-if="sel==2" class="ng">
 				<div v-for="(ng,index) in ngList" :key="index" class="left">
-					<div :id="'ng_'+index" class="item">
+					<div :id="'ng_'+index" class="item" @click="study(0,index)">
 						<img class="pic" :src="ngIcon(index)">
 						<div class="name">
 							{{ngName(index)}}
@@ -50,7 +74,16 @@
 					</div>
 				</div>
 			</div>
-
+			<div v-if="sel==3" class="ng">
+				<div v-for="(zf,index) in zfList" :key="index" class="left">
+					<div :id="'zf_'+index" class="item" @click="study(1,index)">
+						<img class="pic" :src="zfIcon(index)">
+						<div class="name">
+							{{zfName(index)}}
+						</div>
+					</div>
+				</div>
+			</div>
 			<button class="close" @click="close">关闭</button>
 		</div>
 	</div>
@@ -64,7 +97,7 @@ import RO from '../../mlGame/core/role.js'
 import SK from '../../mlGame/data/skill.js'
 import ITM from '../../mlGame/data/item.js'
 import NG from '../../mlGame/data/ng.js'
-var skl = SK.SKL;
+var skl = SK.FSKL;
 var $ply = RO.role;
 var $plyUI = RO.ui;
 var $item = ITM.item;
@@ -90,6 +123,10 @@ export default {
 		{
 			return this.player.attr.ng;
 		},
+		zfList:function()
+		{
+			return this.player.attr.zf;
+		},
 		name:function()
 		{
 			return this.player.name();
@@ -106,6 +143,10 @@ export default {
 		{
 			return this.player.atk();
 		},
+		mtk:function()
+		{
+			return this.player.mtk();
+		},
 		def:function()
 		{
 			return this.player.def();
@@ -113,6 +154,39 @@ export default {
 		spd:function()
 		{
 			return this.player.spd();
+		},
+		learning:function()
+		{
+			if(this.player.attr.cl.type==-1)
+				return false;
+			else
+				return true;
+		},
+		clTime:function()
+		{
+			var type=this.player.attr.cl.type;
+			var idx=this.player.attr.cl.index;
+			if(type==0)
+			{
+				var ng = this.player.attr.ng[idx];
+				var lv = ng.lv;
+	            var id = ng.id;
+	            var lb = $ng[id].lb;
+	            var lbp = $ng[id].lbp;
+	            var next = Math.ceil(lb+Math.pow(lbp,lv));
+	            return (ng.study/next).toFixed(0)+"%";
+			}
+			if(type==1)
+			{
+				console.log("idx="+idx);
+				var zf = this.player.attr.zf[idx];
+				var lv = zf.lv;
+	            var id = zf.id;
+	            var lb = skl[id].lb;
+	            var lbp = skl[id].lbp;
+	            var next = Math.ceil(lb+Math.pow(lbp,lv));
+	            return (zf.study/next).toFixed(0)+"%";
+			}
 		},
 	},
 	methods:
@@ -159,6 +233,40 @@ export default {
 			var id = ng.id;
 			return "/static/img/mlGame/ng_"+$ng[id].icon+".png";
 		},
+		zfName:function(index)
+		{
+			var zf = this.player.attr.zf[index];
+			var id = zf.id;
+			return skl[id].name+" ( Lv."+zf.lv+" )";
+		},
+		zfIcon:function(index)
+		{
+			var zf = this.player.attr.zf[index];
+			var id = zf.id;
+			return "/static/img/mlGame/zf_"+skl[id].icon+".png";
+		},
+		study:function(type,idx)
+		{
+			this.player.changeStudy(type,idx);
+		},
+		clIcon:function()
+		{
+			var type=this.player.attr.cl.type;
+			var idx=this.player.attr.cl.index;
+			if(type==0)
+			{
+				var ng = this.player.attr.ng[idx];
+	            var id = ng.id;
+	            return "/static/img/mlGame/ng_"+$ng[id].icon+".png";
+
+			}
+			if(type==1)
+			{
+				var zf = this.player.attr.zf[idx];
+	            var id = zf.id;
+	            return "/static/img/mlGame/zf_"+skl[id].icon+".png";
+			}			
+		}
 	}
 }
 </script>
@@ -186,6 +294,10 @@ export default {
 			color:white;
 			text-align: center;
 		}
+		.active
+		{
+			background-color: #69594e;
+		}
 	}
 
 	
@@ -198,16 +310,18 @@ export default {
 		left: 2em;
 		top: 6em;
 		padding: 25px;
+		background-color: #333;
+		color: white;
 
 		.ng
 		{
 			padding: 1em;
 			width: 47em;
-			height: 27em;
+			height: 26em;
 			overflow: scroll;
 			border: solid 1px black;
 			position: absolute;
-			background-color: #333;
+			background-color: #443c36;
 			.item
 			{
 				float: left;
@@ -219,10 +333,10 @@ export default {
 				.pic
 				{
 					position: relative;
-					width: 4em;
-					height: 4em;
+					width: 24px;
+					height: 24px;
 					top: 0em;
-					left:.5em;
+					left:1.5em;
 				}
 				.name
 				{
@@ -237,17 +351,73 @@ export default {
 			}
 		}
 
+		.szzf
+		{
+			position: absolute;
+			top: 12em;
+			left: 18em;
+			width: 32em;
+			height: 5em;
+			border: solid 1px black;
+		}
+		.cl
+		{
+			position: absolute;
+			top: 6em;
+			left: 18em;
+			width: 32em;
+			height: 5em;
+			border: solid 1px black;
+			.title
+			{
+				position: absolute;
+				top: 1.8em;
+			}
+			.pic
+			{
+				position: absolute;
+				top:1em;
+				height: 24px;
+				width: 24px;				
+			}
+			.txt
+			{
+				position: absolute;
+				top:1.8em;				
+			}
+			.content
+			{
+				position: absolute;
+				left: 3em;
+				height: 24px;
+				width: 24px;
+			}
+			.time
+			{
+				position: absolute;
+				top:3.4em;
+				height: 24px;
+				width: 5em;				
+			}
+		}
 		.attr
 		{
 			position: absolute;
-			top:4em;
-			left: 4em;
+			top:6em;
+			left: 2em;
 		}
 		.close
 		{
 			position: absolute;
 			bottom: 1em;
 			left: 25em;
+		}
+		
+		.bagttl
+		{
+			position: absolute;
+			top: 18em;
+			left: 18.5em;
 		}
 
 		.bag
@@ -258,9 +428,10 @@ export default {
 			width: 32em;
 			height: 10em;
 			border: solid 1px black;
-			background-color: #333;
+			background-color: #443c36;
 			overflow: scroll;
 			position: absolute;
+
 			.item
 			{
 				float: left;
@@ -272,8 +443,8 @@ export default {
 				.pic
 				{
 					position: relative;
-					width: 2em;
-					height: 2em;
+					width: 34px;
+					height: 34px;
 					top: .5em;
 					left:.7em;
 				}

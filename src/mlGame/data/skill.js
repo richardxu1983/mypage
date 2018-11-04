@@ -2,8 +2,8 @@
 
 var FSKL = 
 [
-{"id":0,"name":"重击","icon":"a.png","desc":"对敌军单体发动一次强力的攻击（伤害率<>）和一次仙法攻击（伤害率<>，受仙法影响），2次攻击独立计算","base":"100<>90","":"4<>4","lb":1,"lbp":1.5,"maxLvl":10,"type":1,"eff":"[0,2]","prob":0.2,"probAdd":0.015,"target":2,"range":2},
-{"id":1,"name":"鼓舞","icon":"a.png","desc":"鼓舞士气，持续3回合","base":"","":"","lb":1,"lbp":1.5,"maxLvl":10,"type":0,"eff":"[1]","prob":0,"probAdd":0,"target":1,"range":2}
+{"id":0,"name":"重击","icon":"01","desc":"对敌军单体发动一次强力的攻击（伤害率<>）和一次仙法攻击（伤害率<>，受仙法影响），2次攻击独立计算","base":"100<>90","":"4<>4","lb":1,"lbp":1.5,"maxLvl":10,"type":1,"eff":"[0,2]","prob":0.2,"probAdd":0.015,"target":2,"range":2},
+{"id":1,"name":"鼓舞","icon":"01","desc":"鼓舞士气，持续3回合","base":"","":"","lb":1,"lbp":1.5,"maxLvl":10,"type":0,"eff":"[1]","prob":0,"probAdd":0,"target":1,"range":2}
 ]
 
 var FSC = 
