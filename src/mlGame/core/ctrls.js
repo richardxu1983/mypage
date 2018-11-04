@@ -19,7 +19,7 @@ var c = {
 	new:function()
 	{
 		$kctrl.new();
-		$ti.reSet();
+		$ti.new();
         $ply.new();
         $scene.new();
         $zxCtrl.new();

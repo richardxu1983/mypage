@@ -326,7 +326,7 @@ function castZhudong(u)
                 id = u.attr.zf[index].id;
                 if(skl[id].type==1) //类型为主动技能
                 {
-                    lvl = u.attr.zf[index].lvl;
+                    lvl = u.attr.zf[index].lv;
                     probAdd = skl[id].probAdd;
                     prob = skl[id].prob+(lvl-1)*probAdd;
                     p = Math.random();
@@ -446,7 +446,7 @@ function castZhiHui(u)
                 id = u.attr.zf[index].id;
                 if(id>=0&&skl[id].type==0) //类型为主动技能
                 {
-                    lvl = u.attr.zf[index].lvl;
+                    lvl = u.attr.zf[index].lv;
                     castSkill(u,id,lvl);
                 }
             }

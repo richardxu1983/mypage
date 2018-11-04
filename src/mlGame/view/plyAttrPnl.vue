@@ -14,7 +14,20 @@
 			</div>
 		</div>
 		<div class="box">
-
+			<div v-if="zfPnl" class="zfSelPnl">
+				<div class="txt">全部战法</div>
+				<div class="contain">
+					<div v-for="(zf,index) in zfList" :key="index">
+						<div :id="'zf_'+index" class="left item" @click="zfSel(index)">
+							<img class="pic" :src="zfIcon(index)">
+							<div class="name">
+								{{zfName(index)}}
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="clo" @click="zfPnl=false">关闭</button>
+			</div>
 			<div v-if="sel==1">
 				<div class="attr">
 					<p>当前生命：{{ hp }}</p>
@@ -26,13 +39,24 @@
 					<p>悟性：0</p>
 				</div>
 				<div class="szzf">
-					上阵战法：
+					<div class="title">
+						上阵战法
+					</div>
+					<div v-for="(sk,index) in fsl" :key="index"  @click="openZfPnl(index)" class="left cell">
+						<div class="txt" v-if="sk<0">
+							空
+						</div>
+						<div v-else>
+							<img class="pic" :src="skIcon(index)">
+							<div class="szName">{{szzfName(index)}}</div>
+						</div>
+					</div>
 				</div>
 				<div class="cl">
 					<div class="title">
-						研习：
+						研习
 					</div>
-					<div class="content">
+					<div>
 						<div v-if="learning">
 							<img class="pic" :src="clIcon()">
 							<div class="time">
@@ -63,7 +87,6 @@
 					</div>
 				</div>
 			</div>
-			
 			<div v-if="sel==2" class="ng">
 				<div v-for="(ng,index) in ngList" :key="index" class="left">
 					<div :id="'ng_'+index" class="item" @click="study(0,index)">
@@ -87,7 +110,6 @@
 			<button class="close" @click="close">关闭</button>
 		</div>
 	</div>
-
 </template>
 
 <script>
@@ -111,6 +133,8 @@ export default {
 			player:$ply,
 			show:$plyUI,
 			sel:1,
+			zfPnl:false,
+			cuFtIdx:-1,
 		}
 	},
 	computed: 
@@ -122,6 +146,10 @@ export default {
 		ngList:function()
 		{
 			return this.player.attr.ng;
+		},
+		fsl:function()
+		{
+			return this.player.attr.fskl;
 		},
 		zfList:function()
 		{
@@ -193,6 +221,7 @@ export default {
 	{
 		close:function()
 		{
+			this.zfPnl=false;
 			this.show.pnl=false;
 		},
 		itemName:function(index)
@@ -239,9 +268,23 @@ export default {
 			var id = zf.id;
 			return skl[id].name+" ( Lv."+zf.lv+" )";
 		},
+		szzfName:function(idx)
+		{
+			var el = this.player.attr.fskl[idx];
+			var zf = this.player.attr.zf[el];
+			var id = zf.id;
+			return skl[id].name;
+		},
 		zfIcon:function(index)
 		{
 			var zf = this.player.attr.zf[index];
+			var id = zf.id;
+			return "/static/img/mlGame/zf_"+skl[id].icon+".png";
+		},
+		skIcon:function(idx)
+		{
+			var el = this.player.attr.fskl[idx];
+			var zf = this.player.attr.zf[el];
 			var id = zf.id;
 			return "/static/img/mlGame/zf_"+skl[id].icon+".png";
 		},
@@ -266,7 +309,17 @@ export default {
 	            var id = zf.id;
 	            return "/static/img/mlGame/zf_"+skl[id].icon+".png";
 			}			
-		}
+		},
+		openZfPnl:function(index)
+		{
+			this.cuFtIdx = index;
+			this.zfPnl=true;
+		},
+		zfSel:function(idx)
+		{
+			this.player.addToFtByIdxPos(idx,this.cuFtIdx);
+			this.zfPnl=false;
+		},
 	}
 }
 </script>
@@ -312,6 +365,44 @@ export default {
 		padding: 25px;
 		background-color: #333;
 		color: white;
+		
+		.zfSelPnl
+		{
+			position: absolute;
+			border: solid 2px black;
+			background-color: #333;
+			left: 10em;
+			top:6em;
+			width: 32em;
+			height: 20em;
+			z-index:1;
+			.txt
+			{
+				position: absolute;
+				left:.5em;
+				top:.5em;
+				background-color: #443c36;
+				font-weight: bolder;
+				padding: .5em;
+			}
+			.contain
+			{
+				position: absolute;
+				left: 2em;
+				top: 4em;
+				width: 28em;
+				height: 12em;
+				border: solid 1px black;
+				background-color: #443c36;
+				overflow: scroll;
+			}
+			.clo
+			{
+				position: absolute;
+				left: 15em;
+				bottom: 1em;
+			}
+		}
 
 		.ng
 		{
@@ -350,54 +441,94 @@ export default {
 				}
 			}
 		}
-
+		.title
+		{
+			position: absolute;
+			top: -2.2em;
+			background-color: #443c36;
+			font-weight: bolder;
+			padding: .2em;
+		}
 		.szzf
 		{
 			position: absolute;
 			top: 12em;
-			left: 18em;
-			width: 32em;
+			left: 27em;
+			width: 25em;
 			height: 5em;
-			border: solid 1px black;
+			.cell
+			{
+				width: 6em;
+				margin-right: .5em;
+				height: 5em;
+				background-color: #443c36;
+				.sel
+				{
+					position: relative;
+					bottom: -2em;
+					left: 1.5em;
+				}
+				.txt
+				{
+					position: relative;
+					top:1.2em;
+					left: 0em;
+					width: 6em;
+					text-align: center;
+				}
+				.pic
+				{
+					position: relative;
+					top:1em;
+					left: 2.2em;
+					width: 24px;
+					height: 24px;
+				}
+				.szName
+				{
+					position: relative;
+					top:1.2em;
+					left: 0em;
+					width: 6em;
+					text-align: center;
+				}
+			}
+			.cell:hover
+			{
+				cursor: pointer;;
+			}
 		}
 		.cl
 		{
 			position: absolute;
-			top: 6em;
+			top: 12em;
 			left: 18em;
-			width: 32em;
+			width: 6em;
 			height: 5em;
-			border: solid 1px black;
-			.title
-			{
-				position: absolute;
-				top: 1.8em;
-			}
+			background-color: #443c36;
+			text-align: center;
 			.pic
 			{
 				position: absolute;
 				top:1em;
 				height: 24px;
-				width: 24px;				
+				width: 24px;
+				left: 2em;
 			}
 			.txt
 			{
 				position: absolute;
-				top:1.8em;				
-			}
-			.content
-			{
-				position: absolute;
-				left: 3em;
-				height: 24px;
-				width: 24px;
+				top:1.8em;
+				width: 6em;
+				text-align: center;		
 			}
 			.time
 			{
 				position: absolute;
 				top:3.4em;
 				height: 24px;
-				width: 5em;				
+				width: 6em;
+				text-align: center;
 			}
 		}
 		.attr
@@ -418,6 +549,9 @@ export default {
 			position: absolute;
 			top: 18em;
 			left: 18.5em;
+			background-color: #443c36;
+			font-weight: bolder;
+			padding: .2em;
 		}
 
 		.bag

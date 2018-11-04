@@ -217,8 +217,6 @@ class Unit
 
     addToFtByIdx(idx)
     {
-        if(this.attr.fskl.length>=3)
-            return;
 
         if(this.attr.zf[idx]==undefined)
             return;
@@ -233,12 +231,21 @@ class Unit
         }
     }
 
+    addToFtByIdxPos(idx,pos)
+    {
+        for(var i=0;i<3;i++)
+        {
+            if(this.attr.fskl[i]==idx&&pos!=i)
+            {
+                this.attr.fskl[i]=-1;
+            }
+        }
+        this.attr.fskl[pos] = idx;
+    }
+
     addToFtById(id)
     {
         if(!skl[id])
-            return;
-
-        if(this.attr.fskl.length>=3)
             return;
 
         var len = this.attr.zf.length;
