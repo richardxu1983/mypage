@@ -84,14 +84,8 @@ export default {
 		},
 		test:function()
 		{
-			//console.log(JSON.parse(NG.NG[0].attr));
-			//console.log($ply.hpmax());
-			var r = Math.random();
-
-			if(r>0.5)
-				$ply.bagAddItem(0);
-			else
-				$ply.bagAddItem(1);
+			$ply.bagAddItem(0);
+			$ply.bagAddItem(1);
 		},
 		fight:function()
 		{

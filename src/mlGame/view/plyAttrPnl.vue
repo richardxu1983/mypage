@@ -33,19 +33,28 @@
 			</div>
 			<div v-if="sel==1">
 				<div class="attr">
-					<p>当前生命：{{ hp }}</p>
-					<p>最大生命：{{ hpmax }}</p>
-					<p>攻击：{{ atk }}</p>
-					<p>仙法：{{ mtk }}</p>
-					<p>速度：{{ spd }}</p>
-					<p>防御力：{{ def }}</p>
-					<p>悟性：0</p>
+					<div class="tit">
+						基本属性
+					</div>
+					<div class="con">
+						<div class="lcon">
+							<p>生命：{{ hp }}/{{ hpmax }}</p>
+							<p>悟性：0</p>	
+							<p>速度：{{ spd }}</p>
+						</div>
+						<div class="rcon">
+							<p>攻击：{{ atk }}</p>
+							<p>仙法：{{ mtk }}</p>
+							<p>防御力：{{ def }}</p>
+						</div>						
+					</div>
+
 				</div>
 				<div class="szzf">
 					<div class="title">
 						上阵战法
 					</div>
-					<div v-for="(sk,index) in fsl" :key="index"  @click="openZfPnl(index)" class="left cell back">
+					<div v-for="(sk,index) in fsl" :key="index"  @click="openZfPnl(index)" class="left cell">
 						<div class="txt" v-if="sk<0">
 							空
 						</div>
@@ -62,7 +71,7 @@
 					<div class="title">
 						研习
 					</div>
-					<div>
+					<div class="cell">
 						<div v-if="learning">
 							<img class="pic" :src="clIcon()">
 							<div class="time">
@@ -283,12 +292,12 @@ export default {
 		zfLv:function(idx)
 		{
 			var zf = this.player.attr.zf[idx];
-			return zf.lv;
+			return "L"+zf.lv;
 		},
 		ngLv:function(index)
 		{
 			var ng = this.player.attr.ng[index];
-			return ng.lv;
+			return "L"+ng.lv;
 		},
 		szzfName:function(idx)
 		{
@@ -301,7 +310,7 @@ export default {
 		{
 			var el = this.player.attr.fskl[idx];
 			var zf = this.player.attr.zf[el];
-			return zf.lv;
+			return "L"+zf.lv;
 		},
 		zfIcon:function(index)
 		{
@@ -360,9 +369,9 @@ export default {
 	{
 		position: absolute;
 		width: 52em;
-		top:3.9em;
+		top:4.5em;
 		height: 3em;
-		left: 2em;
+		left: 6em;
 		z-index:100;
 		.btn
 		{
@@ -375,6 +384,10 @@ export default {
 			color:white;
 			text-align: center;
 		}
+		.btn:hover
+		{
+			cursor: pointer;
+		}
 		.active
 		{
 			background-color: #69594e;
@@ -383,7 +396,7 @@ export default {
 
 	.cell
 	{
-		width: 6em;
+		width: 5em;
 		height: 5em;
 		background-color: #111;
 		margin:.5em;
@@ -391,25 +404,25 @@ export default {
 		{
 			position: relative;
 			top:1em;
-			left: 2em;
+			left: 1.5em;
 			width: 24px;
 			height: 24px;
 		}
 		.szName
 		{
 			position: relative;
-			top:1.2em;
-			left: 0em;
+			top:1.7em;
 			width: 6em;
 			text-align: center;
 			overflow-style: hidden;
+			font-size: xx-small;
 		}
 		.lv
 		{
 			position: relative;
-			top:-2em;
-			right: -4.5em;
-			width: 20px;
+			top:-1.8em;
+			right: -3.8em;
+			width: 2em;
 			height: 15px;
 			text-align: center;
 			font-size: xx-small;
@@ -423,36 +436,35 @@ export default {
 		.txt
 		{
 			position: relative;
-			top:1.2em;
-			left: 0em;
-			width: 6em;
+			top:1.5em;
+			width: 5em;
 			text-align: center;
+
 		}
 	}
 	.cell:hover
 	{
 		cursor: pointer;
 	}
-	
-	
 	.box
 	{
 		position: absolute;
-		width: 48em;
-		height: 30em;
-		left: 2em;
-		top: 6em;
+		width: 40em;
+		height: 29.3em;
+		left: 6em;
+		top: 6.7em;
 		padding: 25px;
 		background-color: #333;
 		color: white;
+		border: 2px solid black;
 		
 		.zfSelPnl
 		{
 			position: absolute;
 			border: solid 2px black;
 			background-color: #443c36;
-			left: 10em;
-			top:6em;
+			left: 5.5em;
+			top:4em;
 			width: 32em;
 			height: 20em;
 			z-index:1;
@@ -487,8 +499,8 @@ export default {
 		.ng
 		{
 			padding: 1em;
-			width: 47em;
-			height: 26em;
+			width: 38em;
+			height: 21em;
 			overflow: scroll;
 			border: solid 1px black;
 			position: absolute;
@@ -497,16 +509,18 @@ export default {
 		.title
 		{
 			position: absolute;
-			top: -2.2em;
+			top: -1.5em;
 			background-color: #443c36;
 			font-weight: bolder;
 			padding: .2em;
+			left: 0.5em;
+			font-size:small;
 		}
 		.szzf
 		{
 			position: absolute;
-			top: 12em;
-			left: 27em;
+			top: 11.3em;
+			left: 17em;
 			width: 25em;
 			height: 5em;
 			.back
@@ -517,54 +531,91 @@ export default {
 		.cl
 		{
 			position: absolute;
-			top: 12em;
-			left: 18em;
+			top: 11.3em;
+			left: 10em;
 			width: 6em;
 			height: 5em;
-			background-color: #443c36;
 			text-align: center;
+			.back
+			{
+				background-color: #443c36;
+			}
 			.pic
 			{
 				position: absolute;
-				top:1em;
+				top:1.5em;
 				height: 24px;
 				width: 24px;
-				left: 2em;
+				left: 2.2em;
 			}
 			.txt
 			{
 				position: absolute;
-				top:1.8em;
+				top:2.5em;
 				width: 6em;
-				text-align: center;		
+				text-align: center;
+				font-size: xx-small;
 			}
 			.time
 			{
 				position: absolute;
-				top:3.4em;
+				top:4.5em;
 				height: 24px;
 				width: 6em;
 				text-align: center;
+				font-size: xx-small;
 			}
 		}
 		.attr
 		{
 			position: absolute;
-			top:6em;
-			left: 2em;
+			top:2.1em;
+			left:10.5em;
+			.tit
+			{
+				position: absolute;
+				top: -1.2em;
+				background-color: #443c36;
+				font-weight: bolder;
+				padding: .2em;
+				width: 4.5em;
+			}
+			.con
+			{
+				position: absolute;
+				top:1em;
+				background-color: #111;
+				font-size: xx-small;
+				width: 22em;
+				height: 5em;
+				padding: 1em;
+			}
+			.lcon
+			{
+				position: absolute;
+				top:.8em;
+				width: 8em;
+			}
+			.rcon
+			{
+				position: absolute;
+				width: 7em;
+				left:12em;
+				top:.8em;
+			}
 		}
 		.close
 		{
 			position: absolute;
 			bottom: 1em;
-			left: 25em;
+			left: 21em;
 		}
 		
 		.bagttl
 		{
 			position: absolute;
-			top: 18em;
-			left: 18.5em;
+			top: 17.1em;
+			left: 10.5em;
 			background-color: #443c36;
 			font-weight: bolder;
 			padding: .2em;
@@ -605,7 +656,7 @@ export default {
 					width: 100%;
 					height: 1.5em;
 					overflow: hidden;
-					font-size: 50%;
+					font-size: xx-small;
 					text-align: center;
 					color: white;
 				}
@@ -616,10 +667,10 @@ export default {
 					right:-3em;
 					width: 1.5em;
 					overflow: hidden;
-					font-size: 50%;
 					text-align: center;
 					background-color: #333;
 					color: white;
+					font-size: xx-small;
 				}
 			}
 		}
