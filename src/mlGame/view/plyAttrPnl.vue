@@ -18,10 +18,13 @@
 				<div class="txt">全部战法</div>
 				<div class="contain">
 					<div v-for="(zf,index) in zfList" :key="index">
-						<div :id="'zf_'+index" class="left item" @click="zfSel(index)">
+						<div :id="'zf_'+index" class="left cell" @click="zfSel(index)">
 							<img class="pic" :src="zfIcon(index)">
-							<div class="name">
+							<div class="szName">
 								{{zfName(index)}}
+							</div>
+							<div class="lv">
+								{{zfLv(index)}}
 							</div>
 						</div>
 					</div>
@@ -42,13 +45,16 @@
 					<div class="title">
 						上阵战法
 					</div>
-					<div v-for="(sk,index) in fsl" :key="index"  @click="openZfPnl(index)" class="left cell">
+					<div v-for="(sk,index) in fsl" :key="index"  @click="openZfPnl(index)" class="left cell back">
 						<div class="txt" v-if="sk<0">
 							空
 						</div>
 						<div v-else>
 							<img class="pic" :src="skIcon(index)">
 							<div class="szName">{{szzfName(index)}}</div>
+							<div class="lv">
+								{{szzfLv(index)}}
+							</div>
 						</div>
 					</div>
 				</div>
@@ -89,20 +95,26 @@
 			</div>
 			<div v-if="sel==2" class="ng">
 				<div v-for="(ng,index) in ngList" :key="index" class="left">
-					<div :id="'ng_'+index" class="item" @click="study(0,index)">
+					<div :id="'ng_'+index" class="cell" @click="study(0,index)">
 						<img class="pic" :src="ngIcon(index)">
-						<div class="name">
+						<div class="szName">
 							{{ngName(index)}}
+						</div>
+						<div class="lv">
+							{{ngLv(index)}}
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="sel==3" class="ng">
 				<div v-for="(zf,index) in zfList" :key="index" class="left">
-					<div :id="'zf_'+index" class="item" @click="study(1,index)">
+					<div :id="'zf_'+index" class="cell" @click="study(1,index)">
 						<img class="pic" :src="zfIcon(index)">
-						<div class="name">
+						<div class="szName">
 							{{zfName(index)}}
+						</div>
+						<div class="lv">
+							{{zfLv(index)}}
 						</div>
 					</div>
 				</div>
@@ -254,7 +266,7 @@ export default {
 		{
 			var ng = this.player.attr.ng[index];
 			var id = ng.id;
-			return $ng[id].name+" ( Lv."+ng.lv+" )";
+			return $ng[id].name;
 		},
 		ngIcon:function(index)
 		{
@@ -266,7 +278,17 @@ export default {
 		{
 			var zf = this.player.attr.zf[index];
 			var id = zf.id;
-			return skl[id].name+" ( Lv."+zf.lv+" )";
+			return skl[id].name;
+		},
+		zfLv:function(idx)
+		{
+			var zf = this.player.attr.zf[idx];
+			return zf.lv;
+		},
+		ngLv:function(index)
+		{
+			var ng = this.player.attr.ng[index];
+			return ng.lv;
 		},
 		szzfName:function(idx)
 		{
@@ -274,6 +296,12 @@ export default {
 			var zf = this.player.attr.zf[el];
 			var id = zf.id;
 			return skl[id].name;
+		},
+		szzfLv:function(idx)
+		{
+			var el = this.player.attr.fskl[idx];
+			var zf = this.player.attr.zf[el];
+			return zf.lv;
 		},
 		zfIcon:function(index)
 		{
@@ -353,6 +381,58 @@ export default {
 		}
 	}
 
+	.cell
+	{
+		width: 6em;
+		height: 5em;
+		background-color: #111;
+		margin:.5em;
+		.pic
+		{
+			position: relative;
+			top:1em;
+			left: 2em;
+			width: 24px;
+			height: 24px;
+		}
+		.szName
+		{
+			position: relative;
+			top:1.2em;
+			left: 0em;
+			width: 6em;
+			text-align: center;
+			overflow-style: hidden;
+		}
+		.lv
+		{
+			position: relative;
+			top:-2em;
+			right: -4.5em;
+			width: 20px;
+			height: 15px;
+			text-align: center;
+			font-size: xx-small;
+		}
+		.sel
+		{
+			position: relative;
+			bottom: -2em;
+			left: 1.5em;
+		}
+		.txt
+		{
+			position: relative;
+			top:1.2em;
+			left: 0em;
+			width: 6em;
+			text-align: center;
+		}
+	}
+	.cell:hover
+	{
+		cursor: pointer;
+	}
 	
 	
 	.box
@@ -370,7 +450,7 @@ export default {
 		{
 			position: absolute;
 			border: solid 2px black;
-			background-color: #333;
+			background-color: #443c36;
 			left: 10em;
 			top:6em;
 			width: 32em;
@@ -393,7 +473,7 @@ export default {
 				width: 28em;
 				height: 12em;
 				border: solid 1px black;
-				background-color: #443c36;
+				background-color: #333;
 				overflow: scroll;
 			}
 			.clo
@@ -413,33 +493,6 @@ export default {
 			border: solid 1px black;
 			position: absolute;
 			background-color: #443c36;
-			.item
-			{
-				float: left;
-				margin: 2px;
-				width: 6em;
-				height: 7em;
-				vertical-align: middle;
-				display: table-cell;
-				.pic
-				{
-					position: relative;
-					width: 24px;
-					height: 24px;
-					top: 0em;
-					left:1.5em;
-				}
-				.name
-				{
-					position: relative;
-					bottom: 0em;
-					width: 6em;
-					overflow: hidden;
-					font-size: 50%;
-					text-align: center;
-					color: white;
-				}
-			}
 		}
 		.title
 		{
@@ -456,46 +509,9 @@ export default {
 			left: 27em;
 			width: 25em;
 			height: 5em;
-			.cell
+			.back
 			{
-				width: 6em;
-				margin-right: .5em;
-				height: 5em;
 				background-color: #443c36;
-				.sel
-				{
-					position: relative;
-					bottom: -2em;
-					left: 1.5em;
-				}
-				.txt
-				{
-					position: relative;
-					top:1.2em;
-					left: 0em;
-					width: 6em;
-					text-align: center;
-				}
-				.pic
-				{
-					position: relative;
-					top:1em;
-					left: 2.2em;
-					width: 24px;
-					height: 24px;
-				}
-				.szName
-				{
-					position: relative;
-					top:1.2em;
-					left: 0em;
-					width: 6em;
-					text-align: center;
-				}
-			}
-			.cell:hover
-			{
-				cursor: pointer;;
 			}
 		}
 		.cl
