@@ -1,7 +1,7 @@
 <template>
 	<div class="bottomBar">
 		<img class="player_head" src="/static/img/mlGame/player_head.png" @click="showPnl()">
-		<div class="hpBar z1" :style="{width:'55px','background-color':'black'}"></div>
+		<div class="hpBar z1" :style="{width:'45px','background-color':'black'}"></div>
 		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
 	</div>
 </template>
@@ -37,7 +37,7 @@ export default {
 	computed:{
 		plyhpw:function()
 	    {
-	    	var len = Math.floor((this.player.hp()/this.player.hpmax())*55);
+	    	var len = Math.floor((this.player.hp()/this.player.hpmax())*45);
 	    	return len;		
 	    },
 	    plyhpc:function()
@@ -64,8 +64,8 @@ export default {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		height: 5em;
-		padding: .4em .4em 0em .7em;
+		height: 4em;
+		padding: 0 .4em 0em .7em;
 		box-sizing: border-box;
 	}
 	.z1{
@@ -77,9 +77,9 @@ export default {
 	.player_head{
 		position: absolute;
 		left: 0.7em;
-		top:0.3em;
-		width: 55px;
-		height: 55px;
+		top:0;
+		width: 45px;
+		height: 45px;
 		background-color: white;
 		border-radius: 3px;
 	}

@@ -1,27 +1,25 @@
-import ktrl from '../../mlGame/core/kuangchang.js'
 import RO from '../../mlGame/core/role.js'
 import TI from '../../mlGame/core/gTime.js'
-import SCE from '../../mlGame/core/sceneCtrl.js'
-import ZXModule from '../../mlGame/core/zhenxing.js'
-var $kctrl = ktrl.kcCtrl;
+import ZX from '../../mlGame/core/zhenxing.js'
+import MAP from '../../mlGame/core/gameMap.js'
 var $ti = TI.gtime;
-var $scene = SCE.scene;
 var $ply = RO.role;
-var $zxCtrl = ZXModule.zxCtrl;
+var $zxCtrl = ZX.zxCtrl;
+var $map = MAP.mapCtrl;
 
 var c = {
 
 	start:function()
 	{
-		c.load();
+		c.new();
+		$map.genNew();
+		$ply.setPos(25,25);
 	},
 
 	new:function()
 	{
-		$kctrl.new();
 		$ti.new();
         $ply.new();
-        $scene.new();
         $zxCtrl.new();
 	},
 
@@ -30,14 +28,12 @@ var c = {
         $ti.load();
         $ply.load();
         $zxCtrl.load();
-        $scene.load();
-        $kctrl.load();
 	},
 
 	refresh:function()
 	{
-		$scene.refresh();
+
 	},
 }
 
-export default { c}; 
+export default {c}; 

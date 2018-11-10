@@ -369,7 +369,7 @@ export default {
 	{
 		position: absolute;
 		width: 52em;
-		top:4.5em;
+		top:2.8em;
 		height: 3em;
 		left: 6em;
 		z-index:100;
@@ -452,7 +452,7 @@ export default {
 		width: 40em;
 		height: 29.3em;
 		left: 6em;
-		top: 6.7em;
+		top: 5em;
 		padding: 25px;
 		background-color: #333;
 		color: white;

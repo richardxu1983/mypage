@@ -5,12 +5,14 @@ import WPD from '../../mlGame/data/wpData.js'
 import NG from '../../mlGame/data/ng.js'
 import ITM from '../../mlGame/data/item.js'
 import NPCD from '../../mlGame/data/npc.js'
+import MAP from '../../mlGame/core/gameMap.js'
 var Fight = FT.Fight;
 var $wp = WPD.wp;
 var skl = SK.FSKL;
 var $npc = NPCD.npc;
 var $item = ITM.item;
 var $ng = NG.NG;
+var $map = MAP.mapCtrl;
 
 class Unit
 {
@@ -21,6 +23,7 @@ class Unit
         this.attr = 
         {
             'id':0,
+            'idx':0,
             'head':"",
             'name':"",
             'type':0,
@@ -36,7 +39,7 @@ class Unit
             'tx':[],    //特性
             'ng':[],    //所掌握内功
             'cl':{type:-1,index:0},    //正在练习的技能
-            'pos':-1,   //位置
+            'pos':{'x':0,'y':0,'m':0},   //位置
         };
 
         //计算属性
@@ -90,6 +93,18 @@ class Unit
         this.ft.mtkp=0;
         this.ft.spdp=0;
         this.ft.defp=0;
+    }
+
+    idx(v)
+    {
+        if(v!=undefined)
+        {
+            this.setAttr('idx', v)
+        }
+        else
+        {
+            return this.getAttr('idx');
+        }
     }
 
     id(v)
@@ -163,6 +178,39 @@ class Unit
         {
             return this.getAttr('name');
         }
+    }
+
+    pos(v)
+    {
+        if(v)
+        {
+            this.attr.pos.x=v.x;
+            this.attr.pos.y=v.y;
+        }
+        else
+        {
+            return this.getAttr('pos');
+        }
+    }
+
+    moveTo(x,y)
+    {
+        var v = addUnitToPos(x,y,this);
+        if(v==-1)
+            return;
+        var oldIdx = this.attr.pos.m;
+        var oldx = this.attr.pos.x;
+        var oldy = this.attr.pos.y;
+        $map.delUnitAtByIdx(oldx,oldy,oldIdx);
+        this.pos({'x':x,'y':y});
+        this.attr.pos.m = v;
+    }
+
+    setPos(x,y)
+    {
+        var v = addUnitToPos(x,y,this);
+        this.pos({'x':x,'y':y});
+        this.attr.pos.m = v;
     }
 
     fskl()

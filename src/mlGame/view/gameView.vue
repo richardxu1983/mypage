@@ -7,7 +7,7 @@
 		</div>
 		<fightPnl></fightPnl>
 		<plyPnl></plyPnl>
-		<ntk></ntk>
+		<scene></scene>
 		<wpDesc v-if="wpDesc" @clsWp="clsWp"></wpDesc>
 		<div class="infoBox" id="info"></div>
 		<!--<textarea name="" id="infoBox" class="infoBox" readonly>{{info.v}}</textarea>-->
@@ -31,11 +31,11 @@ import fightPnl from '../../mlGame/view/fightPnl.vue'
 import plyPnl from '../../mlGame/view/plyAttrPnl.vue'
 import wpDesc from '../../mlGame/view/wpDesc.vue'
 import tiv from '../../mlGame/view/tiv.vue'
-import ntk from '../../mlGame/view/npcTalk.vue'
 import CT from '../../mlGame/core/ctrls.js'
 import bottomBar from '../../mlGame/view/bottomBar.vue'
 import zxModule from '../../mlGame/core/zhenxing.js'
 import FT from '../../mlGame/core/fight.js'
+import scene from '../../mlGame/view/scene.vue'
 var $ctrl = CT.c;
 var $ply = RO.role;
 var zxCtrl = zxModule.zxCtrl;
@@ -60,9 +60,9 @@ export default {
 	  fightPnl,
 	  wpDesc,
 	  tiv,
-	  ntk,
 	  bottomBar,
 	  plyPnl,
+	  scene,
 	},
 	created:function()
 	{
@@ -123,7 +123,7 @@ export default {
 	.infoBox{
 		position: absolute;
 		width: 100%;
-		bottom: 5em;
+		bottom: 4em;
 		padding: 0.3em 0 0.3em 1em;
 		box-sizing: border-box;
 		overflow-y: hidden;
@@ -131,6 +131,7 @@ export default {
 		background-color: #333;
 		color: white;
 		font-size: 1.1em;
+		opacity: .5;
 	}
 	.topBar{
 		position: absolute;
