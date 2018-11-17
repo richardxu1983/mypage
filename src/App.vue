@@ -76,4 +76,29 @@ export default {
     }
   }
 
+  .map
+  {
+    position: absolute;
+    width: 62px;
+    height: 62px;
+    border:1px solid gray;
+    box-sizing: border-box;
+  }
+
+  .tilePos
+  {
+    position: absolute;
+    left: 0;
+    top:0;
+    color: black;
+    font-size: xx-small;
+  }
+
+  .mapTile
+  {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+  }
+
 </style>

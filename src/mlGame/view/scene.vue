@@ -1,29 +1,19 @@
 <template>
-	<div class="scene">
+	<div class="sce">
+		<div id="maps"></div>
+		<img class="" id="flag" src="/static/img/mlGame/flag.png">
 	</div>
 </template>
 
 <script>
 
+import mp from '../../mlGame/core/gameMap.js'
+var $map = mp.mapCtrl;
 
 export default 
 {
 	name:"scene",
-	data:function()
-	{
 
-	},
-	computed:
-	{
-	},
-	components: 
-	{
-
-	},
-	methods:
-	{
-
-	}
 }
 
 </script>
@@ -32,15 +22,14 @@ export default
 <style lang="scss" scoped>
 
 	@import "../../scss/mlGame";
-	.scene
+	.sce
 	{
 		position: absolute;
 		width: 100%;
-		height: 33em;
-		top:4em;
+		height: 37.5em;
+		top:3em;
 		left:0;
 		box-sizing: border-box;
 		background-color: black;
 	}
-
 </style>

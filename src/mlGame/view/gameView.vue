@@ -70,7 +70,7 @@ export default {
 	},
 	mounted:function()
 	{
-		$ctrl.refresh();
+		$ctrl.mounted();
 	},
 	methods:
 	{
@@ -128,7 +128,6 @@ export default {
 		box-sizing: border-box;
 		overflow-y: hidden;
 		height: 2em;
-		background-color: #333;
 		color: white;
 		font-size: 1.1em;
 		opacity: .5;
@@ -148,7 +147,7 @@ export default {
 
 	.mlBoard{
 		width: 800px;
-		height: 600px;
+		height: 650px;
 		margin: 0;
 		border: solid 1px #ccc;
 		position: relative;

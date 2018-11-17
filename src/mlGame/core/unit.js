@@ -1,18 +1,10 @@
 
-import FT from '../../mlGame/core/fight.js'
-import SK from '../../mlGame/data/skill.js'
-import WPD from '../../mlGame/data/wpData.js'
-import NG from '../../mlGame/data/ng.js'
-import ITM from '../../mlGame/data/item.js'
-import NPCD from '../../mlGame/data/npc.js'
-import MAP from '../../mlGame/core/gameMap.js'
-var Fight = FT.Fight;
-var $wp = WPD.wp;
-var skl = SK.FSKL;
-var $npc = NPCD.npc;
-var $item = ITM.item;
-var $ng = NG.NG;
-var $map = MAP.mapCtrl;
+const Fight = require('../../mlGame/core/fight.js').default.Fight;
+const $wp = require('../../mlGame/data/wpData.js').default.wp;
+const skl = require('../../mlGame/data/skill.js').default.FSKL;
+const $npc = require('../../mlGame/data/ng.js').default.npc;
+const $item = require('../../mlGame/data/item.js').default.item;
+const $ng = require('../../mlGame/data/npc.js').default.NG;
 
 class Unit
 {
@@ -195,7 +187,8 @@ class Unit
 
     moveTo(x,y)
     {
-        var v = addUnitToPos(x,y,this);
+        let $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+        var v = $map.addUnitToPos(x,y,this);
         if(v==-1)
             return;
         var oldIdx = this.attr.pos.m;
@@ -208,7 +201,8 @@ class Unit
 
     setPos(x,y)
     {
-        var v = addUnitToPos(x,y,this);
+        let $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+        var v = $map.addUnitToPos(x,y,this);
         this.pos({'x':x,'y':y});
         this.attr.pos.m = v;
     }

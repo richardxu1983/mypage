@@ -64,7 +64,7 @@ export default {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		height: 4em;
+		height: 4.5em;
 		padding: 0 .4em 0em .7em;
 		box-sizing: border-box;
 	}
@@ -77,7 +77,7 @@ export default {
 	.player_head{
 		position: absolute;
 		left: 0.7em;
-		top:0;
+		top:0.5em;
 		width: 45px;
 		height: 45px;
 		background-color: white;

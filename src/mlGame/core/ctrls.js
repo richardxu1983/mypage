@@ -12,8 +12,11 @@ var c = {
 	start:function()
 	{
 		c.new();
-		$map.genNew();
+
+		//创建地图
 		$ply.setPos(25,25);
+		$map.setCutPos(25,25);
+
 	},
 
 	new:function()
@@ -30,9 +33,9 @@ var c = {
         $zxCtrl.load();
 	},
 
-	refresh:function()
+	mounted:function()
 	{
-
+		$map.createEl();
 	},
 }
 

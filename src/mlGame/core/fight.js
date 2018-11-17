@@ -1,3 +1,4 @@
+
 import SK from '../../mlGame/data/skill.js'
 import FTD from '../../mlGame/data/fightData.js'
 var skl = SK.FSKL;
