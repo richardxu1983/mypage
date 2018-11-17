@@ -32,6 +32,7 @@ class Unit
             'ng':[],    //所掌握内功
             'cl':{type:-1,index:0},    //正在练习的技能
             'pos':{'x':0,'y':0,'m':0},   //位置
+            'side':0,
         };
 
         //计算属性
@@ -108,6 +109,18 @@ class Unit
         else
         {
             return this.getAttr('id');
+        }
+    }
+
+    side(v)
+    {
+        if(v!=undefined)
+        {
+            this.setAttr('side', v)
+        }
+        else
+        {
+            return this.getAttr('side');
         }
     }
 

@@ -34,20 +34,14 @@ class map
     {
     	this.data.units.splice(idx,1);
     }
-}
 
-function initMaps()
-{
-	for(var i=0;i<MAXCELL;i++)
-	{
-		for(var j=0;j<MAXCELL;j++)
-		{
-			var m = new map({'x':i,'y':j,'type':0});
-			maps[m.idx] = m;
-		}
-	}
+    captureByUnit(u)
+    {
+    	let s = u.side();
+    	this.data.ownBy = s;
+    	mapCtrl.renderBorderPos(this.data.x,this.data.y);
+    }
 }
-initMaps();
 
 class _mapCtrl 
 {
@@ -89,13 +83,13 @@ class _mapCtrl
 
 	insertMap(map)
 	{
-		maps[map.idx] = map;
+		maps[map.data.idx] = map;
 	}
 
 	genMapAtPos(x,y,type)
 	{
 		var m = new map({'x':x,'y':y,'type':type});
-		this.insertMap(m);
+		maps[m.data.idx] = m;
 	}
 
 	addUnitToPos(x,y,u)
@@ -103,7 +97,7 @@ class _mapCtrl
 		var m = this.getMapByPos(x, y);
 		if(m==undefined)
 			return -1;
-		return m.addUnitToPos(u.idx());
+		return m.addUnit(u.idx());
 	}
 
 	delUnitAtByIdx(x,y,idx)
@@ -123,6 +117,12 @@ class _mapCtrl
 		}
 	}
 
+	capturePosByUnit(x,y,u)
+	{
+		var m = this.getMapByPos(x, y);
+		m.captureByUnit(u);
+	}
+
 	createEl()
 	{
 		createTiles();
@@ -133,6 +133,118 @@ class _mapCtrl
 	{
 		this.renderTile();
 		this.reanderPly();
+	}
+
+	getTileByPos(x,y)
+	{
+		let xmin = this.cutPos.x - centerx + 1;
+		let ymin = this.cutPos.y - centery + 1;
+		let xi = x - xmin;	//绘图坐标
+		let xj = y - ymin;	//绘图坐标
+		var div = document.getElementById("tile_"+xi+"_"+xj);
+		return div;
+	}
+
+	renderBorderPos(x,y)
+	{
+		let div = this.getTileByPos(x,y);
+		var m = this.getMapByPos(x, y);
+		var s = m.data.ownBy;
+		
+		//判断上边
+		if(this.inRange(x,y+1))
+		{
+			var s1 = this.getMapByPos(x, y+1).data.ownBy;
+			if(s1==s)
+			{
+				div.style.borderTop = "2px solid #503810";
+				let d = this.getTileByPos(x,y+1);
+				d.style.borderBottom = "2px solid #503810";
+			}
+			else
+			{
+				this.renderSgB("borderTop",s,div);
+			}
+		}
+		else
+		{
+			//不在范围
+			this.renderSgB("borderTop",s,div);
+		}
+		
+		if(this.inRange(x,y-1))
+		{
+			var s1 = this.getMapByPos(x, y-1).data.ownBy;
+			if(s1==s)
+			{
+				div.style.borderBottom = "2px solid #503810";
+				let d = this.getTileByPos(x,y-1);
+				d.style.borderTop = "2px solid #503810";
+			}
+			else
+			{
+				this.renderSgB("borderBottom",s,div);
+			}
+		}
+		else
+		{
+			//不在范围
+			this.renderSgB("borderBottom",s,div);
+		}
+		if(this.inRange(x+1,y))
+		{
+			var s1 = this.getMapByPos(x+1, y).data.ownBy;
+			if(s1==s)
+			{
+				div.style.borderRight = "2px solid #503810";
+				let d = this.getTileByPos(x+1,y);
+				d.style.borderLeft = "2px solid #503810";
+			}
+			else
+			{
+				this.renderSgB("borderRight",s,div);
+			}
+		}
+		else
+		{
+			//不在范围
+			this.renderSgB("borderRight",s,div);
+		}
+		if(this.inRange(x-1,y))
+		{
+			var s1 = this.getMapByPos(x-1, y).data.ownBy;
+			if(s1==s)
+			{
+				div.style.borderLeft = "2px solid #503810";
+				let d = this.getTileByPos(x-1,y);
+				d.style.borderRight = "2px solid #503810";
+			}
+			else
+			{
+				this.renderSgB("borderLeft",s,div);
+			}
+		}
+		else
+		{
+			//不在范围
+			this.renderSgB("borderLeft",s,div);
+		}
+	}
+
+	renderSgB(b,s,el)
+	{
+		if(s==1)
+		{
+			el.style[b]="2px solid green";
+		}
+		else if(s==0)
+		{
+			el.style[b]="2px solid #503810";
+		}
+		else
+		{
+			el.style[b]="2px solid red";
+		}
 	}
 
 	renderTile()
@@ -158,8 +270,23 @@ class _mapCtrl
 				img.src = "/static/img/mlGame/tile_00.png"
 				pos.innerText = i + "," + j+"\n"+x + "," + y;
 				//tile.innerText = x + "," + y;
+				this.renderBorderPos(x,y);
 			}
 		}
+	}
+
+	//传入实际坐标
+	inRange(px,py)
+	{
+		if(px<0||py<0||px>=MAXCELL||py>=MAXCELL)
+			return false;
+		let xmin = this.cutPos.x - centerx + 1;
+		let ymin = this.cutPos.y - centery + 1;
+		let xmax = xmin + (maxx-1);
+		let ymax = ymin + (maxy-1);
+		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
+			return true;
+		return false;
 	}
 
 	reanderPly()
@@ -172,7 +299,6 @@ class _mapCtrl
 		let ymax = ymin + (maxy-1);
 		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
 		{
-			console.log(px+","+py+","+ymin);
 			let i = px - xmin;
 			let j = py - ymin;
 			let div = document.getElementById("tile_"+i+"_"+j);
@@ -191,7 +317,7 @@ class _mapCtrl
 		var starty = this.cutPos.y - centery + 1;
 		var x = startx + i;
 		var y = starty + j;
-		console.log(x+","+y);
+		this.capturePosByUnit(x,y,$ply);
 	}
 }
 

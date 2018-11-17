@@ -79,10 +79,9 @@ export default {
   .map
   {
     position: absolute;
-    width: 62px;
-    height: 62px;
-    border:1px solid gray;
-    box-sizing: border-box;
+    width: 58px;
+    height: 58px;
+    border:2px solid #503810;
   }
 
   .tilePos
@@ -97,8 +96,8 @@ export default {
   .mapTile
   {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 58px;
+    height: 58px;
   }
 
 </style>

@@ -14,6 +14,7 @@ var c = {
 		c.new();
 
 		//创建地图
+		$map.genMapArea(25,25,15);
 		$ply.setPos(25,25);
 		$map.setCutPos(25,25);
 

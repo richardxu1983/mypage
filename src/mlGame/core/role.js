@@ -18,6 +18,7 @@ class _role extends $Unit
         this.attr.bag=[];
         this.setAttr('gold',0);
         this.setAttr('type',99);
+        this.setAttr('side',1);
     }
 
     gold(v)
@@ -117,6 +118,7 @@ class _role extends $Unit
         this.setAttr('tx', []);
         this.setAttr('ng', []);
         this.setAttr('bag', []);
+        this.setAttr('side',1);
         this.attr.cl = {type:-1,index:0};    //正在练习的技能
         //内功附加数值
         this.ng = 
