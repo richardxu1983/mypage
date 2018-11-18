@@ -131,6 +131,7 @@ export default {
 		color: white;
 		font-size: 1.1em;
 		opacity: .5;
+		pointer-events:none;
 	}
 	.topBar{
 		position: absolute;

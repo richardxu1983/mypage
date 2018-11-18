@@ -1,5 +1,7 @@
 
 const $ply = require('../../mlGame/core/role.js').default.role;
+const $tileType = require('../../mlGame/data/area.js').default.tileType;
+const $mapTile = require('../../mlGame/data/area.js').default.mapTile;
 
 var maps = [];
 const MAXCELL = 50;
@@ -48,6 +50,8 @@ class _mapCtrl
 	constructor()
 	{
 		this.cutPos = {'x':0,'y':0};
+		this.cutSel = {'x':-1,'y':-1,'i':-1,'j':-1};
+		this.lastSel = {'x':-1,'y':-1,'i':-1,'j':-1};
 	}
 
 	getMax()
@@ -126,6 +130,7 @@ class _mapCtrl
 	createEl()
 	{
 		createTiles();
+		createUI();
 		this.render();
 	}
 
@@ -147,6 +152,9 @@ class _mapCtrl
 
 	renderBorderPos(x,y)
 	{
+		if(!this.inRange(x,y))
+			return;
+
 		let div = this.getTileByPos(x,y);
 		var m = this.getMapByPos(x, y);
 		var s = m.data.ownBy;
@@ -292,7 +300,7 @@ class _mapCtrl
 	reanderPly()
 	{
 		let px = $ply.pos().x;
-		let py = $ply.pos().x;
+		let py = $ply.pos().y;
 		let xmin = this.cutPos.x - centerx + 1;
 		let ymin = this.cutPos.y - centery + 1;
 		let xmax = xmin + (maxx-1);
@@ -311,13 +319,69 @@ class _mapCtrl
 		}
 	}
 
+	setCutSel(x,y,pi,pj)
+	{
+		let i=pi||(x-(this.cutPos.x - centerx + 1));
+		let j=pj||(y-(this.cutPos.y - centery + 1));
+		this.lastSel.x = this.cutSel.x;
+		this.lastSel.y = this.cutSel.y;
+		this.lastSel.i = this.cutSel.i;
+		this.lastSel.j = this.cutSel.j;
+		this.cutSel.x = x;
+		this.cutSel.y = y;
+		this.cutSel.i = i;
+		this.cutSel.j = j;		
+	}
+
 	onLeftClickTile(i,j)
 	{
-		var startx = this.cutPos.x - centerx + 1;
-		var starty = this.cutPos.y - centery + 1;
-		var x = startx + i;
-		var y = starty + j;
-		this.capturePosByUnit(x,y,$ply);
+		let startx = this.cutPos.x - centerx + 1;
+		let starty = this.cutPos.y - centery + 1;
+		let x = startx + i;
+		let y = starty + j;
+		let px = $ply.pos().x;
+		let py = $ply.pos().y;
+		this.setCutSel(x,y,i,j)
+		let div = this.getTileByPos(x,y);
+		let m = this.getMapByPos(px, py);
+		let own = m.data.ownBy;
+		//document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
+		refreshAcB()
+		renderSel();
+		
+	}
+}
+
+function showMapTip()
+{
+	let tip = document.getElementById("mapInfo");
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let m = mapCtrl.getMapByPos(x, y);
+	let type = m.data.type;
+	let own = m.data.ownBy;
+	let lv = m.data.lv;
+
+	let name = $tileType[type].name;
+	tip.innerText = "";
+	if($tileType[type].showLv)
+	{
+		tip.innerText = lv+"级";
+	}
+
+	tip.innerText = tip.innerText + name;
+
+	if(own==1)
+	{
+		tip.innerText = tip.innerText + "，已占领";
+	}
+	else if(own==0)
+	{
+		tip.innerText = tip.innerText + "，无主";
+	}
+	else
+	{
+		tip.innerText = tip.innerText + "，被占";
 	}
 }
 
@@ -351,6 +415,153 @@ function createTiles()
 			mapRoot.appendChild(div);
 		}
 	}	
+}
+
+function onClickMove()
+{
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let px = $ply.pos().x;
+	let py = $ply.pos().y;
+	let m = mapCtrl.getMapByPos(x, y);
+	let own = m.data.ownBy;
+	if((Math.abs(x-px)+Math.abs(y-py)!=1))
+		return;
+	$ply.moveTo(x,y);
+	mapCtrl.reanderPly();
+	//document.getElementById("move").disabled=true;
+	refreshAcB()
+	renderSel();
+}
+
+function onMove(x,y)
+{
+	let px = $ply.pos().x;
+	let py = $ply.pos().y;
+	console.log(x+","+y);
+	console.log(px+","+py);
+	let tox = x+px;
+	let toy = y+py;
+	console.log(tox+","+toy);
+	if(tox<0||toy<0||tox>=MAXCELL||toy>=MAXCELL)
+		return;
+	$ply.moveTo(tox,toy);
+	//mapCtrl.setCutSel(tox,toy);
+	mapCtrl.reanderPly();
+	refreshAcB()
+	//renderSel();
+}
+
+
+function conquer()
+{
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let px = $ply.pos().x;
+	let py = $ply.pos().y;
+	let m = mapCtrl.getMapByPos(x, y);
+	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1))
+	{
+		let m = mapCtrl.getMapByPos(x, y);
+		if(m.data.ownBy!=1)
+			mapCtrl.capturePosByUnit(x,y,$ply);
+	}
+	
+	refreshAcB()
+	renderSel();
+}
+
+function refreshAcB()
+{
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let px = $ply.pos().x;
+	let py = $ply.pos().y;
+	let m1 = mapCtrl.getMapByPos(x, y);
+	let own1 = m1.data.ownBy;
+	document.getElementById("buy").disabled=(own1!=1&&((x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1)))?false:true;
+	document.getElementById("build").disabled=(own1==1&&(x==px&&py==y))?false:true;
+	document.getElementById("conquer").disabled=(own1!=1&&((x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1)))?false:true;
+}
+
+function renderSel()
+{
+	mapCtrl.renderBorderPos(mapCtrl.lastSel.x,mapCtrl.lastSel.y);
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let div = mapCtrl.getTileByPos(x,y);
+	div.style.border = "2px solid #00CCFF";
+	showMapTip();
+}
+
+function createUI()
+{
+	let rt = document.getElementById("mapAct");
+
+	let btn4 = document.createElement("button");
+	btn4.classList.add("mapActBtn");
+	btn4.innerText = "攻占";
+	btn4.id="conquer";
+	btn4.disabled=true;
+	btn4.addEventListener("click", () => {conquer();})
+	rt.appendChild(btn4);
+
+	let btn3 = document.createElement("button");
+	btn3.classList.add("mapActBtn");
+	btn3.innerText = "买地";
+	btn3.id="buy";
+	btn3.disabled=true;
+	btn3.addEventListener("click", () => {})
+	rt.appendChild(btn3);
+
+	let btn2 = document.createElement("button");
+	btn2.classList.add("mapActBtn");
+	btn2.innerText = "探索";
+	btn2.id="explore";
+	btn2.disabled=true;
+	btn2.addEventListener("click", () => {})
+	rt.appendChild(btn2);
+
+	let btn1 = document.createElement("button");
+	btn1.classList.add("mapActBtn");
+	btn1.innerText = "建设";
+	btn1.id="build";
+	btn1.disabled=true;
+	btn1.addEventListener("click", () => {})
+	rt.appendChild(btn1);
+
+	/*
+	let btn = document.createElement("button");
+	btn.classList.add("mapActBtn");
+	btn.innerText = "前往";
+	btn.id="move";
+	btn.disabled=true;
+	btn.addEventListener("click", () => {onClickMove()})
+	rt.appendChild(btn);
+	*/
+}
+
+
+document.onkeyup=function(e){  
+	e=e||window.event;  
+	e.preventDefault(); 
+	switch(e.keyCode){
+		case 37:
+			//左
+			onMove(-1,0);
+			break;
+		case 38: 
+			onMove(0,1);
+			break;
+		case 39:
+			//右
+			onMove(1,0);
+			break;
+		case 40:
+			onMove(0,-1);
+			break;
+	}
+
 }
 
 var mapCtrl = new _mapCtrl();

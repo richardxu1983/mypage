@@ -17,7 +17,7 @@ var c = {
 		$map.genMapArea(25,25,15);
 		$ply.setPos(25,25);
 		$map.setCutPos(25,25);
-
+		$map.setCutSel(25,25);
 	},
 
 	new:function()
@@ -37,6 +37,7 @@ var c = {
 	mounted:function()
 	{
 		$map.createEl();
+		$map.capturePosByUnit(25,25,$ply);
 	},
 }
 

@@ -100,4 +100,32 @@ export default {
     height: 58px;
   }
 
+  .mapActBtn
+  {
+    float: right;
+    margin:0 .5em 0 .5em;
+    height: 2em;
+    padding-left: .7em;
+    padding-right: .7em;
+    background-color:white;
+    border:1px solid gray;
+  }
+
+  .mapActBtn:hover
+  {
+    background-color:yellow;
+  }
+
+  .mapActBtn:active
+  {
+    background-color:brown;
+  }
+  .mapActBtn:disabled
+  {
+    background-color:#333;
+    border:1px solid #333;
+    height: 2em;
+    color:black;
+  }
+
 </style>
