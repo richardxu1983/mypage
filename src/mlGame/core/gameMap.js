@@ -345,7 +345,7 @@ class _mapCtrl
 		let div = this.getTileByPos(x,y);
 		let m = this.getMapByPos(px, py);
 		let own = m.data.ownBy;
-		//document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
+		document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
 		refreshAcB()
 		renderSel();
 		
@@ -429,7 +429,7 @@ function onClickMove()
 		return;
 	$ply.moveTo(x,y);
 	mapCtrl.reanderPly();
-	//document.getElementById("move").disabled=true;
+	document.getElementById("move").disabled=true;
 	refreshAcB()
 	renderSel();
 }
@@ -446,10 +446,10 @@ function onMove(x,y)
 	if(tox<0||toy<0||tox>=MAXCELL||toy>=MAXCELL)
 		return;
 	$ply.moveTo(tox,toy);
-	//mapCtrl.setCutSel(tox,toy);
+	mapCtrl.setCutSel(tox,toy);
 	mapCtrl.reanderPly();
 	refreshAcB()
-	//renderSel();
+	renderSel();
 }
 
 
@@ -462,13 +462,36 @@ function conquer()
 	let m = mapCtrl.getMapByPos(x, y);
 	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1))
 	{
+		if(!canHave(x,y))
+			return;
 		let m = mapCtrl.getMapByPos(x, y);
 		if(m.data.ownBy!=1)
 			mapCtrl.capturePosByUnit(x,y,$ply);
+		refreshAcB()
+		renderSel();
 	}
-	
-	refreshAcB()
-	renderSel();
+}
+
+function canHave(x,y)
+{
+	let own = false;
+	for(let i=x-1;i<=x+1;i++)
+	{
+		for(let j=y-1;j<=y+1;j++)
+		{
+			if(i>=0&&i<=MAXCELL&&j>=0&&j<=MAXCELL&&(i!=x||j!=y))
+			{
+				let tm = mapCtrl.getMapByPos(i,j).data.ownBy;
+				//console.log("x="+x+",y="+y+",i="+i+",j="+j+",tm="+tm);
+				if(tm==1)
+				{
+					own = true;
+					break;
+				}
+			}
+		}
+	}
+	return own;
 }
 
 function refreshAcB()
@@ -479,9 +502,11 @@ function refreshAcB()
 	let py = $ply.pos().y;
 	let m1 = mapCtrl.getMapByPos(x, y);
 	let own1 = m1.data.ownBy;
-	document.getElementById("buy").disabled=(own1!=1&&((x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1)))?false:true;
+	let have = canHave(x,y);
+	//console.log(have);
+	document.getElementById("buy").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 	document.getElementById("build").disabled=(own1==1&&(x==px&&py==y))?false:true;
-	document.getElementById("conquer").disabled=(own1!=1&&((x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1)))?false:true;
+	document.getElementById("conquer").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 }
 
 function renderSel()
@@ -530,7 +555,7 @@ function createUI()
 	btn1.addEventListener("click", () => {})
 	rt.appendChild(btn1);
 
-	/*
+
 	let btn = document.createElement("button");
 	btn.classList.add("mapActBtn");
 	btn.innerText = "前往";
@@ -538,7 +563,7 @@ function createUI()
 	btn.disabled=true;
 	btn.addEventListener("click", () => {onClickMove()})
 	rt.appendChild(btn);
-	*/
+
 }
 
 
