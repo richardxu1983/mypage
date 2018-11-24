@@ -2,6 +2,7 @@
 const $ply = require('../../mlGame/core/role.js').default.role;
 const $tileType = require('../../mlGame/data/area.js').default.tileType;
 const $mapTile = require('../../mlGame/data/area.js').default.mapTile;
+const $ti = require('../../mlGame/core/gTime.js').default.gtime;
 
 var maps = [];
 const MAXCELL = 50;
@@ -130,7 +131,7 @@ class _mapCtrl
 	createEl()
 	{
 		createTiles();
-		createUI();
+		initMapActBtn();
 		this.render();
 	}
 
@@ -243,7 +244,7 @@ class _mapCtrl
 	{
 		if(s==1)
 		{
-			el.style[b]="2px solid green";
+			el.style[b]="2px solid #3CB371";
 		}
 		else if(s==0)
 		{
@@ -417,14 +418,31 @@ function createTiles()
 	}	
 }
 
-function onClickMove()
+
+
+function onClickBuild()
 {
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
+
+}
+
+function onClickExplore()
+{
+
+}
+
+function onClickBuy()
+{
+
+}
+
+function TryMoveTo(x,y,v)
+{
+	if(!$ti.act(v))
+		return;
 	let px = $ply.pos().x;
 	let py = $ply.pos().y;
-	let m = mapCtrl.getMapByPos(x, y);
-	let own = m.data.ownBy;
+	if(x<0||y<0||x>=MAXCELL||y>=MAXCELL)
+		return;
 	if((Math.abs(x-px)+Math.abs(y-py)!=1))
 		return;
 	$ply.moveTo(x,y);
@@ -434,24 +452,19 @@ function onClickMove()
 	renderSel();
 }
 
-function onMove(x,y)
+function onClickMove()
 {
-	let px = $ply.pos().x;
-	let py = $ply.pos().y;
-	console.log(x+","+y);
-	console.log(px+","+py);
-	let tox = x+px;
-	let toy = y+py;
-	console.log(tox+","+toy);
-	if(tox<0||toy<0||tox>=MAXCELL||toy>=MAXCELL)
-		return;
-	$ply.moveTo(tox,toy);
-	mapCtrl.setCutSel(tox,toy);
-	mapCtrl.reanderPly();
-	refreshAcB()
-	renderSel();
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	TryMoveTo(x,y,1);
 }
 
+function onHitMove(x,y)
+{
+	let tox = x+px;
+	let toy = y+py;
+	TryMoveTo(tox,toy,1);
+}
 
 function conquer()
 {
@@ -503,7 +516,6 @@ function refreshAcB()
 	let m1 = mapCtrl.getMapByPos(x, y);
 	let own1 = m1.data.ownBy;
 	let have = canHave(x,y);
-	//console.log(have);
 	document.getElementById("buy").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 	document.getElementById("build").disabled=(own1==1&&(x==px&&py==y))?false:true;
 	document.getElementById("conquer").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
@@ -515,78 +527,57 @@ function renderSel()
 	let x = mapCtrl.cutSel.x;
 	let y = mapCtrl.cutSel.y;
 	let div = mapCtrl.getTileByPos(x,y);
-	div.style.border = "2px solid #00CCFF";
+	div.style.border = "2px solid #EEE685";
 	showMapTip();
 }
 
-function createUI()
+function initMapActBtn()
 {
 	let rt = document.getElementById("mapAct");
-
-	let btn4 = document.createElement("button");
-	btn4.classList.add("mapActBtn");
-	btn4.innerText = "攻占";
-	btn4.id="conquer";
-	btn4.disabled=true;
-	btn4.addEventListener("click", () => {conquer();})
-	rt.appendChild(btn4);
-
-	let btn3 = document.createElement("button");
-	btn3.classList.add("mapActBtn");
-	btn3.innerText = "买地";
-	btn3.id="buy";
-	btn3.disabled=true;
-	btn3.addEventListener("click", () => {})
-	rt.appendChild(btn3);
-
-	let btn2 = document.createElement("button");
-	btn2.classList.add("mapActBtn");
-	btn2.innerText = "探索";
-	btn2.id="explore";
-	btn2.disabled=true;
-	btn2.addEventListener("click", () => {})
-	rt.appendChild(btn2);
-
-	let btn1 = document.createElement("button");
-	btn1.classList.add("mapActBtn");
-	btn1.innerText = "建设";
-	btn1.id="build";
-	btn1.disabled=true;
-	btn1.addEventListener("click", () => {})
-	rt.appendChild(btn1);
-
-
-	let btn = document.createElement("button");
-	btn.classList.add("mapActBtn");
-	btn.innerText = "前往";
-	btn.id="move";
-	btn.disabled=true;
-	btn.addEventListener("click", () => {onClickMove()})
-	rt.appendChild(btn);
-
+	adMpAcBtn("攻占","conquer",conquer);
+	adMpAcBtn("买地","buy",onClickBuy);
+	adMpAcBtn("探索","explore",onClickExplore);
+	adMpAcBtn("规划","build",onClickBuild);
+	adMpAcBtn("前往","move",onClickMove);
 }
 
+function adMpAcBtn(name,id,fun)
+{
+	let rt = document.getElementById("mapAct");
+	let btn = document.createElement("button");
+	btn.classList.add("mapActBtn");
+	btn.innerText = name;
+	btn.id=id;
+	btn.disabled=true;
+	btn.addEventListener("click", () => {fun()})
+	rt.appendChild(btn);	
+}
 
-document.onkeyup=function(e){  
+document.onkeyup=function(e)
+{  
+
 	e=e||window.event;  
 	e.preventDefault(); 
-	switch(e.keyCode){
+	switch(e.keyCode)
+	{
 		case 37:
-			//左
-			onMove(-1,0);
+			onHitMove(-1,0);
 			break;
 		case 38: 
-			onMove(0,1);
+			onHitMove(0,1);
 			break;
 		case 39:
-			//右
-			onMove(1,0);
+			onHitMove(1,0);
 			break;
 		case 40:
-			onMove(0,-1);
+			onHitMove(0,-1);
 			break;
 	}
+}
 
+document.ondblclick = function()
+{
+	onClickMove();
 }
 
 var mapCtrl = new _mapCtrl();

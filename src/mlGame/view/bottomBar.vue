@@ -3,12 +3,16 @@
 		<img class="player_head" src="/static/img/mlGame/player_head.png" @click="showPnl()">
 		<div class="hpBar z1" :style="{width:'45px','background-color':'black'}"></div>
 		<div class="hpBar z2" :style="{width:plyhpw+'px','background-color':plyhpc}"></div>
+		<div class="apts">行动力：{{apts}}</div>
+		<button class="turn" @click="addMonth">下一个月</button>
 	</div>
 </template>
 
 <script>
 import RO from '../../mlGame/core/role.js'
 var $ply = RO.role;
+const $ti = require('../../mlGame/core/gTime.js').default.gT;
+var $tCtrl = require('../../mlGame/core/gTime.js').default.gtime;
 
 function getColor(p)
 {
@@ -32,6 +36,7 @@ export default {
 	{
 		return{
 			player:$ply,
+			time:$ti,
 		}
 	},
 	computed:{
@@ -45,6 +50,10 @@ export default {
     		var p = (this.player.hp()/this.player.hpmax());
     		return getColor(p);	
 	    },
+	    apts:function()
+	    {
+	    	return $tCtrl.remain();
+	    }
 	},
 	methods:
 	{
@@ -53,6 +62,10 @@ export default {
 			if(!RO.ui.pnl)
 				RO.ui.pnl=true;
 		},
+		addMonth:function()
+		{
+			$tCtrl.addMonth(1);
+		}
 	}
 }
 
@@ -88,5 +101,19 @@ export default {
 		left: 0.7em;
 		bottom:0.1em;
 		height: .4em;
+	}
+	.apts
+	{
+		position: absolute;
+		top:1.5em;
+		right: 8em;
+		color: white;
+	}
+	.turn
+	{
+		position: absolute;
+		top:1.5em;
+		right: 1em;
+		height: 2em;
 	}
 </style>

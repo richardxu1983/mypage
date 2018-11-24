@@ -69,13 +69,16 @@
 				</div>
 				<div class="cl">
 					<div class="title">
-						研习
+						研习中
 					</div>
 					<div class="cell">
 						<div v-if="learning">
 							<img class="pic" :src="clIcon()">
 							<div class="time">
 								{{clTime}}
+							</div>
+							<div class="yxlv">
+								{{yxLv}}
 							</div>
 						</div>
 						<div class="txt" v-else>
@@ -223,7 +226,7 @@ export default {
 	            var lb = $ng[id].lb;
 	            var lbp = $ng[id].lbp;
 	            var next = Math.ceil(lb+Math.pow(lbp,lv));
-	            return (ng.study/next).toFixed(0)+"%";
+	            return (100*(ng.study/next)).toFixed(0)+"%";
 			}
 			if(type==1)
 			{
@@ -234,9 +237,26 @@ export default {
 	            var lb = skl[id].lb;
 	            var lbp = skl[id].lbp;
 	            var next = Math.ceil(lb+Math.pow(lbp,lv));
-	            return (zf.study/next).toFixed(0)+"%";
+	            return (100*(zf.study/next)).toFixed(0)+"%";
 			}
 		},
+		yxLv:function()
+		{
+			var type=this.player.attr.cl.type;
+			var idx=this.player.attr.cl.index;
+			if(type==0)
+			{
+				var ng = this.player.attr.ng[idx];
+				return ng.lv;
+	            
+			}
+			if(type==1)
+			{
+				console.log("idx="+idx);
+				var zf = this.player.attr.zf[idx];
+				return zf.lv;
+			}
+		}
 	},
 	methods:
 	{
@@ -292,12 +312,12 @@ export default {
 		zfLv:function(idx)
 		{
 			var zf = this.player.attr.zf[idx];
-			return "L"+zf.lv;
+			return zf.lv;
 		},
 		ngLv:function(index)
 		{
 			var ng = this.player.attr.ng[index];
-			return "L"+ng.lv;
+			return ng.lv;
 		},
 		szzfName:function(idx)
 		{
@@ -310,7 +330,7 @@ export default {
 		{
 			var el = this.player.attr.fskl[idx];
 			var zf = this.player.attr.zf[el];
-			return "L"+zf.lv;
+			return zf.lv;
 		},
 		zfIcon:function(index)
 		{
@@ -369,7 +389,7 @@ export default {
 	{
 		position: absolute;
 		width: 52em;
-		top:2.8em;
+		top:3.8em;
 		height: 3em;
 		left: 6em;
 		z-index:100;
@@ -452,7 +472,7 @@ export default {
 		width: 40em;
 		height: 29.3em;
 		left: 6em;
-		top: 5em;
+		top: 6em;
 		padding: 25px;
 		background-color: #333;
 		color: white;
@@ -562,6 +582,16 @@ export default {
 				top:4.5em;
 				height: 24px;
 				width: 6em;
+				text-align: center;
+				font-size: xx-small;
+			}
+			.yxlv
+			{
+				position: absolute;
+				top:2.7em;
+				right: .6em;
+				width: 2em;
+				height: 15px;
 				text-align: center;
 				font-size: xx-small;
 			}

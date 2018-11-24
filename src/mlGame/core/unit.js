@@ -4,7 +4,7 @@ const $wp = require('../../mlGame/data/wpData.js').default.wp;
 const skl = require('../../mlGame/data/skill.js').default.FSKL;
 const $npc = require('../../mlGame/data/ng.js').default.npc;
 const $item = require('../../mlGame/data/item.js').default.item;
-const $ng = require('../../mlGame/data/npc.js').default.NG;
+const $ng = require('../../mlGame/data/ng.js').default.NG;
 
 class Unit
 {
@@ -588,7 +588,6 @@ class Unit
         hp = hp - val;
         if(hp<=0)
         {
-            
             this.hp(0);
             return -1;
         }

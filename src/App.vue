@@ -103,7 +103,7 @@ export default {
   .mapActBtn
   {
     float: right;
-    margin:0 .5em 0 .5em;
+    margin:0 .2em 0 .2em;
     height: 2em;
     padding-left: .7em;
     padding-right: .7em;
