@@ -462,31 +462,35 @@ function onClickBuild()
 	let x = mapCtrl.cutSel.x;
 	let y = mapCtrl.cutSel.y;
 	let m = mapCtrl.getMapByPos(x, y);
-	let type = m.data.type;
-	let len = $condt.length;
-	let v;
-	for(let i=0;i<len;i++)
+	let own = m.data.ownBy;
+
+	if(own==1)
 	{
-		v = $condt[i];
-		let sel = document.createElement("div");
-		sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
-		sel.style.top = (7+i*3.5)+"em";
-
-		if(type!=v.area||$ply.gold()<v.gold)
+		let type = m.data.type;
+		let len = $condt.length;
+		let v;
+		for(let i=0;i<len;i++)
 		{
-			sel.classList.add("selno");
-			sel.style.color = "gray";
-		}
-		else
-		{
-			sel.classList.add("sel");
-			sel.style.color = "black";
-		}
+			v = $condt[i];
+			let sel = document.createElement("div");
+			sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
+			sel.style.top = (7+i*3.5)+"em";
 
-		rt.appendChild(sel);
+			if(type!=v.area||$ply.gold()<v.gold)
+			{
+				sel.classList.add("selno");
+				sel.style.color = "gray";
+			}
+			else
+			{
+				sel.classList.add("sel");
+				sel.style.color = "black";
+			}
+
+			rt.appendChild(sel);
+		}		
 	}
 
-	rt.style.visibility = "visible";
 	let btn = document.createElement("button");
 	btn.classList.add("close");
 	btn.innerText="关闭";
@@ -496,6 +500,7 @@ function onClickBuild()
 		rt.style.visibility = "hidden";
 	})
 	rt.appendChild(btn);
+	rt.style.visibility = "visible";
 }
 
 function onClickExplore()
@@ -590,7 +595,7 @@ function refreshAcB()
 	let own1 = m1.data.ownBy;
 	let have = canHave(x,y);
 	document.getElementById("buy").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
-	document.getElementById("build").disabled=(own1==1)?false:true;
+	document.getElementById("build").disabled=false;
 	document.getElementById("conquer").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 }
 
