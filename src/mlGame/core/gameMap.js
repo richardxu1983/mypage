@@ -1,10 +1,16 @@
 
 const $ply = require('../../mlGame/core/role.js').default.role;
 const $tileType = require('../../mlGame/data/area.js').default.tileType;
-const $mapTile = require('../../mlGame/data/area.js').default.mapTile;
 const $ti = require('../../mlGame/core/gTime.js').default.gtime;
+const $condt = require('../../mlGame/data/construct.js').default.construct;
 
 var maps = [];
+var mapUI = 
+{
+	guihua:false,
+};
+
+
 const MAXCELL = 50;
 const maxx=9;
 const maxy=7;
@@ -26,6 +32,7 @@ class map
     	this.data.lv = 1;
     	this.data.ownBy = 0;	//1:玩家,0：无主
     	this.data.idx = data.x*MAXCELL+data.y;
+    	this.data.con = -1;		//土地上的建设
     }
 
     addUnit(v)
@@ -258,7 +265,6 @@ class _mapCtrl
 
 	renderTile()
 	{
-		var tile;
 		var img;
 		var m;
 		var startx = this.cutPos.x - centerx + 1;
@@ -273,7 +279,6 @@ class _mapCtrl
 				x = startx+i;
 				y = starty+j;
 				m = this.getMapByPos(x, y);
-				tile = document.getElementById("tile_"+i+"_"+j);
 				img = document.getElementById("tile_img_"+i+"_"+j);
 				pos = document.getElementById("tilePos_"+i+"_"+j);
 				img.src = "/static/img/mlGame/tile_00.png"
@@ -364,7 +369,7 @@ function showMapTip()
 	let lv = m.data.lv;
 
 	let name = $tileType[type].name;
-	tip.innerText = "";
+	tip.innerText = "( "+x+","+y+" ) ，";
 	if($tileType[type].showLv)
 	{
 		tip.innerText = lv+"级";
@@ -374,7 +379,7 @@ function showMapTip()
 
 	if(own==1)
 	{
-		tip.innerText = tip.innerText + "，已占领";
+		tip.innerText = tip.innerText + "，领土属于您";
 	}
 	else if(own==0)
 	{
@@ -418,11 +423,79 @@ function createTiles()
 	}	
 }
 
+function genMapDesc()
+{
+	let s="";
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let m = mapCtrl.getMapByPos(x, y);
+	let con = m.data.con;
+	let type = m.data.type;
+	let own = m.data.ownBy;
 
+	s = $tileType[type].desc;
+	if(con=-1)
+		s+="目前还没有被建设。"
+	if(own==1)
+	{
+		s += "您已经占领这块领土。";
+	}
+	else if(own==0)
+	{
+		s += "这里没有被占领，这里住着一些山野之人和强盗土匪。";
+	}
+	else
+	{
+		s += "已被占领。";
+	}
+	return s;
+}
 
 function onClickBuild()
 {
+	let rt = document.getElementById("construct");
+	let desc = document.createElement("div");
+	desc.classList.add("desc");
+	desc.innerText = genMapDesc();
+	rt.appendChild(desc);
 
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let m = mapCtrl.getMapByPos(x, y);
+	let type = m.data.type;
+	let len = $condt.length;
+	let v;
+	for(let i=0;i<len;i++)
+	{
+		v = $condt[i];
+		let sel = document.createElement("div");
+		sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
+		sel.style.top = (7+i*3.5)+"em";
+
+		if(type!=v.area||$ply.gold()<v.gold)
+		{
+			sel.classList.add("selno");
+			sel.style.color = "gray";
+		}
+		else
+		{
+			sel.classList.add("sel");
+			sel.style.color = "black";
+		}
+
+		rt.appendChild(sel);
+	}
+
+	rt.style.visibility = "visible";
+	let btn = document.createElement("button");
+	btn.classList.add("close");
+	btn.innerText="关闭";
+	btn.addEventListener("click", () => {
+		let rt = document.getElementById("construct");
+		rt.innerHTML="";
+		rt.style.visibility = "hidden";
+	})
+	rt.appendChild(btn);
 }
 
 function onClickExplore()
@@ -517,7 +590,7 @@ function refreshAcB()
 	let own1 = m1.data.ownBy;
 	let have = canHave(x,y);
 	document.getElementById("buy").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
-	document.getElementById("build").disabled=(own1==1&&(x==px&&py==y))?false:true;
+	document.getElementById("build").disabled=(own1==1)?false:true;
 	document.getElementById("conquer").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 }
 
@@ -537,7 +610,7 @@ function initMapActBtn()
 	adMpAcBtn("攻占","conquer",conquer);
 	adMpAcBtn("买地","buy",onClickBuy);
 	adMpAcBtn("探索","explore",onClickExplore);
-	adMpAcBtn("规划","build",onClickBuild);
+	adMpAcBtn("查看/建设","build",onClickBuild);
 	adMpAcBtn("前往","move",onClickMove);
 }
 
@@ -582,4 +655,4 @@ document.ondblclick = function()
 
 var mapCtrl = new _mapCtrl();
 
-export default { mapCtrl };
+export default { mapCtrl,mapUI,maps };
