@@ -99,7 +99,13 @@ export default {
     width: 58px;
     height: 58px;
   }
-
+  .mapTileNo
+  {
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    visibility: hidden;
+  }
   .mapActBtn
   {
     float: right;

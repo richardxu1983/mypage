@@ -14,6 +14,7 @@ var construct =
 		need:'需要平原',
 		gold:0,
 		area:0,
+		img:'village_0',
 	},
 	{
 		id:1,
@@ -22,6 +23,7 @@ var construct =
 		need:'需要树林',
 		gold:100,
 		area:1,
+		img:'village_0',
 	},
 	{
 		id:2,
@@ -30,6 +32,7 @@ var construct =
 		need:'需要矿场',
 		gold:100,
 		area:2,
+		img:'village_0',
 	},
 ];
 

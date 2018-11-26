@@ -3,6 +3,7 @@ const $ply = require('../../mlGame/core/role.js').default.role;
 const $tileType = require('../../mlGame/data/area.js').default.tileType;
 const $ti = require('../../mlGame/core/gTime.js').default.gtime;
 const $condt = require('../../mlGame/data/construct.js').default.construct;
+const $cons = require('../../mlGame/core/consCtrl.js').default.conCtrl;
 
 var maps = [];
 var mapUI = 
@@ -280,13 +281,32 @@ class _mapCtrl
 				y = starty+j;
 				m = this.getMapByPos(x, y);
 				img = document.getElementById("tile_img_"+i+"_"+j);
-				pos = document.getElementById("tilePos_"+i+"_"+j);
+				//pos = document.getElementById("tilePos_"+i+"_"+j);
 				img.src = "/static/img/mlGame/tile_00.png"
-				pos.innerText = i + "," + j+"\n"+x + "," + y;
+				//pos.innerText = i + "," + j+"\n"+x + "," + y;
 				//tile.innerText = x + "," + y;
+				this.renderBuildPos(x,y);
 				this.renderBorderPos(x,y);
 			}
 		}
+	}
+
+	renderBuildPos(x,y)
+	{
+		let m = this.getMapByPos(x, y);
+		let idx = m.data.con;
+		if(idx==-1)
+			return;
+		let xmin = this.cutPos.x - centerx + 1;
+		let ymin = this.cutPos.y - centery + 1;
+		let i = x - xmin;	//绘图坐标
+		let j = y - ymin;	//绘图坐标
+		let cons = $cons.getConByIdx(idx);
+		let id = cons.data.id;
+		let imgSrc = $condt[id].img;
+		let conImg = document.getElementById("tile_build_"+i+"_"+j);
+		conImg.src = "/static/img/mlGame/"+imgSrc+".png";
+		conImg.style.visibility = "visible";
 	}
 
 	//传入实际坐标
@@ -401,15 +421,20 @@ function createTiles()
 			let left = i*width+leftGap;
 			let top = (maxy-j-1)*width+topGap;
 			let div = document.createElement("div");
-			let img = document.createElement("img");
-			let pos = document.createElement("div");
-			img.id = "tile_img_"+i+"_"+j;
-			img.src="";
-			img.classList.add("mapTile");
-			div.appendChild(img);
-			div.appendChild(pos);
-			pos.id = "tilePos_"+i+"_"+j;
-			pos.classList.add("tilePos");
+			let bk = document.createElement("img");
+			//let pos = document.createElement("div");
+			let bd = document.createElement("img");
+			bk.id = "tile_img_"+i+"_"+j;
+			bk.src="";
+			bk.classList.add("mapTile");
+			bd.id = "tile_build_"+i+"_"+j;
+			bd.src="";
+			bd.classList.add("mapTileNo");
+			div.appendChild(bk);
+			div.appendChild(bd);
+			//div.appendChild(pos);
+			//pos.id = "tilePos_"+i+"_"+j;
+			//pos.classList.add("tilePos");
 			//div.innerHTML="<img class=\"mapTile\" id=\""+"tile_img_"+i+"_"+j+"\" src=\"\">"
 			//div.innerText=i+","+j;
 			div.classList.add("map");
@@ -434,11 +459,17 @@ function genMapDesc()
 	let own = m.data.ownBy;
 
 	s = $tileType[type].desc;
-	if(con=-1)
+	if(con==-1)
 		s+="目前还没有被建设。"
+	else
+	{
+		let cons = $cons.getConByIdx(con);
+		let id = cons.data.id;
+		s+="这里被建设为了【"+$condt[id].name+"】。"
+	}
 	if(own==1)
 	{
-		s += "您已经占领这块领土。";
+		s += "这块领土属于您。";
 	}
 	else if(own==0)
 	{
@@ -463,44 +494,76 @@ function onClickBuild()
 	let y = mapCtrl.cutSel.y;
 	let m = mapCtrl.getMapByPos(x, y);
 	let own = m.data.ownBy;
+	let con = m.data.con;
 
 	if(own==1)
 	{
-		let type = m.data.type;
-		let len = $condt.length;
-		let v;
-		for(let i=0;i<len;i++)
+		if(con==-1)
 		{
-			v = $condt[i];
-			let sel = document.createElement("div");
-			sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
-			sel.style.top = (7+i*3.5)+"em";
-
-			if(type!=v.area||$ply.gold()<v.gold)
+			let type = m.data.type;
+			let len = $condt.length;
+			let v;
+			for(let i=0;i<len;i++)
 			{
-				sel.classList.add("selno");
-				sel.style.color = "gray";
-			}
-			else
-			{
-				sel.classList.add("sel");
-				sel.style.color = "black";
-			}
+				v = $condt[i];
+				let sel = document.createElement("div");
+				sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
+				sel.style.top = (7+i*3.5)+"em";
 
-			rt.appendChild(sel);
-		}		
+				if(type!=v.area||$ply.gold()<v.gold)
+				{
+					sel.classList.add("selno");
+					sel.style.color = "gray";
+				}
+				else
+				{
+					sel.classList.add("sel");
+					sel.style.color = "black";
+					sel.addEventListener("click", () => {
+						onBuildRaw(i);
+						closeBuild();
+					})
+				}
+				rt.appendChild(sel);			
+			}
+		}
 	}
 
 	let btn = document.createElement("button");
 	btn.classList.add("close");
 	btn.innerText="关闭";
 	btn.addEventListener("click", () => {
-		let rt = document.getElementById("construct");
-		rt.innerHTML="";
-		rt.style.visibility = "hidden";
+		closeBuild();
 	})
 	rt.appendChild(btn);
 	rt.style.visibility = "visible";
+}
+
+function closeBuild()
+{
+	let rt = document.getElementById("construct");
+	rt.innerHTML="";
+	rt.style.visibility = "hidden";	
+}
+
+function onBuildRaw(idx)
+{
+	let v = $condt[idx];
+	let x = mapCtrl.cutSel.x;
+	let y = mapCtrl.cutSel.y;
+	let m = mapCtrl.getMapByPos(x, y);
+	let own = m.data.ownBy;
+
+	if(own!=1)
+		return;
+	if(m.data.con!=-1)
+		return;
+	let type = m.data.type;
+	if(type!=v.area||$ply.gold()<v.gold)
+		return;
+	$cons.BuildCon(x,y,idx,1);
+	if(mapCtrl.inRange(x,y))
+		mapCtrl.renderBuildPos(x,y);
 }
 
 function onClickExplore()
@@ -551,7 +614,7 @@ function conquer()
 	let px = $ply.pos().x;
 	let py = $ply.pos().y;
 	let m = mapCtrl.getMapByPos(x, y);
-	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)+Math.abs(y-py)==1))
+	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1))
 	{
 		if(!canHave(x,y))
 			return;
