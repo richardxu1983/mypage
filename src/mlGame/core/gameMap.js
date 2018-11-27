@@ -19,7 +19,7 @@ const centerx = (maxx+1)/2;
 const centery = (maxy+1)/2;
 const topGap=55;
 const leftGap=175;
-const width = 62;
+const width = 60;
 
 class map
 { 
@@ -159,12 +159,22 @@ class _mapCtrl
 		return div;
 	}
 
+	getBorderByPos(x,y)
+	{
+		let xmin = this.cutPos.x - centerx + 1;
+		let ymin = this.cutPos.y - centery + 1;
+		let xi = x - xmin;	//绘图坐标
+		let xj = y - ymin;	//绘图坐标
+		var div = document.getElementById("border_"+xi+"_"+xj);
+		return div;
+	}
+
 	renderBorderPos(x,y)
 	{
 		if(!this.inRange(x,y))
 			return;
 
-		let div = this.getTileByPos(x,y);
+		let div = this.getBorderByPos(x,y);
 		var m = this.getMapByPos(x, y);
 		var s = m.data.ownBy;
 		
@@ -174,9 +184,9 @@ class _mapCtrl
 			var s1 = this.getMapByPos(x, y+1).data.ownBy;
 			if(s1==s)
 			{
-				div.style.borderTop = "2px solid #503810";
-				let d = this.getTileByPos(x,y+1);
-				d.style.borderBottom = "2px solid #503810";
+				div.style.borderTop = "";
+				let d = this.getBorderByPos(x,y+1);
+				d.style.borderBottom = "";
 			}
 			else
 			{
@@ -194,9 +204,9 @@ class _mapCtrl
 			var s1 = this.getMapByPos(x, y-1).data.ownBy;
 			if(s1==s)
 			{
-				div.style.borderBottom = "2px solid #503810";
-				let d = this.getTileByPos(x,y-1);
-				d.style.borderTop = "2px solid #503810";
+				div.style.borderBottom = "";
+				let d = this.getBorderByPos(x,y-1);
+				d.style.borderTop = "";
 			}
 			else
 			{
@@ -213,9 +223,9 @@ class _mapCtrl
 			var s1 = this.getMapByPos(x+1, y).data.ownBy;
 			if(s1==s)
 			{
-				div.style.borderRight = "2px solid #503810";
-				let d = this.getTileByPos(x+1,y);
-				d.style.borderLeft = "2px solid #503810";
+				div.style.borderRight = "";
+				let d = this.getBorderByPos(x+1,y);
+				d.style.borderLeft = "";
 			}
 			else
 			{
@@ -232,9 +242,9 @@ class _mapCtrl
 			var s1 = this.getMapByPos(x-1, y).data.ownBy;
 			if(s1==s)
 			{
-				div.style.borderLeft = "2px solid #503810";
-				let d = this.getTileByPos(x-1,y);
-				d.style.borderRight = "2px solid #503810";
+				div.style.borderLeft = "";
+				let d = this.getBorderByPos(x-1,y);
+				d.style.borderRight = "";
 			}
 			else
 			{
@@ -252,15 +262,15 @@ class _mapCtrl
 	{
 		if(s==1)
 		{
-			el.style[b]="2px solid #3CB371";
+			el.style[b]="1px solid #3CB371";
 		}
 		else if(s==0)
 		{
-			el.style[b]="2px solid #503810";
+			el.style[b]="";
 		}
 		else
 		{
-			el.style[b]="2px solid red";
+			el.style[b]="1px solid red";
 		}
 	}
 
@@ -295,18 +305,24 @@ class _mapCtrl
 	{
 		let m = this.getMapByPos(x, y);
 		let idx = m.data.con;
-		if(idx==-1)
-			return;
 		let xmin = this.cutPos.x - centerx + 1;
 		let ymin = this.cutPos.y - centery + 1;
 		let i = x - xmin;	//绘图坐标
 		let j = y - ymin;	//绘图坐标
-		let cons = $cons.getConByIdx(idx);
-		let id = cons.data.id;
-		let imgSrc = $condt[id].img;
 		let conImg = document.getElementById("tile_build_"+i+"_"+j);
-		conImg.src = "/static/img/mlGame/"+imgSrc+".png";
-		conImg.style.visibility = "visible";
+		if(idx==-1)
+		{
+			conImg.src = "";
+			conImg.style.visibility = "hidden";
+		}
+		else
+		{
+			let cons = $cons.getConByIdx(idx);
+			let id = cons.data.id;
+			let imgSrc = $condt[id].img;
+			conImg.src = "/static/img/mlGame/"+imgSrc+".png";
+			conImg.style.visibility = "visible";
+		}
 	}
 
 	//传入实际坐标
@@ -368,9 +384,6 @@ class _mapCtrl
 		let px = $ply.pos().x;
 		let py = $ply.pos().y;
 		this.setCutSel(x,y,i,j)
-		let div = this.getTileByPos(x,y);
-		let m = this.getMapByPos(px, py);
-		let own = m.data.ownBy;
 		document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
 		refreshAcB()
 		renderSel();
@@ -424,14 +437,18 @@ function createTiles()
 			let bk = document.createElement("img");
 			//let pos = document.createElement("div");
 			let bd = document.createElement("img");
+			let border = document.createElement("div");
 			bk.id = "tile_img_"+i+"_"+j;
 			bk.src="";
 			bk.classList.add("mapTile");
 			bd.id = "tile_build_"+i+"_"+j;
 			bd.src="";
 			bd.classList.add("mapTileNo");
+			border.id = "border_"+i+"_"+j;
+			border.classList.add("border");
 			div.appendChild(bk);
 			div.appendChild(bd);
+			div.appendChild(border);
 			//div.appendChild(pos);
 			//pos.id = "tilePos_"+i+"_"+j;
 			//pos.classList.add("tilePos");
@@ -586,8 +603,40 @@ function TryMoveTo(x,y,v)
 		return;
 	if((Math.abs(x-px)+Math.abs(y-py)!=1))
 		return;
+
+	let xmin = mapCtrl.cutPos.x - centerx + 1;
+	let ymin = mapCtrl.cutPos.y - centery + 1;
+	let toI = x - xmin;	//绘图坐标
+	let toJ = y - ymin;	//绘图坐标
+
+	//const maxx=9;
+	//const maxy=7;
 	$ply.moveTo(x,y);
-	mapCtrl.reanderPly();
+
+	if(toI==0&&x>=0)
+	{
+		mapCtrl.cutPos.x--;
+		mapCtrl.render();
+	}
+	else if(toI==(maxx-1)&&x<MAXCELL)
+	{
+		mapCtrl.cutPos.x++;
+		mapCtrl.render();
+	}
+	else if(toJ==0&&y>=0)
+	{
+		mapCtrl.cutPos.y--;
+		mapCtrl.render();
+	}
+	else if(toJ==(maxy-1)&&y<MAXCELL)
+	{
+		mapCtrl.cutPos.y++;
+		mapCtrl.render();
+	}
+	else
+	{
+		mapCtrl.reanderPly();
+	}
 	document.getElementById("move").disabled=true;
 	refreshAcB()
 	renderSel();
@@ -664,11 +713,19 @@ function refreshAcB()
 
 function renderSel()
 {
-	mapCtrl.renderBorderPos(mapCtrl.lastSel.x,mapCtrl.lastSel.y);
+	
 	let x = mapCtrl.cutSel.x;
 	let y = mapCtrl.cutSel.y;
-	let div = mapCtrl.getTileByPos(x,y);
-	div.style.border = "2px solid #EEE685";
+	let xmin = mapCtrl.cutPos.x - centerx + 1;
+	let ymin = mapCtrl.cutPos.y - centery + 1;
+	let i = x - xmin;	//绘图坐标
+	let j = y - ymin;	//绘图坐标
+	
+	if(x!=mapCtrl.lastSel.x||y!=mapCtrl.lastSel.y)
+		mapCtrl.renderBorderPos(mapCtrl.lastSel.x,mapCtrl.lastSel.y);
+
+	let div = document.getElementById("border_"+i+"_"+j);
+	div.style.border = "1px solid #EEE685";
 	showMapTip();
 }
 

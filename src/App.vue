@@ -79,9 +79,9 @@ export default {
   .map
   {
     position: absolute;
-    width: 58px;
-    height: 58px;
-    border:2px solid #503810;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
   }
 
   .tilePos
@@ -96,14 +96,26 @@ export default {
   .mapTile
   {
     position: absolute;
-    width: 58px;
-    height: 58px;
+    width: 60px;
+    height: 60px;
+
+    box-sizing: border-box;
+
+  }
+  .border
+  {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
   }
   .mapTileNo
   {
     position: absolute;
-    width: 58px;
-    height: 58px;
+    width: 60px;
+    height: 60px;
+
+    box-sizing: border-box;
     visibility: hidden;
   }
   .mapActBtn
