@@ -15,6 +15,11 @@ export default new Router({
       name:"about",
       component: resolve => require(['@/views/about'], resolve)
     },
+      {
+      path: '/lifeGame',
+      name:"lifeGame",
+      component: resolve => require(['@/views/lifeGame'], resolve)
+    },
     {
       path: '/magicLand',
       name:"magicLand",

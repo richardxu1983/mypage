@@ -45,6 +45,10 @@ export default {
 			    	path:"/magicLand"
 			    },
 			    {
+			    	name:"生命游戏",
+			    	path:"/lifeGame"
+			    },
+			    {
 			    	name:"关于老徐",
 			    	path:"/about"
 			    },
