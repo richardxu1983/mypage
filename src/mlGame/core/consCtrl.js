@@ -14,6 +14,10 @@ class cot
     	this.data.id = data.id;
     	this.data.ownBy = data.side;
     	this.data.map = data.idx;
+    	this.data.num1 = 0;	//当作为产出时，为工人数量，当作为村庄时
+    	this.data.num2 = 0;
+    	this.data.num3 = 0;
+    	this.data.num4 = 0;
     }
 }
 
@@ -22,6 +26,7 @@ var conCtrl =
 	BuildCon:function(x,y,id,side)
 	{
 		let $mapCtrl = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+		let $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 
 		var v = $condt[id];
 		if(!v)
@@ -34,8 +39,16 @@ var conCtrl =
 		if(m.data.con!=-1)
 			return;
 		let type = m.data.type;
-		if(type!=v.area||$ply.gold()<v.gold)
+		let p = $prop.get(side);
+
+		if(p==undefined)
 			return;
+
+		if(type!=v.area||p.gold()<v.gold)
+			return;
+
+		console.log(p);
+		p.ad('gold',-1*v.gold);
 
 		if(conSide[side]==undefined)
 			conSide[side] = [];
@@ -52,4 +65,4 @@ var conCtrl =
 	}
 };
 
-export default { conCtrl }; 
+export default { conCtrl,conSide }; 

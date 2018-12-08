@@ -9,6 +9,7 @@ var tileType =
 		"enter":true,
 		"maxLv":1,
 		"showLv":false,
+		"img":"00",
 	},
 	{
 		"id":1,
@@ -17,6 +18,7 @@ var tileType =
 		"enter":false,
 		"maxLv":1,
 		"showLv":false,
+		"img":"01",
 	},
 	{
 		"id":2,
@@ -25,6 +27,7 @@ var tileType =
 		"enter":true,
 		"maxLv":2,
 		"showLv":true,
+		"img":"02",
 	},
 ];
 

@@ -7,6 +7,8 @@ var $ply = RO.role;
 var $zxCtrl = ZX.zxCtrl;
 var $map = MAP.mapCtrl;
 
+const $dft = require('../../mlGame/data/gData.js').default.dft;
+
 var c = {
 
 	start:function()
@@ -15,6 +17,7 @@ var c = {
 
 		//创建地图
 		$map.genMapArea(25,25,15);
+		$ply.side($dft.plySide);
 		$ply.setPos(25,25);
 		$map.setCutPos(25,25);
 		$map.setCutSel(25,25);

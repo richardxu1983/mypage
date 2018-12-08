@@ -1,10 +1,5 @@
 
 
-var data = 
-{
-    timeLimit:200,
-};
-
 var role = 
 {
     new:
@@ -23,4 +18,9 @@ var role =
     },
 }
 
-export default { data,role }; 
+var dft =
+{
+    plySide:1,
+}
+
+export default { role,dft }; 

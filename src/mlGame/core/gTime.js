@@ -10,6 +10,7 @@ var gT =
 
 const MAX_DAY = 31;
 const $ply = require('../../mlGame/core/role.js').default.role;
+var $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 
 var gtime = {
 
@@ -36,6 +37,7 @@ var gtime = {
 
 	addMonth:function(v)
 	{
+		
 		gT.month = gT.month + v;
 		var add = Math.floor(gT.month/MAX_MONTH);
 		if(add>0)
@@ -44,6 +46,7 @@ var gtime = {
 			gT.year = gT.year + 1;
 		}
 		gT.day = 1;
+		$prop.month();
 		$ply.onMonthStep();
 	},
 

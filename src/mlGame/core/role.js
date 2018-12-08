@@ -5,6 +5,7 @@ var $Unit = UB.Unit;
 var $role = DT.role;
 var $item = ITM.item;
 
+
 var ui =  
 {
     pnl:false,
@@ -16,26 +17,20 @@ class _role extends $Unit
     { 
         super();
         this.attr.bag=[];
-        this.setAttr('gold',0);
         this.setAttr('type',99);
-        this.setAttr('side',1);
-    }
-
-    gold(v)
-    {
-    	if(v!=undefined)
-    	{
-    		this.setAttr('gold',v);
-    	}
-    	else
-    	{
-    		return this.getAttr('gold');
-    	}
     }
 
     bag()
     {
         return this.attr.bag;
+    }
+
+    gold(v)
+    {
+        let $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
+        let side = this.side();
+        let p = $prop.get(side);
+        return p.gold();
     }
 
     bagAddItem(id)
@@ -112,7 +107,6 @@ class _role extends $Unit
         this.setAttr('spdBase', spdBase);
         this.setAttr('defBase', defBase);
         this.name($role.new.name);
-        this.gold($role.new.gold);
         this.setAttr('fskl', [-1,-1,-1]);
         this.setAttr('zf', []);
         this.setAttr('tx', []);

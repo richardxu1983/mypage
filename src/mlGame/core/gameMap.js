@@ -3,6 +3,7 @@ const $ply = require('../../mlGame/core/role.js').default.role;
 const $tileType = require('../../mlGame/data/area.js').default.tileType;
 const $ti = require('../../mlGame/core/gTime.js').default.gtime;
 const $condt = require('../../mlGame/data/construct.js').default.construct;
+const $mtName = require('../../mlGame/data/construct.js').default.names;
 const $cons = require('../../mlGame/core/consCtrl.js').default.conCtrl;
 
 var maps = [];
@@ -101,7 +102,10 @@ class _mapCtrl
 
 	genMapAtPos(x,y,type)
 	{
-		var m = new map({'x':x,'y':y,'type':type});
+		let v=0;
+		let p = Math.random();
+		v = p>0.15?0:2;
+		var m = new map({'x':x,'y':y,'type':v});
 		maps[m.data.idx] = m;
 	}
 
@@ -260,7 +264,7 @@ class _mapCtrl
 
 	renderSgB(b,s,el)
 	{
-		if(s==1)
+		if(s==$ply.side())
 		{
 			el.style[b]="1px solid #3CB371";
 		}
@@ -281,7 +285,7 @@ class _mapCtrl
 		var startx = this.cutPos.x - centerx + 1;
 		var starty = this.cutPos.y - centery + 1;
 		var x,y;
-		var pos;
+		var t;
 
 		for(var i=0;i<maxx;i++)
 		{
@@ -290,9 +294,10 @@ class _mapCtrl
 				x = startx+i;
 				y = starty+j;
 				m = this.getMapByPos(x, y);
+				t = m.data.type;
 				img = document.getElementById("tile_img_"+i+"_"+j);
 				//pos = document.getElementById("tilePos_"+i+"_"+j);
-				img.src = "/static/img/mlGame/tile_00.png"
+				img.src = "/static/img/mlGame/tile_"+$tileType[t].img+".png"
 				//pos.innerText = i + "," + j+"\n"+x + "," + y;
 				//tile.innerText = x + "," + y;
 				this.renderBuildPos(x,y);
@@ -400,18 +405,39 @@ function showMapTip()
 	let type = m.data.type;
 	let own = m.data.ownBy;
 	let lv = m.data.lv;
+	let cons = m.data.con;
+	let con;
+	let conId;
 
-	let name = $tileType[type].name;
-	tip.innerText = "( "+x+","+y+" ) ，";
+	let name;
+
+	if(cons!=-1)
+	{
+		con = $cons.getConByIdx(m.data.con);
+		conId = con.data.id;
+		name = "【"+$condt[conId].name+"】";
+	}
+	else
+	{
+		name = $tileType[type].name;
+	}
+
 	if($tileType[type].showLv)
 	{
 		tip.innerText = lv+"级";
 	}
 
-	tip.innerText = tip.innerText + name;
+	tip.innerText = name+"( "+x+","+y+" )";
 
-	if(own==1)
+	if(own==$ply.side())
 	{
+		if(cons!=-1)
+		{
+			if($condt[conId].work!=undefined)
+			{
+				tip.innerText = tip.innerText + " , 劳工("+con.data.num1+"/"+$condt[conId].work.worker+") , "+$mtName[$condt[conId].work.type]+"+"+Math.ceil((con.data.num1/$condt[conId].work.worker)*$condt[conId].work.max)
+			}
+		}
 		tip.innerText = tip.innerText + "，领土属于您";
 	}
 	else if(own==0)
@@ -484,7 +510,7 @@ function genMapDesc()
 		let id = cons.data.id;
 		s+="这里被建设为了【"+$condt[id].name+"】。"
 	}
-	if(own==1)
+	if(own==$ply.side())
 	{
 		s += "这块领土属于您。";
 	}
@@ -513,7 +539,7 @@ function onClickBuild()
 	let own = m.data.ownBy;
 	let con = m.data.con;
 
-	if(own==1)
+	if(own==$ply.side())
 	{
 		if(con==-1)
 		{
@@ -686,7 +712,7 @@ function canHave(x,y)
 			{
 				let tm = mapCtrl.getMapByPos(i,j).data.ownBy;
 				//console.log("x="+x+",y="+y+",i="+i+",j="+j+",tm="+tm);
-				if(tm==1)
+				if(tm==$ply.side())
 				{
 					own = true;
 					break;

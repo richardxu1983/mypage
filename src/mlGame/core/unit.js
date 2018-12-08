@@ -33,6 +33,7 @@ class Unit
             'cl':{type:-1,index:0},    //正在练习的技能
             'pos':{'x':0,'y':0,'m':0},   //位置
             'side':0,
+            'gold':0,
         };
 
         //计算属性
@@ -97,6 +98,18 @@ class Unit
         else
         {
             return this.getAttr('idx');
+        }
+    }
+
+    gold(v)
+    {
+        if(v!=undefined)
+        {
+            this.setAttr('gold', v)
+        }
+        else
+        {
+            return this.getAttr('gold');
         }
     }
 

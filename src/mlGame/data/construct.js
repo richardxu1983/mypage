@@ -1,9 +1,8 @@
-var build = [
-{
-	id:0,
-	name:'商店',
-},
-];
+var names = {
+	'food':"粮食",
+	'wood':"木材",
+	'iron':"生铁",
+};
 
 var construct = 
 [
@@ -15,25 +14,56 @@ var construct =
 		gold:0,
 		area:0,
 		img:'village_0',
+		type:0,
 	},
 	{
 		id:1,
-		name:'林站',
-		desc:'林站能让劳力从树林采集木头',
+		name:'田地',
+		desc:'田地能产出粮食、草药及其它作物，需要劳工',
 		need:'需要树林',
-		gold:100,
-		area:1,
-		img:'village_0',
+		gold:20,
+		area:0,
+		img:'crop_0',
+		type:1,
+		work:
+		{
+			worker:5,
+			max:100,
+			type:'food',
+		},
 	},
 	{
 		id:2,
+		name:'林站',
+		desc:'林站从树林产出木材，和其它的东西',
+		need:'需要树林',
+		gold:20,
+		area:0,
+		img:'crop_0',
+		type:1,
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'wood',
+		},
+	},
+	{
+		id:3,
 		name:'矿站',
 		desc:'矿站能让劳力从矿场采集石头、矿产',
 		need:'需要矿场',
 		gold:100,
 		area:2,
 		img:'village_0',
+		type:1,
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'iron',
+		},
 	},
 ];
 
-export default { build,construct }; 
+export default { names,construct }; 

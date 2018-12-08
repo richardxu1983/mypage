@@ -3,7 +3,7 @@
 	<div class="mlBoard nosel">
 		<div class="topBar" >
 			<tiv class="left"></tiv>
-			<div class="right">您拥有：&ensp;{{ gold }}&ensp;金</div>
+			<div class="right">您拥有：&ensp;{{gold}}&ensp;金</div>
 		</div>
 		<fightPnl></fightPnl>
 		<plyPnl></plyPnl>
@@ -39,6 +39,7 @@ import scene from '../../mlGame/view/scene.vue'
 var $ctrl = CT.c;
 var $ply = RO.role;
 var zxCtrl = zxModule.zxCtrl;
+const $prop = require('../../mlGame/core/propCtrl.js').default.propList;
 
 export default {
 	name:"gameView",
@@ -46,13 +47,14 @@ export default {
 	{
 		return {
 			ply:$ply,
+			prop:$prop,
 		}
 	},
 	computed:
 	{
 		gold:function()
 		{
-			return this.ply.gold();
+			return $ply.gold();
 		}
 	},
 	components: 
