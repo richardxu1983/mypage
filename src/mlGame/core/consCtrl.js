@@ -33,11 +33,14 @@ var conCtrl =
 			return;
 		let m = $mapCtrl.getMapByPos(x, y);
 		let own = m.data.ownBy;
+		let bin = m.data.in;
 
-		if(own!=side)
+		if(own!=side||bin!=side)
 			return;
+
 		if(m.data.con!=-1)
 			return;
+		
 		let type = m.data.type;
 		let p = $prop.get(side);
 

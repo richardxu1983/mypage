@@ -32,9 +32,11 @@ class map
     	this.data.type = data.type;
     	this.data.units = [];
     	this.data.lv = 1;
-    	this.data.ownBy = 0;	//1:玩家,0：无主
+    	this.data.ownBy = 0;	//被谁占领
+    	this.data.in = 0;		//在谁的据点范围内
     	this.data.idx = data.x*MAXCELL+data.y;
     	this.data.con = -1;		//土地上的建设
+    	this.data.captureAt = -1;
     }
 
     addUnit(v)
@@ -50,8 +52,25 @@ class map
     captureByUnit(u)
     {
     	let s = u.side();
+
+    	if(s==this.data.ownBy)
+    		return;
+
+    	if(s!=this.data.in&&this.data.captureAt==-1)
+    	{
+    		this.data.captureAt = $ti.getTick();
+    	}
     	this.data.ownBy = s;
     	mapCtrl.renderBorderPos(this.data.x,this.data.y);
+    }
+
+    inBySide(s)
+    {
+    	this.data.in = s;
+    	if(s==this.data.ownBy&&this.data.captureAt!=-1)
+    	{
+    		this.data.captureAt = -1;
+    	}
     }
 }
 
@@ -62,6 +81,7 @@ class _mapCtrl
 		this.cutPos = {'x':0,'y':0};
 		this.cutSel = {'x':-1,'y':-1,'i':-1,'j':-1};
 		this.lastSel = {'x':-1,'y':-1,'i':-1,'j':-1};
+		this.showBorder = false;
 	}
 
 	getMax()
@@ -179,8 +199,17 @@ class _mapCtrl
 			return;
 
 		let div = this.getBorderByPos(x,y);
+
+		if(this.showBorder==false)
+		{
+			div.style.visibility="hidden";
+			return;
+		}
+		else
+			div.style.visibility="visible";
+
 		var m = this.getMapByPos(x, y);
-		var s = m.data.ownBy;
+		var s = m.data.in;
 		
 		//判断上边
 		if(this.inRange(x,y+1))
@@ -433,7 +462,7 @@ function showMapTip()
 	{
 		if(cons!=-1)
 		{
-			if($condt[conId].work!=undefined)
+			if($condt[conId].type==2)
 			{
 				tip.innerText = tip.innerText + " , 劳工("+con.data.num1+"/"+$condt[conId].work.worker+") , "+$mtName[$condt[conId].work.type]+"+"+Math.ceil((con.data.num1/$condt[conId].work.worker)*$condt[conId].work.max)
 			}
@@ -611,7 +640,29 @@ function onBuildRaw(idx)
 
 function onClickExplore()
 {
+	if(mapCtrl.showBorder)
+	{
+		mapCtrl.showBorder = false;
+		document.getElementById("explore").innerText="显示边界";
+	}
+	else
+	{
+		mapCtrl.showBorder = true;
+		document.getElementById("explore").innerText="隐藏边界";
+	}
 
+	let startx = mapCtrl.cutPos.x - centerx + 1;
+	let starty = mapCtrl.cutPos.y - centery + 1;
+	let x,y;
+	for(var i=0;i<maxx;i++)
+	{
+		for(var j=0;j<maxy;j++)
+		{
+			x = startx+i;
+			y = starty+j;
+			mapCtrl.renderBorderPos(x,y);
+		}
+	}
 }
 
 function onClickBuy()
@@ -677,6 +728,8 @@ function onClickMove()
 
 function onHitMove(x,y)
 {
+	let px = $ply.pos().x;
+	let py = $ply.pos().y;
 	let tox = x+px;
 	let toy = y+py;
 	TryMoveTo(tox,toy,1);
@@ -742,6 +795,10 @@ function renderSel()
 	
 	let x = mapCtrl.cutSel.x;
 	let y = mapCtrl.cutSel.y;
+
+	if(!mapCtrl.inRange(x,y))
+		return;
+
 	let xmin = mapCtrl.cutPos.x - centerx + 1;
 	let ymin = mapCtrl.cutPos.y - centery + 1;
 	let i = x - xmin;	//绘图坐标
@@ -758,28 +815,27 @@ function renderSel()
 function initMapActBtn()
 {
 	let rt = document.getElementById("mapAct");
-	adMpAcBtn("攻占","conquer",conquer);
-	adMpAcBtn("买地","buy",onClickBuy);
-	adMpAcBtn("探索","explore",onClickExplore);
-	adMpAcBtn("查看/建设","build",onClickBuild);
-	adMpAcBtn("前往","move",onClickMove);
+	adMpAcBtn("显示边界","explore",onClickExplore,false);
+	adMpAcBtn("攻占","conquer",conquer,true);
+	adMpAcBtn("买地","buy",onClickBuy,true);
+	adMpAcBtn("查看/建设","build",onClickBuild,true);
+	adMpAcBtn("前往","move",onClickMove,true);
 }
 
-function adMpAcBtn(name,id,fun)
+function adMpAcBtn(name,id,fun,f)
 {
 	let rt = document.getElementById("mapAct");
 	let btn = document.createElement("button");
 	btn.classList.add("mapActBtn");
 	btn.innerText = name;
 	btn.id=id;
-	btn.disabled=true;
+	btn.disabled=f;
 	btn.addEventListener("click", () => {fun()})
 	rt.appendChild(btn);	
 }
 
 document.onkeyup=function(e)
 {  
-
 	e=e||window.event;  
 	e.preventDefault(); 
 	switch(e.keyCode)

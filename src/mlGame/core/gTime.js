@@ -35,6 +35,11 @@ var gtime = {
 		return true;
 	},
 
+	getTick:function()
+	{
+		return gT.year*MAX_MONTH + gT.month;
+	},
+
 	addMonth:function(v)
 	{
 		

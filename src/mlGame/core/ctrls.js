@@ -40,7 +40,6 @@ var c = {
 	mounted:function()
 	{
 		$map.createEl();
-		$map.capturePosByUnit(25,25,$ply);
 	},
 }
 

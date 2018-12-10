@@ -16,6 +16,8 @@ class prop
 			wood:0,
 			food:0,
 			iron:0,
+			center:0,	//中心据点数量
+			centerMax:3	//初始最大中心据点数量
 		};
 		this.add = 
 		{
@@ -94,9 +96,9 @@ class prop
 			id = c.data.id;
 			if(c.data.ownBy == s)
 			{
-				if(id == 1)
+				dt = $condt[id];
+				if(dt.type == 2)		//需要工人的类型
 				{
-					dt = $condt[id];
 					work = c.data.num1;
 					t = dt.work.type;
 					n = Math.ceil((work/dt.work.worker)*dt.work.max);
@@ -137,7 +139,6 @@ class _propCtrl
 	{
 		return propList[side];
 	}
-
 }
 
 var propCtrl = new _propCtrl();
