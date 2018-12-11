@@ -8,6 +8,7 @@ var $zxCtrl = ZX.zxCtrl;
 var $map = MAP.mapCtrl;
 
 const $dft = require('../../mlGame/data/gData.js').default.dft;
+const $cons = require('../../mlGame/core/consCtrl.js').default.conCtrl;
 
 var c = {
 
@@ -18,6 +19,7 @@ var c = {
 		//创建地图
 		$map.genMapArea(25,25,15);
 		$ply.side($dft.plySide);
+		$cons.BuildConForce(25,25,0,$ply.side());
 		$ply.setPos(25,25);
 		$map.setCutPos(25,25);
 		$map.setCutSel(25,25);

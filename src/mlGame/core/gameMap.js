@@ -199,6 +199,8 @@ class _mapCtrl
 			return;
 
 		let div = this.getBorderByPos(x,y);
+		if(!div)
+			return;
 
 		if(this.showBorder==false)
 		{
@@ -210,11 +212,17 @@ class _mapCtrl
 
 		var m = this.getMapByPos(x, y);
 		var s = m.data.in;
+
+		div.style.backgroundColor="";
+		if(m.data.ownBy==$ply.side())
+		{
+			div.style.backgroundColor="green";
+		}
 		
 		//判断上边
 		if(this.inRange(x,y+1))
 		{
-			var s1 = this.getMapByPos(x, y+1).data.ownBy;
+			var s1 = this.getMapByPos(x, y+1).data.in;
 			if(s1==s)
 			{
 				div.style.borderTop = "";
@@ -234,7 +242,7 @@ class _mapCtrl
 		
 		if(this.inRange(x,y-1))
 		{
-			var s1 = this.getMapByPos(x, y-1).data.ownBy;
+			var s1 = this.getMapByPos(x, y-1).data.in;
 			if(s1==s)
 			{
 				div.style.borderBottom = "";
@@ -253,7 +261,7 @@ class _mapCtrl
 		}
 		if(this.inRange(x+1,y))
 		{
-			var s1 = this.getMapByPos(x+1, y).data.ownBy;
+			var s1 = this.getMapByPos(x+1, y).data.in;
 			if(s1==s)
 			{
 				div.style.borderRight = "";
@@ -272,7 +280,7 @@ class _mapCtrl
 		}
 		if(this.inRange(x-1,y))
 		{
-			var s1 = this.getMapByPos(x-1, y).data.ownBy;
+			var s1 = this.getMapByPos(x-1, y).data.in;
 			if(s1==s)
 			{
 				div.style.borderLeft = "";
@@ -359,6 +367,13 @@ class _mapCtrl
 		}
 	}
 
+	inMap(px,py)
+	{
+		if(px<0||py<0||px>=MAXCELL||py>=MAXCELL)
+			return false;
+		return true;
+	}
+
 	//传入实际坐标
 	inRange(px,py)
 	{
@@ -371,6 +386,22 @@ class _mapCtrl
 		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
 			return true;
 		return false;
+	}
+
+	renderBorder()
+	{
+		let startx = this.cutPos.x - centerx + 1;
+		let starty = this.cutPos.y - centery + 1;
+		let x,y;
+		for(var i=0;i<maxx;i++)
+		{
+			for(var j=0;j<maxy;j++)
+			{
+				x = startx+i;
+				y = starty+j;
+				this.renderBorderPos(x,y);
+			}
+		}
 	}
 
 	reanderPly()
@@ -501,9 +532,10 @@ function createTiles()
 			bd.classList.add("mapTileNo");
 			border.id = "border_"+i+"_"+j;
 			border.classList.add("border");
+			border.style.opacity = "0.5";
 			div.appendChild(bk);
-			div.appendChild(bd);
 			div.appendChild(border);
+			div.appendChild(bd);
 			//div.appendChild(pos);
 			//pos.id = "tilePos_"+i+"_"+j;
 			//pos.classList.add("tilePos");
@@ -618,9 +650,9 @@ function closeBuild()
 	rt.style.visibility = "hidden";	
 }
 
-function onBuildRaw(idx)
+function onBuildRaw(id)
 {
-	let v = $condt[idx];
+	let v = $condt[id];
 	let x = mapCtrl.cutSel.x;
 	let y = mapCtrl.cutSel.y;
 	let m = mapCtrl.getMapByPos(x, y);
@@ -633,7 +665,7 @@ function onBuildRaw(idx)
 	let type = m.data.type;
 	if(type!=v.area||$ply.gold()<v.gold)
 		return;
-	$cons.BuildCon(x,y,idx,1);
+	$cons.BuildCon(x,y,id,$ply.side());
 	if(mapCtrl.inRange(x,y))
 		mapCtrl.renderBuildPos(x,y);
 }
@@ -744,36 +776,13 @@ function conquer()
 	let m = mapCtrl.getMapByPos(x, y);
 	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1))
 	{
-		if(!canHave(x,y))
-			return;
+
 		let m = mapCtrl.getMapByPos(x, y);
 		if(m.data.ownBy!=1)
 			mapCtrl.capturePosByUnit(x,y,$ply);
 		refreshAcB()
 		renderSel();
 	}
-}
-
-function canHave(x,y)
-{
-	let own = false;
-	for(let i=x-1;i<=x+1;i++)
-	{
-		for(let j=y-1;j<=y+1;j++)
-		{
-			if(i>=0&&i<=MAXCELL&&j>=0&&j<=MAXCELL&&(i!=x||j!=y))
-			{
-				let tm = mapCtrl.getMapByPos(i,j).data.ownBy;
-				//console.log("x="+x+",y="+y+",i="+i+",j="+j+",tm="+tm);
-				if(tm==$ply.side())
-				{
-					own = true;
-					break;
-				}
-			}
-		}
-	}
-	return own;
 }
 
 function refreshAcB()
@@ -784,10 +793,10 @@ function refreshAcB()
 	let py = $ply.pos().y;
 	let m1 = mapCtrl.getMapByPos(x, y);
 	let own1 = m1.data.ownBy;
-	let have = canHave(x,y);
-	document.getElementById("buy").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
+
+	document.getElementById("buy").disabled=(own1!=$ply.side()&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 	document.getElementById("build").disabled=false;
-	document.getElementById("conquer").disabled=(have&&own1!=1&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
+	document.getElementById("conquer").disabled=(own1!=$ply.side()&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 }
 
 function renderSel()

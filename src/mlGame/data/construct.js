@@ -15,6 +15,7 @@ var construct =
 		area:0,
 		img:'village_0',
 		type:0,				//据点类型
+		range:2,
 	},
 	{
 		id:1,
