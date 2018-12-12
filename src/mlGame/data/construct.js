@@ -13,7 +13,7 @@ var construct =
 		need:'需要平原',
 		gold:0,
 		area:0,
-		img:'village_0',
+		img:'obelisk_0',
 		type:0,				//据点类型
 		range:2,
 	},
@@ -50,7 +50,7 @@ var construct =
 		need:'需要树林',
 		gold:20,
 		area:0,
-		img:'crop_0',
+		img:'wood_0',
 		type:2,		//需要工人产出类型
 		work:
 		{

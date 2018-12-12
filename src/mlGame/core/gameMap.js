@@ -303,7 +303,7 @@ class _mapCtrl
 	{
 		if(s==$ply.side())
 		{
-			el.style[b]="1px solid #3CB371";
+			el.style[b]="1px solid green";
 		}
 		else if(s==0)
 		{
@@ -598,9 +598,10 @@ function onClickBuild()
 	let y = mapCtrl.cutSel.y;
 	let m = mapCtrl.getMapByPos(x, y);
 	let own = m.data.ownBy;
+	let border = m.data.in;
 	let con = m.data.con;
 
-	if(own==$ply.side())
+	if(own==$ply.side()&&border==$ply.side())
 	{
 		if(con==-1)
 		{
@@ -628,7 +629,7 @@ function onClickBuild()
 						closeBuild();
 					})
 				}
-				rt.appendChild(sel);			
+				rt.appendChild(sel);	
 			}
 		}
 	}
@@ -793,6 +794,7 @@ function refreshAcB()
 	let py = $ply.pos().y;
 	let m1 = mapCtrl.getMapByPos(x, y);
 	let own1 = m1.data.ownBy;
+	let border = m1.data.in;
 
 	document.getElementById("buy").disabled=(own1!=$ply.side()&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 	document.getElementById("build").disabled=false;
@@ -801,23 +803,31 @@ function refreshAcB()
 
 function renderSel()
 {
-	
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
+	let px = mapCtrl.cutSel.x;
+	let py = mapCtrl.cutSel.y;
 
-	if(!mapCtrl.inRange(x,y))
+	if(!mapCtrl.inRange(px,py))
 		return;
 
 	let xmin = mapCtrl.cutPos.x - centerx + 1;
 	let ymin = mapCtrl.cutPos.y - centery + 1;
-	let i = x - xmin;	//绘图坐标
-	let j = y - ymin;	//绘图坐标
-	
-	if(x!=mapCtrl.lastSel.x||y!=mapCtrl.lastSel.y)
-		mapCtrl.renderBorderPos(mapCtrl.lastSel.x,mapCtrl.lastSel.y);
-
-	let div = document.getElementById("border_"+i+"_"+j);
-	div.style.border = "1px solid #EEE685";
+	let xmax = xmin + (maxx-1);
+	let ymax = ymin + (maxy-1);
+	if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
+	{
+		let i = px - xmin;
+		let j = py - ymin;
+		//console.log(i+","+j);
+		let div = document.getElementById("tile_"+i+"_"+j);
+		let left = div.offsetLeft;
+		let top = div.offsetTop;
+		let flag = document.getElementById("sel");
+		flag.style.border = "solid 1px yellow";
+		flag.style.visibility="visible";
+		//console.log(top+","+left);
+		flag.style.top = top+"px";
+		flag.style.left = left+"px";
+	}
 	showMapTip();
 }
 

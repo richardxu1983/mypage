@@ -102,19 +102,18 @@ var conCtrl =
 		let own = m.data.ownBy;
 		let bin = m.data.in;
 
-		console.log("1");
 		if(own!=side||bin!=side)
 			return false;
-		console.log("2");
+
 		if(m.data.con!=-1)
 			return false;
 		
 		let type = m.data.type;
 		let p = $prop.get(side);
-		console.log("3");
+
 		if(p==undefined)
 			return false;
-		console.log("4");
+
 		if(type!=v.area||p.gold()<v.gold)
 			return false;
 		return true;

@@ -2,6 +2,7 @@
 	<div class="sce">
 		<div id="maps"></div>
 		<img class="flag" id="flag" src="/static/img/mlGame/flag.png">
+		<div class="psel" id="sel"></div>
 		<div class="mapInfo" id="mapInfo"></div>
 		<div class="mapAct" id="mapAct"></div>
 		<div class="build" id="construct">
@@ -35,6 +36,15 @@ export default
 		.flag
 		{
 			pointer-events:none;
+		}
+		.psel
+		{
+			position: absolute;
+			width: 60px;
+			height: 60px;
+			visibility: hidden;
+			pointer-events:none;
+			box-sizing: border-box;
 		}
 		.mapInfo
 		{
