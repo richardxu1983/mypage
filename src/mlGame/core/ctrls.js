@@ -19,8 +19,6 @@ var c = {
 		//创建地图
 		$map.genMapArea(25,25,15);
 		$ply.side($dft.plySide);
-		$cons.BuildConForce(25,25,0,$ply.side());
-		$ply.setPos(25,25);
 		$map.setCutPos(25,25);
 		$map.setCutSel(25,25);
 	},

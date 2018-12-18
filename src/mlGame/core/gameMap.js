@@ -1,17 +1,14 @@
 
 const $ply = require('../../mlGame/core/role.js').default.role;
 const $tileType = require('../../mlGame/data/area.js').default.tileType;
-const $ti = require('../../mlGame/core/gTime.js').default.gtime;
-const $condt = require('../../mlGame/data/construct.js').default.construct;
-const $mtName = require('../../mlGame/data/construct.js').default.names;
-const $cons = require('../../mlGame/core/consCtrl.js').default.conCtrl;
+const $cellType = require('../../mlGame/data/area.js').default.cellType;
 
+//世界地图
 var maps = [];
 var mapUI = 
 {
 	guihua:false,
 };
-
 
 const MAXCELL = 50;
 const maxx=9;
@@ -22,6 +19,23 @@ const topGap=55;
 const leftGap=175;
 const width = 60;
 
+//世界地图展开后的每个地块，用于建设建筑物
+class cell
+{
+	constructor(data)
+	{
+		this.data = {};
+		this.data.x = data.x;
+		this.data.y = data.y;
+		this.idx = data.x*data.width+data.y;
+		this.type = data.type;
+		this.build = -1;
+		this.build_lv = 0;
+		this.status = -1;
+	}
+}
+
+//世界地图上的每个地块
 class map
 { 
     constructor(data)
@@ -29,24 +43,10 @@ class map
     	this.data = {};
     	this.data.x = data.x;
     	this.data.y = data.y;
-    	this.data.type = data.type;
-    	this.data.units = [];
-    	this.data.lv = 1;
-    	this.data.ownBy = 0;	//被谁占领
-    	this.data.in = 0;		//在谁的据点范围内
-    	this.data.idx = data.x*MAXCELL+data.y;
-    	this.data.con = -1;		//土地上的建设
-    	this.data.captureAt = -1;
-    }
-
-    addUnit(v)
-    {
-    	return (this.data.units.push(v)-1);
-    }
-
-    delUnitByIdx(idx)
-    {
-    	this.data.units.splice(idx,1);
+    	this.data.id = data.id;
+    	this.data.ownBy = 0;					//被谁占领
+    	this.data.cells = -1;
+    	this.data.idx = data.x*MAXCELL+data.y;	//世界地图数组中的位置
     }
 
     captureByUnit(u)
@@ -56,20 +56,26 @@ class map
     	if(s==this.data.ownBy)
     		return;
 
-    	if(s!=this.data.in&&this.data.captureAt==-1)
-    	{
-    		this.data.captureAt = $ti.getTick();
-    	}
     	this.data.ownBy = s;
-    	mapCtrl.renderBorderPos(this.data.x,this.data.y);
     }
 
-    inBySide(s)
+    createCell()
     {
-    	this.data.in = s;
-    	if(s==this.data.ownBy&&this.data.captureAt!=-1)
+    	if(this.data.cells!=-1)
+    		return;
+
+    	this.data.cells = [];
+
+    	let w = $tileType[this.data.id].width;
+    	let t;
+
+    	for(let i=0;i<w;i++)
     	{
-    		this.data.captureAt = -1;
+    		for(let j=0;j<w;j++)
+    		{
+    			t = $tileType[this.data.id].cell[i][j];
+    			this.data.cells[i][j] = cell({x:i,y:j,type:t});
+    		}
     	}
     }
 }
@@ -129,20 +135,6 @@ class _mapCtrl
 		maps[m.data.idx] = m;
 	}
 
-	addUnitToPos(x,y,u)
-	{
-		var m = this.getMapByPos(x, y);
-		if(m==undefined)
-			return -1;
-		return m.addUnit(u.idx());
-	}
-
-	delUnitAtByIdx(x,y,idx)
-	{
-		var m = this.getMapByPos(x, y);
-		m.delUnitByIdx(idx);
-	}
-
 	genMapArea(x,y,r)
 	{
 		for(var i=x-r;i<=x+r;i++)
@@ -170,7 +162,6 @@ class _mapCtrl
 	render()
 	{
 		this.renderTile();
-		this.reanderPly();
 	}
 
 	getTileByPos(x,y)
@@ -211,18 +202,12 @@ class _mapCtrl
 			div.style.visibility="visible";
 
 		var m = this.getMapByPos(x, y);
-		var s = m.data.in;
+		var s = m.data.ownBy;
 
-		div.style.backgroundColor="";
-		if(m.data.ownBy==$ply.side())
-		{
-			div.style.backgroundColor="green";
-		}
-		
 		//判断上边
 		if(this.inRange(x,y+1))
 		{
-			var s1 = this.getMapByPos(x, y+1).data.in;
+			var s1 = this.getMapByPos(x, y+1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderTop = "";
@@ -242,7 +227,7 @@ class _mapCtrl
 		
 		if(this.inRange(x,y-1))
 		{
-			var s1 = this.getMapByPos(x, y-1).data.in;
+			var s1 = this.getMapByPos(x, y-1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderBottom = "";
@@ -261,7 +246,7 @@ class _mapCtrl
 		}
 		if(this.inRange(x+1,y))
 		{
-			var s1 = this.getMapByPos(x+1, y).data.in;
+			var s1 = this.getMapByPos(x+1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderRight = "";
@@ -280,7 +265,7 @@ class _mapCtrl
 		}
 		if(this.inRange(x-1,y))
 		{
-			var s1 = this.getMapByPos(x-1, y).data.in;
+			var s1 = this.getMapByPos(x-1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderLeft = "";
@@ -333,10 +318,7 @@ class _mapCtrl
 				m = this.getMapByPos(x, y);
 				t = m.data.type;
 				img = document.getElementById("tile_img_"+i+"_"+j);
-				//pos = document.getElementById("tilePos_"+i+"_"+j);
 				img.src = "/static/img/mlGame/tile_"+$tileType[t].img+".png"
-				//pos.innerText = i + "," + j+"\n"+x + "," + y;
-				//tile.innerText = x + "," + y;
 				this.renderBuildPos(x,y);
 				this.renderBorderPos(x,y);
 			}
@@ -345,26 +327,7 @@ class _mapCtrl
 
 	renderBuildPos(x,y)
 	{
-		let m = this.getMapByPos(x, y);
-		let idx = m.data.con;
-		let xmin = this.cutPos.x - centerx + 1;
-		let ymin = this.cutPos.y - centery + 1;
-		let i = x - xmin;	//绘图坐标
-		let j = y - ymin;	//绘图坐标
-		let conImg = document.getElementById("tile_build_"+i+"_"+j);
-		if(idx==-1)
-		{
-			conImg.src = "";
-			conImg.style.visibility = "hidden";
-		}
-		else
-		{
-			let cons = $cons.getConByIdx(idx);
-			let id = cons.data.id;
-			let imgSrc = $condt[id].img;
-			conImg.src = "/static/img/mlGame/"+imgSrc+".png";
-			conImg.style.visibility = "visible";
-		}
+
 	}
 
 	inMap(px,py)
@@ -404,27 +367,6 @@ class _mapCtrl
 		}
 	}
 
-	reanderPly()
-	{
-		let px = $ply.pos().x;
-		let py = $ply.pos().y;
-		let xmin = this.cutPos.x - centerx + 1;
-		let ymin = this.cutPos.y - centery + 1;
-		let xmax = xmin + (maxx-1);
-		let ymax = ymin + (maxy-1);
-		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
-		{
-			let i = px - xmin;
-			let j = py - ymin;
-			let div = document.getElementById("tile_"+i+"_"+j);
-			let left = div.offsetLeft+10;
-			let top = div.offsetTop+10;
-			let flag = document.getElementById("flag");
-			flag.style.position = "absolute";
-			flag.style.top = top+"px";
-			flag.style.left = left+"px";
-		}
-	}
 
 	setCutSel(x,y,pi,pj)
 	{
@@ -452,7 +394,6 @@ class _mapCtrl
 		document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
 		refreshAcB()
 		renderSel();
-		
 	}
 }
 
@@ -465,22 +406,7 @@ function showMapTip()
 	let type = m.data.type;
 	let own = m.data.ownBy;
 	let lv = m.data.lv;
-	let cons = m.data.con;
-	let con;
-	let conId;
-
-	let name;
-
-	if(cons!=-1)
-	{
-		con = $cons.getConByIdx(m.data.con);
-		conId = con.data.id;
-		name = "【"+$condt[conId].name+"】";
-	}
-	else
-	{
-		name = $tileType[type].name;
-	}
+	let name= $tileType[type].name;
 
 	if($tileType[type].showLv)
 	{
@@ -491,13 +417,6 @@ function showMapTip()
 
 	if(own==$ply.side())
 	{
-		if(cons!=-1)
-		{
-			if($condt[conId].type==2)
-			{
-				tip.innerText = tip.innerText + " , 劳工("+con.data.num1+"/"+$condt[conId].work.worker+") , "+$mtName[$condt[conId].work.type]+"+"+Math.ceil((con.data.num1/$condt[conId].work.worker)*$condt[conId].work.max)
-			}
-		}
 		tip.innerText = tip.innerText + "，领土属于您";
 	}
 	else if(own==0)
@@ -552,123 +471,9 @@ function createTiles()
 	}	
 }
 
-function genMapDesc()
-{
-	let s="";
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let m = mapCtrl.getMapByPos(x, y);
-	let con = m.data.con;
-	let type = m.data.type;
-	let own = m.data.ownBy;
-
-	s = $tileType[type].desc;
-	if(con==-1)
-		s+="目前还没有被建设。"
-	else
-	{
-		let cons = $cons.getConByIdx(con);
-		let id = cons.data.id;
-		s+="这里被建设为了【"+$condt[id].name+"】。"
-	}
-	if(own==$ply.side())
-	{
-		s += "这块领土属于您。";
-	}
-	else if(own==0)
-	{
-		s += "这里没有被占领，这里住着一些山野之人和强盗土匪。";
-	}
-	else
-	{
-		s += "已被占领。";
-	}
-	return s;
-}
-
 function onClickBuild()
 {
-	let rt = document.getElementById("construct");
-	let desc = document.createElement("div");
-	desc.classList.add("desc");
-	desc.innerText = genMapDesc();
-	rt.appendChild(desc);
 
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let m = mapCtrl.getMapByPos(x, y);
-	let own = m.data.ownBy;
-	let border = m.data.in;
-	let con = m.data.con;
-
-	if(own==$ply.side()&&border==$ply.side())
-	{
-		if(con==-1)
-		{
-			let type = m.data.type;
-			let len = $condt.length;
-			let v;
-			for(let i=0;i<len;i++)
-			{
-				v = $condt[i];
-				let sel = document.createElement("div");
-				sel.innerText = "-> 建设 【"+v.name+"】（"+v.need+"，建设资金："+v.gold+"） \n （"+v.desc+"）";
-				sel.style.top = (7+i*3.5)+"em";
-
-				if(type!=v.area||$ply.gold()<v.gold)
-				{
-					sel.classList.add("selno");
-					sel.style.color = "gray";
-				}
-				else
-				{
-					sel.classList.add("sel");
-					sel.style.color = "black";
-					sel.addEventListener("click", () => {
-						onBuildRaw(i);
-						closeBuild();
-					})
-				}
-				rt.appendChild(sel);	
-			}
-		}
-	}
-
-	let btn = document.createElement("button");
-	btn.classList.add("close");
-	btn.innerText="关闭";
-	btn.addEventListener("click", () => {
-		closeBuild();
-	})
-	rt.appendChild(btn);
-	rt.style.visibility = "visible";
-}
-
-function closeBuild()
-{
-	let rt = document.getElementById("construct");
-	rt.innerHTML="";
-	rt.style.visibility = "hidden";	
-}
-
-function onBuildRaw(id)
-{
-	let v = $condt[id];
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let m = mapCtrl.getMapByPos(x, y);
-	let own = m.data.ownBy;
-
-	if(own!=1)
-		return;
-	if(m.data.con!=-1)
-		return;
-	let type = m.data.type;
-	if(type!=v.area||$ply.gold()<v.gold)
-		return;
-	$cons.BuildCon(x,y,id,$ply.side());
-	if(mapCtrl.inRange(x,y))
-		mapCtrl.renderBuildPos(x,y);
 }
 
 function onClickExplore()
@@ -701,71 +506,6 @@ function onClickExplore()
 function onClickBuy()
 {
 
-}
-
-function TryMoveTo(x,y,v)
-{
-	if(!$ti.act(v))
-		return;
-	let px = $ply.pos().x;
-	let py = $ply.pos().y;
-	if(x<0||y<0||x>=MAXCELL||y>=MAXCELL)
-		return;
-	if((Math.abs(x-px)+Math.abs(y-py)!=1))
-		return;
-
-	let xmin = mapCtrl.cutPos.x - centerx + 1;
-	let ymin = mapCtrl.cutPos.y - centery + 1;
-	let toI = x - xmin;	//绘图坐标
-	let toJ = y - ymin;	//绘图坐标
-
-	//const maxx=9;
-	//const maxy=7;
-	$ply.moveTo(x,y);
-
-	if(toI==0&&x>=0)
-	{
-		mapCtrl.cutPos.x--;
-		mapCtrl.render();
-	}
-	else if(toI==(maxx-1)&&x<MAXCELL)
-	{
-		mapCtrl.cutPos.x++;
-		mapCtrl.render();
-	}
-	else if(toJ==0&&y>=0)
-	{
-		mapCtrl.cutPos.y--;
-		mapCtrl.render();
-	}
-	else if(toJ==(maxy-1)&&y<MAXCELL)
-	{
-		mapCtrl.cutPos.y++;
-		mapCtrl.render();
-	}
-	else
-	{
-		mapCtrl.reanderPly();
-	}
-	document.getElementById("move").disabled=true;
-	refreshAcB()
-	renderSel();
-}
-
-function onClickMove()
-{
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	TryMoveTo(x,y,1);
-}
-
-function onHitMove(x,y)
-{
-	let px = $ply.pos().x;
-	let py = $ply.pos().y;
-	let tox = x+px;
-	let toy = y+py;
-	TryMoveTo(tox,toy,1);
 }
 
 function conquer()
@@ -838,7 +578,6 @@ function initMapActBtn()
 	adMpAcBtn("攻占","conquer",conquer,true);
 	adMpAcBtn("买地","buy",onClickBuy,true);
 	adMpAcBtn("查看/建设","build",onClickBuild,true);
-	adMpAcBtn("前往","move",onClickMove,true);
 }
 
 function adMpAcBtn(name,id,fun,f)
@@ -850,33 +589,7 @@ function adMpAcBtn(name,id,fun,f)
 	btn.id=id;
 	btn.disabled=f;
 	btn.addEventListener("click", () => {fun()})
-	rt.appendChild(btn);	
-}
-
-document.onkeyup=function(e)
-{  
-	e=e||window.event;  
-	e.preventDefault(); 
-	switch(e.keyCode)
-	{
-		case 37:
-			onHitMove(-1,0);
-			break;
-		case 38: 
-			onHitMove(0,1);
-			break;
-		case 39:
-			onHitMove(1,0);
-			break;
-		case 40:
-			onHitMove(0,-1);
-			break;
-	}
-}
-
-document.ondblclick = function()
-{
-	onClickMove();
+	rt.appendChild(btn);
 }
 
 var mapCtrl = new _mapCtrl();

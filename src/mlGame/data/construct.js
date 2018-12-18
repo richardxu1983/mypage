@@ -1,10 +1,36 @@
-var names = {
-	'food':"粮食",
+const names = {
+	'grain':"谷物",
 	'wood':"木材",
 	'iron':"生铁",
+	'stone':"石头",
+	'animal':"动物",
+	'wood_commodity':"木质日用品",
+	'meat':"肉食",
+	'iron_commodity':"铁质日用品",
+	'bread':"面包",
 };
 
-var construct = 
+const cons_sheet = 
+[
+	{
+		name:"基本",
+		list:[0,1,2,3,4,5],
+	},
+	{
+		name:"生产",
+		list:[11,12,13,14],
+	},
+	{
+		name:"原材料",
+		list:[6,7,8,9,10],
+	},
+	{
+		name:"功能",
+		list:[15,16,17],
+	},
+];
+
+const construct = 
 [
 	{
 		id:0,
@@ -15,12 +41,12 @@ var construct =
 		area:0,
 		img:'obelisk_0',
 		type:0,				//据点类型
-		range:2,
+		range:3,
 	},
 	{
 		id:1,
-		name:'村镇',
-		desc:'村镇会吸引人们来居住，提供劳动力和税收。',
+		name:'民居',
+		desc:'民居提供劳动力和税收，随着生活水平提升，民居会吸引更富有的人和高级人才',
 		need:'需要平原',
 		gold:0,
 		area:0,
@@ -29,9 +55,49 @@ var construct =
 	},
 	{
 		id:2,
-		name:'田地',
-		desc:'田地能产出粮食、草药及其它作物，需要劳工',
-		need:'需要树林',
+		name:'市场',
+		desc:'市场为民居提供基本食物，附近4格以内需要有面包房、屠宰场、果园等产出食物的建筑物',
+		need:'需要平原',
+		gold:0,
+		area:0,
+		img:'market_0',
+		type:1,				//村庄类型
+	},
+	{
+		id:3,
+		name:'用品店',
+		desc:'用品店为民居提供基本日用品，附近4格以内需要有工坊、铁匠铺等产出日用品的建筑物',
+		need:'需要平原',
+		gold:0,
+		area:0,
+		img:'yongpin_0',
+		type:1,				//村庄类型
+	},
+	{
+		id:4,
+		name:'粮仓',
+		desc:'粮仓从附近的农田收集谷物加工为面粉，为附近的面包房提供面粉',
+		need:'需要平原',
+		gold:0,
+		area:0,
+		img:'liangcang_0',
+		type:1,				//村庄类型
+	},
+	{
+		id:5,
+		name:'仓库',
+		desc:'仓库存储木材、铁矿、石头等原材料，为附近的工坊、铁匠铺等提供原材料',
+		need:'需要平原',
+		gold:0,
+		area:0,
+		img:'cangku_0',
+		type:1,				//村庄类型
+	},
+	{
+		id:6,
+		name:'农田',
+		desc:'田地能产出谷物，需要劳动力',
+		need:'需要平原',
 		gold:20,
 		area:0,
 		img:'crop_0',
@@ -40,41 +106,167 @@ var construct =
 		{
 			worker:5,
 			max:100,
-			type:'food',
+			type:'grain',
 		},
 	},
 	{
-		id:3,
-		name:'林站',
-		desc:'林站从树林产出木材，和其它的东西',
-		need:'需要树林',
+		id:7,
+		name:'伐木场',
+		desc:'伐木场从附近1格以内的树木收集木材，每个树林只能被一个伐木场收集',
+		need:'需要平原',
 		gold:20,
 		area:0,
 		img:'wood_0',
-		type:2,		//需要工人产出类型
-		work:
-		{
-			worker:5,
-			max:10,
-			type:'wood',
-		},
-	},
-	{
-		id:4,
-		name:'矿站',
-		desc:'矿站能让劳力从矿场采集石头、矿产',
-		need:'需要矿场',
-		gold:100,
-		area:2,
-		img:'village_0',
 		type:2,			//需要工人产出类型
 		work:
 		{
 			worker:5,
-			max:10,
+			max:100,
+			type:'wood',
+		},
+	},
+	{
+		id:8,
+		name:'采石场',
+		desc:'采石场从原地挖坑收集石头',
+		need:'需要平原',
+		gold:20,
+		area:0,
+		img:'caishichang_0',
+		type:2,			//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:100,
+			type:'stone',
+		},
+	},
+	{
+		id:9,
+		name:'铁矿场',
+		desc:'铁矿场从附近1格以内的铁矿收集铁，每个铁矿只能被1个铁矿场收集',
+		need:'需要平原',
+		gold:20,
+		area:0,
+		img:'tiekuangc_0',
+		type:2,			//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:100,
 			type:'iron',
 		},
 	},
+	{
+		id:10,
+		name:'猎户',
+		desc:'猎户进行打猎，提供动物，动物可以被屠宰场加工为肉食',
+		need:'需要平原',
+		gold:20,
+		area:0,
+		img:'lieren_0',
+		type:2,			//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:100,
+			type:'animal',
+		},
+	},
+	{
+		id:11,
+		name:'面包房',
+		desc:'面包房从附近的粮仓获得面粉，加工为面包',
+		need:'需要平原',
+		gold:20,
+		area:0,
+		img:'mianbao',
+		type:3,		//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'bread',
+		},
+	},
+	{
+		id:12,
+		name:'工坊',
+		desc:'工坊从附近的仓库获取木材，加工为一般木质日用品',
+		need:'需要平原',
+		gold:20,
+		area:0,
+		img:'gongfang_0',
+		type:3,		//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'wood_commodity',
+		},
+	},
+	{
+		id:13,
+		name:'屠宰场',
+		desc:'屠宰场从附近的猎户收集动物，加工为肉食',
+		need:'需要平原',
+		gold:20,
+		area:2,
+		img:'village_0',
+		type:3,			//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'meat',
+		},
+	},
+	{
+		id:14,
+		name:'铁匠铺',
+		desc:'铁匠铺从附近的仓库收集生铁，加工为铁质日用品，或武器防具',
+		need:'需要平原',
+		gold:20,
+		area:2,
+		img:'tiejiangpu_0',
+		type:3,			//需要工人产出类型
+		work:
+		{
+			worker:5,
+			max:10,
+			type:'iron_commodity',
+		},
+	},
+	{
+		id:15,
+		name:'酒馆',
+		desc:'酒馆为附近居民区娱乐，并且可以在这里遇见英雄',
+		need:'需要平原',
+		gold:200,
+		area:2,
+		img:'jiuguan_0',
+		type:4,			//需要工人产出类型
+	},
+	{
+		id:16,
+		name:'医院',
+		desc:'医院为英雄及市民进行质量',
+		need:'需要平原',
+		gold:200,
+		area:2,
+		img:'yiyuan_0',
+		type:4,			//需要工人产出类型
+	},
+	{
+		id:17,
+		name:'花园',
+		desc:'花园为附近居民区提供更好的景观和娱乐',
+		need:'需要平原',
+		gold:200,
+		area:2,
+		img:'garden_0',
+		type:4,			//需要工人产出类型
+	},
 ];
 
-export default { names,construct }; 
+export default { names,construct,cons_sheet }; 

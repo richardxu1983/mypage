@@ -1,47 +1,130 @@
 
-var mapTile = []
-var tileType = 
+const tileType = 
 [
 	{
-		"id":0,
-		"name":"平原",
-		"desc":"这是一片平原。",
-		"enter":true,
-		"maxLv":1,
-		"showLv":false,
-		"img":"00",
+		id:0,
+		name:"平原",
+		desc:"这是一片平原，有9个可建设的地块",
+		enter:true,
+		type:1,
+		img:"00",
+		width:3,
+		cell:
+		[
+			[0,0,0],
+			[0,0,0],
+			[0,0,0],
+		],
 	},
 	{
-		"id":1,
-		"name":"山脉",
-		"desc":"这是一片山脉，不可同行和建设。",
-		"enter":false,
-		"maxLv":1,
-		"showLv":false,
-		"img":"01",
+		id:1,
+		name:"开阔平原",
+		desc:"这是一片平原，有16个可建设的地块",
+		enter:true,
+		width:4,
+		type:1,
+		img:"00",
+		cell:
+		[
+			[0,0,0,0],
+			[0,0,0,0],
+			[0,0,0,0],
+			[0,0,0,0],
+		],
 	},
 	{
-		"id":2,
-		"name":"树林",
-		"desc":"这是一片树林，如果建设了林站，可以产出木材和其它少量材料。",
-		"enter":true,
-		"maxLv":2,
-		"showLv":true,
-		"img":"02",
+		id:2,
+		name:"辽阔平原",
+		desc:"这是一片平原，有25个可建设的地块",
+		enter:true,
+		width:5,
+		type:1,
+		img:"00",
+		cell:
+		[
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+		],
+	},
+	{
+		id:3,
+		name:"山脉",
+		desc:"这是一片山脉，不可同行和建设。",
+		enter:false,
+		width:0,
+		type:0,
+		img:"01",
+	},
+	{
+		id:4,
+		name:"稀疏的树林",
+		desc:"这是一片树林，有少量的树木",
+		enter:true,
+		width:4,
+		type:2,
+		img:"02",
+		cell:
+		[
+			[1,0,0,1],
+			[0,0,0,0],
+			[0,0,1,0],
+			[0,0,0,0],
+		],
+	},
+	{
+		id:5,
+		name:"树林",
+		desc:"这是一片树林，有一些树木",
+		enter:true,
+		width:4,
+		type:2,
+		img:"02",
+		cell:
+		[
+			[0,1,0,1],
+			[1,0,0,0],
+			[0,0,1,0],
+			[1,0,0,0],
+		],
+	},
+	{
+		id:6,
+		name:"茂密树林",
+		desc:"这是一片茂密的树林，有大量树木",
+		enter:true,
+		width:5,
+		type:3,
+		img:"02",
+		cell:
+		[
+			[1,1,0,1,1],
+			[1,0,1,0,1],
+			[0,1,1,0,0],
+			[1,0,0,1,1],
+			[1,0,1,0,1],
+		],
 	},
 ];
 
-//平原
-mapTile[0] = []
-mapTile[0][0] = {tile:"00"};
 
-//山脉
-mapTile[1] = []
-mapTile[1][0] = {tile:"10"};
+const cellType = 
+[
+	{
+		id:0,
+		name:"平地",
+		desc:"这是一片平地，可用于建设",
+		build:true,
+		img:"00",
+	},
+	{
+		id:1,
+		name:"树木",
+		desc:"这是一颗树木，可被伐木场手机",
+		build:false,
+		img:"01",
+	},
+];
 
-//树林
-mapTile[2] = []
-mapTile[2][0] = {tile:"20"};	//一级树林
-mapTile[2][1] = {tile:"21"};	//二级树林
-
-export default { tileType,mapTile }; 
+export default { tileType,cellType }; 
