@@ -19,8 +19,7 @@ var c = {
 		//创建地图
 		$map.genMapArea(25,25,15);
 		$ply.side($dft.plySide);
-		$map.setCutPos(25,25);
-		$map.setCutSel(25,25);
+		$map.setWorldViewCenter(25,25);
 	},
 
 	new:function()
@@ -40,6 +39,7 @@ var c = {
 	mounted:function()
 	{
 		$map.createEl();
+		$map.render();
 	},
 }
 

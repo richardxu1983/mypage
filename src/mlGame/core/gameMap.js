@@ -1,7 +1,7 @@
 
 const $ply = require('../../mlGame/core/role.js').default.role;
-const $tileType = require('../../mlGame/data/area.js').default.tileType;
-const $cellType = require('../../mlGame/data/area.js').default.cellType;
+const $block = require('../../mlGame/data/area.js').default.block;
+const $cellTile = require('../../mlGame/data/area.js').default.cell;
 
 //世界地图
 var maps = [];
@@ -27,19 +27,20 @@ class cell
 		this.data = {};
 		this.data.x = data.x;
 		this.data.y = data.y;
-		this.idx = data.x*data.width+data.y;
-		this.type = data.type;
-		this.build = -1;
-		this.build_lv = 0;
-		this.status = -1;
+		this.data.idx = data.x*data.width+data.y;
+		this.data.type = data.type;
+		this.data.build = -1;
+		this.data.build_lv = 0;
+		this.data.status = -1;
 	}
 }
 
 //世界地图上的每个地块
-class map
+class block
 { 
     constructor(data)
     { 
+    	this.select = {x:-1,y:-1};
     	this.data = {};
     	this.data.x = data.x;
     	this.data.y = data.y;
@@ -59,6 +60,21 @@ class map
     	this.data.ownBy = s;
     }
 
+    captureBySide(s)
+    {
+    	if(s==this.data.ownBy)
+    		return;
+
+    	this.data.ownBy = s;
+    }
+
+    buildOnCell(x,y,id)
+    {
+    	let c = this.data.cells[x][y];
+    	if(c.data.build!=-1)
+    		return;
+    }
+
     createCell()
     {
     	if(this.data.cells!=-1)
@@ -66,14 +82,14 @@ class map
 
     	this.data.cells = [];
 
-    	let w = $tileType[this.data.id].width;
+    	let w = $block[this.data.id].width;
     	let t;
 
     	for(let i=0;i<w;i++)
     	{
     		for(let j=0;j<w;j++)
     		{
-    			t = $tileType[this.data.id].cell[i][j];
+    			t = $block[this.data.id].cell[i][j];
     			this.data.cells[i][j] = cell({x:i,y:j,type:t});
     		}
     	}
@@ -84,54 +100,36 @@ class _mapCtrl
 {
 	constructor()
 	{
-		this.cutPos = {'x':0,'y':0};
-		this.cutSel = {'x':-1,'y':-1,'i':-1,'j':-1};
-		this.lastSel = {'x':-1,'y':-1,'i':-1,'j':-1};
+		this.viewMode = 0;	//0:world,1:block
+		this.WorldViewCenter = {'x':0,'y':0};
+		this.curBlock = {'x':0,'y':0};
+		this.worldSelect = {'x':-1,'y':-1,'i':-1,'j':-1};
+		this.lastWorldSel = {'x':-1,'y':-1,'i':-1,'j':-1};
 		this.showBorder = false;
 	}
 
-	getMax()
+	getWorldViewCenter()
 	{
-		return MAXCELL;
+		return this.WorldViewCenter;
 	}
 
-	new()
+	setWorldViewCenter(x,y)
 	{
-
+		this.WorldViewCenter.x = x;
+		this.WorldViewCenter.y = y;
 	}
 
-	load()
-	{
-
-	}
-
-	getCutPos()
-	{
-		return this.cutPos;
-	}
-
-	setCutPos(x,y)
-	{
-		this.cutPos.x = x;
-		this.cutPos.y = y;
-	}
-
-	getMapByPos(x,y)
+	getBlockByPos(x,y)
 	{
 		return maps[x*MAXCELL+y];
-	}
-
-	insertMap(map)
-	{
-		maps[map.data.idx] = map;
 	}
 
 	genMapAtPos(x,y,type)
 	{
 		let v=0;
 		let p = Math.random();
-		v = p>0.15?0:2;
-		var m = new map({'x':x,'y':y,'type':v});
+		v = p>0.15?0:4;
+		var m = new block({'x':x,'y':y,'id':v});
 		maps[m.data.idx] = m;
 	}
 
@@ -148,36 +146,65 @@ class _mapCtrl
 
 	capturePosByUnit(x,y,u)
 	{
-		var m = this.getMapByPos(x, y);
+		var m = this.getBlockByPos(x, y);
 		m.captureByUnit(u);
+	}
+
+	capturePosBySide(x,y,s)
+	{
+		var m = this.getBlockByPos(x, y);
+		m.captureBySide(s);
 	}
 
 	createEl()
 	{
-		createTiles();
-		initMapActBtn();
-		this.render();
+		createWorldTiles();
 	}
 
 	render()
 	{
-		this.renderTile();
+		if(this.viewMode==0)
+		{
+			this.renderWorld();
+		}
+		else
+		{
+			this.renderBlock();
+		}
+		initMapActBtn();
 	}
 
-	getTileByPos(x,y)
+	switchView(mode)
 	{
-		let xmin = this.cutPos.x - centerx + 1;
-		let ymin = this.cutPos.y - centery + 1;
+		this.viewMode = mode;
+		if(mode==0)
+		{
+			showWorldTiles();
+			this.renderWorld();
+		}
+		else
+		{
+			hideWorldTiles();
+		}
+		hideSel();
+		hideMapTip();
+		refreshBtn();
+	}
+
+	getBlockTile(x,y)
+	{
+		let xmin = this.WorldViewCenter.x - centerx + 1;
+		let ymin = this.WorldViewCenter.y - centery + 1;
 		let xi = x - xmin;	//绘图坐标
 		let xj = y - ymin;	//绘图坐标
 		var div = document.getElementById("tile_"+xi+"_"+xj);
 		return div;
 	}
 
-	getBorderByPos(x,y)
+	getBorder(x,y)
 	{
-		let xmin = this.cutPos.x - centerx + 1;
-		let ymin = this.cutPos.y - centery + 1;
+		let xmin = this.WorldViewCenter.x - centerx + 1;
+		let ymin = this.WorldViewCenter.y - centery + 1;
 		let xi = x - xmin;	//绘图坐标
 		let xj = y - ymin;	//绘图坐标
 		var div = document.getElementById("border_"+xi+"_"+xj);
@@ -186,10 +213,10 @@ class _mapCtrl
 
 	renderBorderPos(x,y)
 	{
-		if(!this.inRange(x,y))
+		if(!this.inWorldView(x,y))
 			return;
 
-		let div = this.getBorderByPos(x,y);
+		let div = this.getBorder(x,y);
 		if(!div)
 			return;
 
@@ -201,17 +228,17 @@ class _mapCtrl
 		else
 			div.style.visibility="visible";
 
-		var m = this.getMapByPos(x, y);
+		var m = this.getBlockByPos(x, y);
 		var s = m.data.ownBy;
 
 		//判断上边
-		if(this.inRange(x,y+1))
+		if(this.inWorldView(x,y+1))
 		{
-			var s1 = this.getMapByPos(x, y+1).data.ownBy;
+			var s1 = this.getBlockByPos(x, y+1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderTop = "";
-				let d = this.getBorderByPos(x,y+1);
+				let d = this.getBorder(x,y+1);
 				d.style.borderBottom = "";
 			}
 			else
@@ -225,13 +252,13 @@ class _mapCtrl
 			this.renderSgB("borderTop",s,div);
 		}
 		
-		if(this.inRange(x,y-1))
+		if(this.inWorldView(x,y-1))
 		{
-			var s1 = this.getMapByPos(x, y-1).data.ownBy;
+			var s1 = this.getBlockByPos(x, y-1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderBottom = "";
-				let d = this.getBorderByPos(x,y-1);
+				let d = this.getBorder(x,y-1);
 				d.style.borderTop = "";
 			}
 			else
@@ -244,13 +271,13 @@ class _mapCtrl
 			//不在范围
 			this.renderSgB("borderBottom",s,div);
 		}
-		if(this.inRange(x+1,y))
+		if(this.inWorldView(x+1,y))
 		{
-			var s1 = this.getMapByPos(x+1, y).data.ownBy;
+			var s1 = this.getBlockByPos(x+1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderRight = "";
-				let d = this.getBorderByPos(x+1,y);
+				let d = this.getBorder(x+1,y);
 				d.style.borderLeft = "";
 			}
 			else
@@ -263,13 +290,13 @@ class _mapCtrl
 			//不在范围
 			this.renderSgB("borderRight",s,div);
 		}
-		if(this.inRange(x-1,y))
+		if(this.inWorldView(x-1,y))
 		{
-			var s1 = this.getMapByPos(x-1, y).data.ownBy;
+			var s1 = this.getBlockByPos(x-1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderLeft = "";
-				let d = this.getBorderByPos(x-1,y);
+				let d = this.getBorder(x-1,y);
 				d.style.borderRight = "";
 			}
 			else
@@ -300,14 +327,14 @@ class _mapCtrl
 		}
 	}
 
-	renderTile()
+	renderWorld()
 	{
 		var img;
 		var m;
-		var startx = this.cutPos.x - centerx + 1;
-		var starty = this.cutPos.y - centery + 1;
+		var startx = this.WorldViewCenter.x - centerx + 1;
+		var starty = this.WorldViewCenter.y - centery + 1;
 		var x,y;
-		var t;
+		var id;
 
 		for(var i=0;i<maxx;i++)
 		{
@@ -315,10 +342,10 @@ class _mapCtrl
 			{
 				x = startx+i;
 				y = starty+j;
-				m = this.getMapByPos(x, y);
-				t = m.data.type;
+				m = this.getBlockByPos(x, y);
+				id = m.data.id;
 				img = document.getElementById("tile_img_"+i+"_"+j);
-				img.src = "/static/img/mlGame/tile_"+$tileType[t].img+".png"
+				img.src = "/static/img/mlGame/tile_"+$block[id].img+".png"
 				this.renderBuildPos(x,y);
 				this.renderBorderPos(x,y);
 			}
@@ -330,20 +357,20 @@ class _mapCtrl
 
 	}
 
-	inMap(px,py)
+	posInWorld(px,py)
 	{
 		if(px<0||py<0||px>=MAXCELL||py>=MAXCELL)
 			return false;
 		return true;
 	}
 
-	//传入实际坐标
-	inRange(px,py)
+	//传入坐标是否在当前世界视图
+	inWorldView(px,py)
 	{
 		if(px<0||py<0||px>=MAXCELL||py>=MAXCELL)
 			return false;
-		let xmin = this.cutPos.x - centerx + 1;
-		let ymin = this.cutPos.y - centery + 1;
+		let xmin = this.WorldViewCenter.x - centerx + 1;
+		let ymin = this.WorldViewCenter.y - centery + 1;
 		let xmax = xmin + (maxx-1);
 		let ymax = ymin + (maxy-1);
 		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
@@ -353,8 +380,8 @@ class _mapCtrl
 
 	renderBorder()
 	{
-		let startx = this.cutPos.x - centerx + 1;
-		let starty = this.cutPos.y - centery + 1;
+		let startx = this.WorldViewCenter.x - centerx + 1;
+		let starty = this.WorldViewCenter.y - centery + 1;
 		let x,y;
 		for(var i=0;i<maxx;i++)
 		{
@@ -367,31 +394,33 @@ class _mapCtrl
 		}
 	}
 
-
-	setCutSel(x,y,pi,pj)
+	setworldSelect(x,y,pi,pj)
 	{
-		let i=pi||(x-(this.cutPos.x - centerx + 1));
-		let j=pj||(y-(this.cutPos.y - centery + 1));
-		this.lastSel.x = this.cutSel.x;
-		this.lastSel.y = this.cutSel.y;
-		this.lastSel.i = this.cutSel.i;
-		this.lastSel.j = this.cutSel.j;
-		this.cutSel.x = x;
-		this.cutSel.y = y;
-		this.cutSel.i = i;
-		this.cutSel.j = j;		
+		let i=pi||(x-(this.WorldViewCenter.x - centerx + 1));
+		let j=pj||(y-(this.WorldViewCenter.y - centery + 1));
+		this.lastWorldSel.x = this.worldSelect.x;
+		this.lastWorldSel.y = this.worldSelect.y;
+		this.lastWorldSel.i = this.worldSelect.i;
+		this.lastWorldSel.j = this.worldSelect.j;
+		this.worldSelect.x = x;
+		this.worldSelect.y = y;
+		this.worldSelect.i = i;
+		this.worldSelect.j = j;	
+	}
+
+	setCurBlock(x,y)
+	{
+		this.curBlock.x = this.worldSelect.x;
+		this.curBlock.y = this.worldSelect.y;
 	}
 
 	onLeftClickTile(i,j)
 	{
-		let startx = this.cutPos.x - centerx + 1;
-		let starty = this.cutPos.y - centery + 1;
+		let startx = this.WorldViewCenter.x - centerx + 1;
+		let starty = this.WorldViewCenter.y - centery + 1;
 		let x = startx + i;
 		let y = starty + j;
-		let px = $ply.pos().x;
-		let py = $ply.pos().y;
-		this.setCutSel(x,y,i,j)
-		document.getElementById("move").disabled=(Math.abs(x-px)+Math.abs(y-py)==1)?false:true;
+		this.setworldSelect(x,y,i,j)
 		refreshAcB()
 		renderSel();
 	}
@@ -400,38 +429,58 @@ class _mapCtrl
 function showMapTip()
 {
 	let tip = document.getElementById("mapInfo");
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let m = mapCtrl.getMapByPos(x, y);
-	let type = m.data.type;
-	let own = m.data.ownBy;
-	let lv = m.data.lv;
-	let name= $tileType[type].name;
-
-	if($tileType[type].showLv)
+	tip.style.visibility = "visible";
+	if(mapCtrl.viewMode==0)
 	{
-		tip.innerText = lv+"级";
-	}
+		let x = mapCtrl.worldSelect.x;
+		let y = mapCtrl.worldSelect.y;
+		let m = mapCtrl.getBlockByPos(x, y);
+		let id = m.data.id;
+		let own = m.data.ownBy;
+		let name= $block[id].name;
 
-	tip.innerText = name+"( "+x+","+y+" )";
+		tip.innerText = name+"( "+x+","+y+" )";
 
-	if(own==$ply.side())
-	{
-		tip.innerText = tip.innerText + "，领土属于您";
-	}
-	else if(own==0)
-	{
-		tip.innerText = tip.innerText + "，无主";
+		if(own==$ply.side())
+		{
+			tip.innerText = tip.innerText + "，领土属于您";
+		}
+		else if(own==0)
+		{
+			//tip.innerText = tip.innerText + "，无主";
+		}
+		else
+		{
+			tip.innerText = tip.innerText + "，被占";
+		}
 	}
 	else
 	{
-		tip.innerText = tip.innerText + "，被占";
+
 	}
 }
 
-function createTiles()
+function hideMapTip()
 {
-	let mapRoot = document.getElementById("maps");
+	let tip = document.getElementById("mapInfo");
+	tip.style.visibility = "hidden";	
+}
+
+function hideWorldTiles()
+{
+	let mapRoot = document.getElementById("world");
+	mapRoot.style.visibility = "hidden";
+}
+
+function showWorldTiles()
+{
+	let mapRoot = document.getElementById("world");
+	mapRoot.style.visibility = "visible";
+}
+
+function createWorldTiles()
+{
+	let mapRoot = document.getElementById("world");
 	for(let i=0;i<maxx;i++)
 	{
 		for(let j=0;j<maxy;j++)
@@ -464,16 +513,33 @@ function createTiles()
 			div.id = "tile_"+i+"_"+j;
 			div.style.top = top+"px";
 			div.style.left = left+"px";
-			div.addEventListener("click", () => {mapCtrl.onLeftClickTile(i,j);})
 
+			//禁用chrome的拖拽图片
+			div.onmousedown = (e)=>{
+			    e.preventDefault()
+			}
+			//响应左键事件
+			div.onmouseup = (e)=>{
+			    mapCtrl.onLeftClickTile(i,j);
+			}
+			/*
+			div.addEventListener("mouseup", (e) => {
+				mapCtrl.onLeftClickTile(i,j);
+			})
+			*/
 			mapRoot.appendChild(div);
 		}
 	}	
 }
 
-function onClickBuild()
+function onBlockView()
 {
+	mapCtrl.switchView(1);
+}
 
+function onWorldView()
+{
+	mapCtrl.switchView(0);
 }
 
 function onClickExplore()
@@ -489,8 +555,8 @@ function onClickExplore()
 		document.getElementById("explore").innerText="隐藏边界";
 	}
 
-	let startx = mapCtrl.cutPos.x - centerx + 1;
-	let starty = mapCtrl.cutPos.y - centery + 1;
+	let startx = mapCtrl.WorldViewCenter.x - centerx + 1;
+	let starty = mapCtrl.WorldViewCenter.y - centery + 1;
 	let x,y;
 	for(var i=0;i<maxx;i++)
 	{
@@ -510,74 +576,80 @@ function onClickBuy()
 
 function conquer()
 {
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let px = $ply.pos().x;
-	let py = $ply.pos().y;
-	let m = mapCtrl.getMapByPos(x, y);
-	if((x==px&&y==py)||(x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1))
-	{
-
-		let m = mapCtrl.getMapByPos(x, y);
-		if(m.data.ownBy!=1)
-			mapCtrl.capturePosByUnit(x,y,$ply);
-		refreshAcB()
-		renderSel();
-	}
+	let x = mapCtrl.worldSelect.x;
+	let y = mapCtrl.worldSelect.y;
+	mapCtrl.capturePosByUnit(x,y,$ply);
 }
 
 function refreshAcB()
 {
-	let x = mapCtrl.cutSel.x;
-	let y = mapCtrl.cutSel.y;
-	let px = $ply.pos().x;
-	let py = $ply.pos().y;
-	let m1 = mapCtrl.getMapByPos(x, y);
-	let own1 = m1.data.ownBy;
-	let border = m1.data.in;
 
-	document.getElementById("buy").disabled=(own1!=$ply.side()&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
-	document.getElementById("build").disabled=false;
-	document.getElementById("conquer").disabled=(own1!=$ply.side()&&((x==px&&py==y)||(Math.abs(x-px)<=1&&Math.abs(y-py)<=1)))?false:true;
 }
 
 function renderSel()
 {
-	let px = mapCtrl.cutSel.x;
-	let py = mapCtrl.cutSel.y;
-
-	if(!mapCtrl.inRange(px,py))
-		return;
-
-	let xmin = mapCtrl.cutPos.x - centerx + 1;
-	let ymin = mapCtrl.cutPos.y - centery + 1;
-	let xmax = xmin + (maxx-1);
-	let ymax = ymin + (maxy-1);
-	if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
+	if(mapCtrl.viewMode==0)
 	{
-		let i = px - xmin;
-		let j = py - ymin;
-		//console.log(i+","+j);
-		let div = document.getElementById("tile_"+i+"_"+j);
-		let left = div.offsetLeft;
-		let top = div.offsetTop;
-		let flag = document.getElementById("sel");
-		flag.style.border = "solid 1px yellow";
-		flag.style.visibility="visible";
-		//console.log(top+","+left);
-		flag.style.top = top+"px";
-		flag.style.left = left+"px";
+		let px = mapCtrl.worldSelect.x;
+		let py = mapCtrl.worldSelect.y;
+
+		if(!mapCtrl.inWorldView(px,py))
+			return;
+
+		let xmin = mapCtrl.WorldViewCenter.x - centerx + 1;
+		let ymin = mapCtrl.WorldViewCenter.y - centery + 1;
+		let xmax = xmin + (maxx-1);
+		let ymax = ymin + (maxy-1);
+		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
+		{
+			let i = px - xmin;
+			let j = py - ymin;
+			//console.log(i+","+j);
+			let div = document.getElementById("tile_"+i+"_"+j);
+			let left = div.offsetLeft;
+			let top = div.offsetTop;
+			let flag = document.getElementById("sel");
+			flag.style.border = "solid 1px yellow";
+			flag.style.visibility="visible";
+			//console.log(top+","+left);
+			flag.style.top = top+"px";
+			flag.style.left = left+"px";
+		}
+		showMapTip();
 	}
-	showMapTip();
+	else
+	{
+
+	}
+}
+
+function hideSel()
+{
+	let flag = document.getElementById("sel");
+	flag.style.visibility="hidden";
 }
 
 function initMapActBtn()
 {
 	let rt = document.getElementById("mapAct");
-	adMpAcBtn("显示边界","explore",onClickExplore,false);
-	adMpAcBtn("攻占","conquer",conquer,true);
-	adMpAcBtn("买地","buy",onClickBuy,true);
-	adMpAcBtn("查看/建设","build",onClickBuild,true);
+	if(mapCtrl.viewMode==0)
+	{
+		adMpAcBtn("建设地块","build",onBlockView,false);
+		adMpAcBtn("显示边界","explore",onClickExplore,false);
+	}
+	else
+	{
+		adMpAcBtn("回到世界","build",onWorldView,false);
+	}
+}
+
+function refreshBtn()
+{
+	let rt = document.getElementById("mapAct");
+	while (rt.firstChild) {
+    	rt.removeChild(rt.firstChild);
+	}
+	initMapActBtn();
 }
 
 function adMpAcBtn(name,id,fun,f)
@@ -591,6 +663,17 @@ function adMpAcBtn(name,id,fun,f)
 	btn.addEventListener("click", () => {fun()})
 	rt.appendChild(btn);
 }
+
+
+document.onkeydown = ()=>{
+	var oEvent = window.event;
+	if(oEvent.keyCode ==27) 
+	{
+		hideSel();
+		hideMapTip();
+	}
+}
+
 
 var mapCtrl = new _mapCtrl();
 

@@ -1,5 +1,5 @@
 
-const tileType = 
+const block = 
 [
 	{
 		id:0,
@@ -109,7 +109,7 @@ const tileType =
 ];
 
 
-const cellType = 
+const cell = 
 [
 	{
 		id:0,
@@ -127,4 +127,4 @@ const cellType =
 	},
 ];
 
-export default { tileType,cellType }; 
+export default { block,cell }; 

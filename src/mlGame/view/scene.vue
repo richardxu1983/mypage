@@ -1,7 +1,7 @@
 <template>
 	<div class="sce">
-		<div id="maps"></div>
-		<img class="flag" id="flag" src="/static/img/mlGame/flag.png">
+		<div id="world"></div>
+		<div id="block"></div>
 		<div class="psel" id="sel"></div>
 		<div class="mapInfo" id="mapInfo"></div>
 		<div class="mapAct" id="mapAct"></div>
