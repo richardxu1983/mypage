@@ -3,7 +3,17 @@
 	<div class="mlBoard nosel">
 		<div class="topBar" >
 			<tiv class="left"></tiv>
-			<div class="right">您拥有：&ensp;{{gold}}&ensp;金</div>
+			<div class="res">
+				<div class="cell">木材：{{wood}}</div>
+				<div class="cell">石头：{{stone}}</div>
+				<div class="cell">铁矿：{{iron}}</div>
+				<div class="cell">粮食：{{food}}</div>
+			</div>
+			<div class="rightRes">
+				<div class="cell">金币：{{gold}}</div>
+				<div class="cell">人口：{{pop}}</div>
+				<div class="cell">地块：{{block}}/{{maxBlock}}</div>
+			</div>
 		</div>
 		<fightPnl></fightPnl>
 		<plyPnl></plyPnl>
@@ -54,8 +64,36 @@ export default {
 	{
 		gold:function()
 		{
-			return $ply.gold();
-		}
+			return this.fmat($ply.gold());
+		},
+		wood:function()
+		{
+			return this.fmat($ply.wood());
+		},
+		iron:function()
+		{
+			return this.fmat($ply.iron());
+		},
+		food:function()
+		{
+			return this.fmat($ply.food());
+		},
+		stone:function()
+		{
+			return this.fmat($ply.stone());
+		},
+		pop:function()
+		{
+			return this.fmat($ply.pop());
+		},
+		block:function()
+		{
+			return this.fmat($ply.block());
+		},
+		maxBlock:function()
+		{
+			return this.fmat($ply.maxBlock());
+		},
 	},
 	components: 
 	{
@@ -76,6 +114,15 @@ export default {
 	},
 	methods:
 	{
+		fmat:function(v)
+		{
+			if(v>=100000)
+			{
+				return Math.floor(v/10000)+"万";
+			}
+			else
+				return v;
+		},
 		clsWp:function()
 		{
 
@@ -141,13 +188,36 @@ export default {
 		width: 100%;
 		box-sizing: border-box;
 		color: #FFF8DC;
+		font-size: xx-small;
+		.res
+		{
+			position: absolute;
+			left:14em;
+			.cell
+			{
+				float: left;
+				width: 6em;
+				margin-right: 1em;
+			}
+		}
+		.rightRes
+		{
+			position: absolute;
+			right:.5em;
+			.cell
+			{
+				float: right;
+				width: 6em;
+				margin-left: 1em;
+			}
+		}
 	}
 	.tool{
 		position: absolute;
 		bottom: -2em;
 		left: 0;
 	}
-
+	
 	.mlBoard{
 		width: 800px;
 		height: 650px;

@@ -1,171 +1,79 @@
-import UB from '../../mlGame/core/unit.js'
-import DT from '../../mlGame/data/gData.js'
-import ITM from '../../mlGame/data/item.js'
-var $Unit = UB.Unit;
-var $role = DT.role;
-var $item = ITM.item;
 
+const $dft = require('../../mlGame/data/gData.js').default.dft;
+const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
+const side = $dft.plySide
 
 var ui =  
 {
     pnl:false,
 }
 
-class _role extends $Unit 
+class _role
 { 
     constructor()
     { 
-        super();
-        this.attr.bag=[];
-        this.setAttr('type',99);
+
     }
 
-    bag()
+    side()
     {
-        return this.attr.bag;
+        return side;
     }
 
     gold(v)
     {
-        let $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
-        let side = this.side();
         let p = $prop.get(side);
         return p.gold();
     }
 
-    bagAddItem(id)
+    wood()
     {
-        var len = this.attr.bag.length;
-        var i=0;
-        var item;
-        var bid;
-
-        for(i=0;i<len;i++)
-        {
-            item = this.attr.bag[i];
-            if(item)
-            {
-                bid=item.id;
-                if(bid==id)
-                {
-                    if($item[bid].stack>item.stack)
-                    {
-                        item.stack++;
-                        return;
-                    }
-                }
-            }
-        }
-
-        if(this.attr.bag.length>=64)
-            return;
-
-        this.attr.bag.push({'id':id,'stack':1});
+        return $prop.getV(side,'wood');
     }
 
-    bagDelItem(index)
+    stone()
     {
-        var stack = this.attr.bag[index].stack;
-        if(stack>1)
-            this.attr.bag[index].stack--;
-        else
-            this.attr.bag.splice(index,1);
+        return $prop.getV(side,'stone');
     }
 
-    bagUseItem(index)
+    iron()
     {
-        var it=this.attr.bag[index];
-        if(it)
-        {
-            var item=$item[it.id];
-            if(item.use==0)
-                return;
-            if(item.type==0)
-            {
-                if(item.sub==0)
-                {
-                    if(this.absorbJS(it.id)==1)
-                    {
-                        this.bagDelItem(index);
-                    }
-                }
-            }
-        }
+        return $prop.getV(side,'iron');
+    }
+
+    food()
+    {
+        return $prop.getV(side,'food');
+    }
+
+    pop()
+    {
+        return $prop.getV(side,'pop');
+    }
+
+    block()
+    {
+        return $prop.getV(side,'block');
+    }
+
+    maxBlock()
+    {
+        return $prop.getV(side,'maxBlock');
     }
 
     new()
     {
-        var hpBase = $role.new.hp;
-        var atkBase = $role.new.atkBase;
-        var mtkBase = $role.new.mtkBase;
-        var spdBase = $role.new.spdBase;
-        var defBase = $role.new.defBase;
-        this.setAttr('hp', hpBase);
-        this.setAttr('hpmaxBase', hpBase);
-        this.setAttr('atkBase', atkBase);
-        this.setAttr('mtkBase', mtkBase);
-        this.setAttr('spdBase', spdBase);
-        this.setAttr('defBase', defBase);
-        this.name($role.new.name);
-        this.setAttr('fskl', [-1,-1,-1]);
-        this.setAttr('zf', []);
-        this.setAttr('tx', []);
-        this.setAttr('ng', []);
-        this.setAttr('bag', []);
-        this.setAttr('side',1);
-        this.attr.cl = {type:-1,index:0};    //正在练习的技能
-        //内功附加数值
-        this.ng = 
-        {
-            'atk':0,
-            'mtk':0,
-            'spd':0,
-            'def':0,
-            'atkp':0,
-            'mtkp':0,
-            'spdp':0,
-            'defp':0,
-        };
 
-        //战斗中的状态数值
-        this.ft = 
-        {
-            round:0,
-            eff:[],
-            'atk':0,
-            'mtk':0,
-            'spd':0,
-            'def':0,
-            'atkp':0,
-            'mtkp':0,
-            'spdp':0,
-            'defp':0,
-        };
-
-        this.ftOn = false;
-        this.attrCheck();
     }
 
     save()
     {
-    	localStorage.role = JSON.stringify(this.attr);
+
     }
 
     load()
     {
-    	try 
-        {
-			var attr = JSON.parse(localStorage.kc);
-			if(k)
-			{
-				this.attr = attr;
-			}
-		}
-		catch(e)
-		{
-			this.new();
-		}
-        this.attrCheck();
+
     }
 }
 

@@ -52,7 +52,6 @@ var gtime = {
 		}
 		gT.day = 1;
 		$prop.month();
-		$ply.onMonthStep();
 	},
 
 	load:function()

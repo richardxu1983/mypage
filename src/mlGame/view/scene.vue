@@ -4,6 +4,7 @@
 		<div id="block"></div>
 		<div class="psel" id="sel"></div>
 		<div class="mapInfo" id="mapInfo"></div>
+		<div class="blockInfo" id="blockInfo"></div>
 		<div class="mapAct" id="mapAct"></div>
 		<div class="build" id="construct">
 		</div>
@@ -51,6 +52,19 @@ export default
 			position: absolute;
 			top: 0;
 			right: 0;
+			width: 25em;
+			height: 3em;
+			padding-top: 1em;
+			padding-right: 2em;
+			text-align: right;
+			color: white;
+			font-size: xx-small;
+		}
+		.blockInfo
+		{
+			position: absolute;
+			top: 0;
+			left: 7em;
 			width: 25em;
 			height: 3em;
 			padding-top: 1em;

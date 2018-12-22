@@ -2,6 +2,10 @@
 const $ply = require('../../mlGame/core/role.js').default.role;
 const $block = require('../../mlGame/data/area.js').default.block;
 const $cellTile = require('../../mlGame/data/area.js').default.cell;
+const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
+const $bdData = require('../../mlGame/data/construct.js').default.construct;
+
+
 
 //世界地图
 var maps = [];
@@ -28,7 +32,7 @@ class cell
 		this.data.x = data.x;
 		this.data.y = data.y;
 		this.data.idx = data.x*data.width+data.y;
-		this.data.type = data.type;
+		this.data.id = data.id;
 		this.data.build = -1;
 		this.data.build_lv = 0;
 		this.data.status = -1;
@@ -48,16 +52,13 @@ class block
     	this.data.ownBy = 0;					//被谁占领
     	this.data.cells = -1;
     	this.data.idx = data.x*MAXCELL+data.y;	//世界地图数组中的位置
+    	this.data.width = $block[this.data.id].width;
     }
 
     captureByUnit(u)
     {
     	let s = u.side();
-
-    	if(s==this.data.ownBy)
-    		return;
-
-    	this.data.ownBy = s;
+    	this.captureBySide(s);
     }
 
     captureBySide(s)
@@ -65,14 +66,25 @@ class block
     	if(s==this.data.ownBy)
     		return;
 
+    	if($prop.getV(s,'block')>=$prop.getV(s,'maxBlock'))
+    		return;
+
     	this.data.ownBy = s;
     }
 
-    buildOnCell(x,y,id)
+    build(i,j,id)
     {
-    	let c = this.data.cells[x][y];
+
+    	if(this.data.cells==-1)
+			this.createCell();
+
+    	let $conCtrl = require('../../mlGame/core/consCtrl.js').default.conCtrl;
+
+    	let c = this.data.cells[i*this.data.width+j];
     	if(c.data.build!=-1)
     		return;
+
+    	$conCtrl.Build(this.data.idx,i,j,this.data.ownBy,id);
     }
 
     createCell()
@@ -82,15 +94,15 @@ class block
 
     	this.data.cells = [];
 
-    	let w = $block[this.data.id].width;
-    	let t;
+    	let w = this.data.width;
+    	let id;
 
     	for(let i=0;i<w;i++)
     	{
     		for(let j=0;j<w;j++)
     		{
-    			t = $block[this.data.id].cell[i][j];
-    			this.data.cells[i][j] = cell({x:i,y:j,type:t});
+    			id = $block[this.data.id].cell[i][j];
+    			this.data.cells[i*w+j] = new cell({x:i,y:j,'id':id,width:w});
     		}
     	}
     }
@@ -104,8 +116,10 @@ class _mapCtrl
 		this.WorldViewCenter = {'x':0,'y':0};
 		this.curBlock = {'x':0,'y':0};
 		this.worldSelect = {'x':-1,'y':-1,'i':-1,'j':-1};
+		this.cellSelect = {'x':-1,'y':-1,'i':-1,'j':-1};
 		this.lastWorldSel = {'x':-1,'y':-1,'i':-1,'j':-1};
 		this.showBorder = false;
+		this.renderReady=false;
 	}
 
 	getWorldViewCenter()
@@ -124,11 +138,44 @@ class _mapCtrl
 		return maps[x*MAXCELL+y];
 	}
 
+	getBlockByIdx(idx)
+	{
+		return maps[idx];
+	}
+
+	build(x,y,i,j,id)
+	{
+		let m = this.getBlockByPos(x,y);
+		m.build(i,j,id);
+	}
+
 	genMapAtPos(x,y,type)
 	{
 		let v=0;
-		let p = Math.random();
-		v = p>0.15?0:4;
+		let p = Math.random()*100;
+		if(p>80)
+		{
+			v = 2;
+		}
+		else if(p>35&&p<=80)
+		{
+			v = 1;
+		}
+		else if(p>9&&p<=35)
+		{
+			v = 0;
+		}
+		else if(p>2&&p<=9)
+		{
+			v = 4;
+		}
+		else if(p<=2&&p>=0)
+		{
+			v = 6;
+		}
+		else
+		{
+		}
 		var m = new block({'x':x,'y':y,'id':v});
 		maps[m.data.idx] = m;
 	}
@@ -159,6 +206,7 @@ class _mapCtrl
 	createEl()
 	{
 		createWorldTiles();
+		this.renderReady=true;
 	}
 
 	render()
@@ -174,17 +222,138 @@ class _mapCtrl
 		initMapActBtn();
 	}
 
+	showBlock(v)
+	{
+		if(v)
+		{
+			let mapRoot = document.getElementById("block");
+			mapRoot.style.visibility = "visible";
+		}
+		else
+		{
+			let mapRoot = document.getElementById("block");
+			while (mapRoot.firstChild) {
+		    	mapRoot.removeChild(mapRoot.firstChild);
+			}
+			mapRoot.style.visibility = "hidden";
+		}
+	}
+
+	renderCell(block_idx,i,j)
+	{
+		if(!this.renderReady)
+			return;
+
+		if(this.viewMode==0)
+			return;
+
+		let $builds = require('../../mlGame/core/consCtrl.js').default.builds;
+		let bd = document.getElementById("cell_build_"+i+"_"+j);
+		let m = this.getBlockByIdx(block_idx);
+		let cell = m.data.cells[i*m.data.width+j];
+		let idx = cell.data.build;
+
+		if(idx==-1)
+		{
+			bd.src="";
+			bd.style.visibility="hidden";
+			return;
+		}
+
+		let lv = $builds[$ply.side()][idx].data.lv;
+		let bid = $builds[$ply.side()][idx].data.id;
+
+		if($bdData[bid].lvl)
+		{
+			console.log("lv="+lv);
+			let img = "/static/img/mlGame/bd_"+$bdData[bid].lvl[lv].img+".png";
+			bd.src=img;
+		}
+		else
+		{
+			let img = "/static/img/mlGame/bd_"+$bdData[bid].img+".png";
+			bd.src=img;
+		}
+		bd.style.visibility="visible";
+	}
+
+	renderBlock(block)
+	{
+		if(block.data.cells==-1)
+			block.createCell();
+
+		let id = block.data.id;
+		let w = block.data.width;
+		let cell;
+		let cell_id;
+		let mapRoot = document.getElementById("block");
+		let center_cell_x = 350;
+		let offset = Math.floor((5-w)/2*width);
+
+		for(let i=0;i<w;i++)
+    	{
+    		for(let j=0;j<w;j++)
+    		{
+    			cell = block.data.cells[i*w+j];
+    			cell_id = cell.data.id;
+    			let left = i*width + center_cell_x + offset;
+				let top = (w-j-1)*width + 100 + offset;
+				let div = document.createElement("div");
+				let bk = document.createElement("img");
+				let bd = document.createElement("img");
+				bk.id = "cell_img_"+i+"_"+j;
+				bk.src= "/static/img/mlGame/cell_"+$cellTile[cell_id].img+".png";
+				bk.classList.add("mapTile");
+				bd.id = "cell_build_"+i+"_"+j;
+				bd.src="";
+				bd.classList.add("mapTileNo");
+				div.appendChild(bk);
+				div.appendChild(bd);
+				//bk.style.border = "1px solid green";
+				div.classList.add("map");
+				div.id = "cell_"+i+"_"+j;
+				div.style.top = top+"px";
+				div.style.left = left+"px";
+
+				//禁用chrome的拖拽图片
+				div.onmousedown = (e)=>{
+				    e.preventDefault()
+				}
+				//响应左键事件
+				div.onmouseup = (e)=>{
+				    mapCtrl.onLeftCell(i,j);
+				}
+				mapRoot.appendChild(div);
+
+				this.renderCell(block.data.idx,i,j);
+    		}
+    	}
+	}
+
 	switchView(mode)
 	{
 		this.viewMode = mode;
 		if(mode==0)
 		{
+			this.showBlock(false);
+			showBlockInfo(false);
 			showWorldTiles();
 			this.renderWorld();
 		}
 		else
 		{
+			let block_x = this.curBlock.x;
+			let block_y = this.curBlock.y;
+			let block = this.getBlockByPos(block_x, block_y);
+			if(!block)
+			{
+				this.viewMode = 0;
+				return;
+			}
 			hideWorldTiles();
+			showBlockInfo(true);
+			this.showBlock(true);
+			this.renderBlock(block);
 		}
 		hideSel();
 		hideMapTip();
@@ -406,6 +575,7 @@ class _mapCtrl
 		this.worldSelect.y = y;
 		this.worldSelect.i = i;
 		this.worldSelect.j = j;	
+		this.setCurBlock();
 	}
 
 	setCurBlock(x,y)
@@ -422,6 +592,13 @@ class _mapCtrl
 		let y = starty + j;
 		this.setworldSelect(x,y,i,j)
 		refreshAcB()
+		renderSel();
+	}
+
+	onLeftCell(i,j)
+	{
+		this.cellSelect.x = i;
+		this.cellSelect.y = j;
 		renderSel();
 	}
 }
@@ -443,7 +620,7 @@ function showMapTip()
 
 		if(own==$ply.side())
 		{
-			tip.innerText = tip.innerText + "，领土属于您";
+			tip.innerText = tip.innerText + "，地块属于你";
 		}
 		else if(own==0)
 		{
@@ -456,8 +633,52 @@ function showMapTip()
 	}
 	else
 	{
-
+		let x = mapCtrl.curBlock.x;
+		let y = mapCtrl.curBlock.y;
+		let m = mapCtrl.getBlockByPos(x, y);
+		let i = mapCtrl.cellSelect.x;
+		let j = mapCtrl.cellSelect.y;
+		let cell = m.data.cells[i*m.data.width+j];
+    	let cell_id = cell.data.id;
+    	let bidx = cell.data.build;
+    	if(bidx==-1)
+    	{
+			tip.innerText = $cellTile[cell_id].name;
+    	}
+		else
+		{
+			let $builds = require('../../mlGame/core/consCtrl.js').default.builds;
+			let lv = $builds[$ply.side()][bidx].data.lv;
+			let bid = $builds[$ply.side()][bidx].data.id;
+			if($bdData[bid].lvl)
+			{
+				tip.innerText = $bdData[bid].lvl[lv].name;
+			}
+			else
+			{
+				tip.innerText = $bdData[bid].name;
+			}
+		}
 	}
+}
+
+function showBlockInfo(v)
+{
+	let tip = document.getElementById("blockInfo");
+	if(v)
+	{
+		let x = mapCtrl.curBlock.x;
+		let y = mapCtrl.curBlock.y;
+		let m = mapCtrl.getBlockByPos(x, y);
+		let id = m.data.id;
+		let name= $block[id].name;
+		tip.innerText = "【"+name+"】"+"( "+x+","+y+" )";
+		if(m.data.ownBy==$ply.side())
+			tip.innerText+="，这块地属于你";
+		tip.style.visibility = "visible";
+	}
+	else
+		tip.style.visibility = "hidden";
 }
 
 function hideMapTip()
@@ -615,18 +836,28 @@ function renderSel()
 			flag.style.top = top+"px";
 			flag.style.left = left+"px";
 		}
-		showMapTip();
 	}
 	else
 	{
-
+		let i = mapCtrl.cellSelect.x;
+		let j = mapCtrl.cellSelect.y;
+		let div = document.getElementById("cell_"+i+"_"+j);
+		let left = div.offsetLeft;
+		let top = div.offsetTop;
+		let flag = document.getElementById("sel");
+		flag.style.border = "solid 1px yellow";
+		flag.style.visibility="visible";
+		flag.style.top = top+"px";
+		flag.style.left = left+"px";
 	}
+	showMapTip();
 }
 
 function hideSel()
 {
 	let flag = document.getElementById("sel");
 	flag.style.visibility="hidden";
+	//mapCtrl.setworldSelect(-1,-1,-1,-1)
 }
 
 function initMapActBtn()

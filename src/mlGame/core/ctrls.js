@@ -20,6 +20,8 @@ var c = {
 		$map.genMapArea(25,25,15);
 		$ply.side($dft.plySide);
 		$map.setWorldViewCenter(25,25);
+		$map.capturePosBySide(25,25,$dft.plySide);
+		$map.build(25,25,1,1,0);
 	},
 
 	new:function()

@@ -3,8 +3,8 @@ const block =
 [
 	{
 		id:0,
-		name:"平原",
-		desc:"这是一片平原，有9个可建设的地块",
+		name:"小平原",
+		desc:"这是一片小平原，有9个可建设的地块",
 		enter:true,
 		type:1,
 		img:"00",
@@ -18,7 +18,7 @@ const block =
 	},
 	{
 		id:1,
-		name:"开阔平原",
+		name:"平原",
 		desc:"这是一片平原，有16个可建设的地块",
 		enter:true,
 		width:4,
@@ -42,6 +42,7 @@ const block =
 		img:"00",
 		cell:
 		[
+			[0,0,0,0,0],
 			[0,0,0,0,0],
 			[0,0,0,0,0],
 			[0,0,0,0,0],
@@ -96,7 +97,7 @@ const block =
 		enter:true,
 		width:5,
 		type:3,
-		img:"02",
+		img:"06",
 		cell:
 		[
 			[1,1,0,1,1],
@@ -123,7 +124,7 @@ const cell =
 		name:"树木",
 		desc:"这是一颗树木，可被伐木场手机",
 		build:false,
-		img:"01",
+		img:"02",
 	},
 ];
 
