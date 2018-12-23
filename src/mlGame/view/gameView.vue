@@ -114,6 +114,10 @@ export default {
 	},
 	methods:
 	{
+		meter:function()
+		{
+
+		},
 		fmat:function(v)
 		{
 			if(v>=100000)
@@ -122,14 +126,6 @@ export default {
 			}
 			else
 				return v;
-		},
-		clsWp:function()
-		{
-
-		},
-		opWp:function()
-		{
-
 		},
 		test:function()
 		{

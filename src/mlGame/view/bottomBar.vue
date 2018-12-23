@@ -1,6 +1,5 @@
 <template>
 	<div class="bottomBar">
-		<div class="apts">行动力：{{apts}}</div>
 		<button class="turn" @click="addMonth">下一个月</button>
 	</div>
 </template>
@@ -36,11 +35,6 @@ export default {
 		}
 	},
 	computed:{
-
-	    apts:function()
-	    {
-	    	return $tCtrl.remain();
-	    }
 	},
 	methods:
 	{

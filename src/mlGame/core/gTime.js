@@ -1,15 +1,17 @@
 
 const MAX_MONTH = 12;
+const MAX_DAY = 10;
 
 var gT = 
 {
 	day:1,
 	year:1,
 	month:1,
+	day:0,
 }
 
-const MAX_DAY = 31;
-const $ply = require('../../mlGame/core/role.js').default.role;
+let timeThread;
+
 var $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 
 var gtime = {
@@ -19,20 +21,25 @@ var gtime = {
 		gT.day = 1;
 		gT.year = 1;
 		gT.month = 1;
+		gT.day = 0;
+
+		timeThread=window.setInterval(gtime.refresh, 1000);
+	},
+
+	refresh:function()
+	{
+		gT.day++;
+		var add = Math.floor(gT.day/MAX_DAY);
+		if(add>0)
+		{
+			gT.day = 0;
+			gtime.addMonth(add);
+		}
 	},
 
 	remain:function()
 	{
-		return (MAX_DAY-gT.day);
-	},
-
-	act:function(v)
-	{
-		if(gT.day+v>MAX_DAY)
-			return false;
-
-		gT.day += v;
-		return true;
+		return (MAX_DAY-gT.day)/MAX_DAY;
 	},
 
 	getTick:function()
@@ -50,7 +57,6 @@ var gtime = {
 			gT.month = 1;
 			gT.year = gT.year + 1;
 		}
-		gT.day = 1;
 		$prop.month();
 	},
 

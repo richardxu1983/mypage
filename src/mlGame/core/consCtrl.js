@@ -29,6 +29,8 @@ class building
     }
 }
 
+
+
 var conCtrl = 
 {
 	Build:function(block_idx,cell_i,cell_j,side,id)
@@ -49,7 +51,11 @@ var conCtrl =
 		let b = new building({'id':id,'side':side,'block_idx':block_idx,'i':cell_i,'j':cell_j});
 		builds[side].push(b);
 
+
 		let idx = builds[side].length-1;
+		console.log("新建筑物,idx="+idx);
+		console.trace()
+
 		builds[side][idx].data.idx = idx;
 		cell.data.build = idx;
 
