@@ -2,11 +2,15 @@
 	<div class="sce">
 		<div id="world"></div>
 		<div id="block"></div>
+		<div class="mengban" id="mengban"></div>
 		<div class="psel" id="sel"></div>
 		<div class="mapInfo" id="mapInfo"></div>
 		<div class="blockInfo" id="blockInfo"></div>
 		<div class="mapAct" id="mapAct"></div>
-		<div class="build" id="construct">
+		<div class="build" id="build">
+			<div class="title" id="assignTitle"></div>
+			<div id="choiceArea"></div>
+			<button class="close" id="closeAssign">关闭</button>
 		</div>
 	</div>
 </template>
@@ -73,43 +77,47 @@ export default
 			color: white;
 			font-size: xx-small;
 		}
+		.mengban
+		{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: black;
+			opacity: 0.5;
+			visibility: hidden;
+		}
 		.build
 		{
 			position: absolute;
 			width: 36em;
-			height: 25em;
+			height: 20em;
 			left: 10em;
-			top:6em;
+			top:8em;
 			background-color: #EEE8CD;
-			visibility:hidden;
+			visibility: hidden;
+			.title
+			{
+				position: absolute;
+				top:2em;
+				left:1em;
+				width: 34em;
+			}
 			.close
 			{
 				position: absolute;
 				bottom: 1em;
 				left:18em;
+
 			}
-			.desc
+			.choice
 			{
 				position: absolute;
-				top:2em;
-				left:1.5em;
-				width: 32em;
+				padding: .5em .5em .5em .5em;
+				height: 1em;
+				width: 34em;
 			}
-			.sel
+			.choice:hover
 			{
-				position: absolute;
-				left:1.5em;
-				padding: .5em 0 .5em 0;
-			}
-			.selno
-			{
-				position: absolute;
-				left:1.5em;
-				padding: .5em 0 .5em 0;
-			}
-			.sel:hover
-			{
-				cursor: pointer;
 				background-color: yellow;
 			}
 		}

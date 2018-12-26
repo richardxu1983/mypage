@@ -1,12 +1,30 @@
+/**
+ * block：地块
+ * 地块类型
+ * 0:未分配
+ * 1:居民区
+ * 2:农业区
+ * 3:生产区
+ * 4:原材料产出区（树林、矿场）
+ * 99:不可到达区
+ */
+
+const typeName = [];
+typeName[0] = {name:"未分配建设类型",desc:"这个地块还没有被分配建设类型，必须分配建设类型后才能进行建设，下面是可以分配的类型：",to:[1,2,3],}
+typeName[1] = {name:"居民区",desc:"居民区可以建设居民区、市场、商店等，为居民提供住所和服务",to:[],};
+typeName[2] = {name:"农业区",desc:"农业区可以建设农田，提供粮食",to:[],};
+typeName[3] = {name:"生产区",desc:"生产区可以建设工坊等建筑物，生产区会降低居民区的幸福度",to:[],};
+typeName[4] = {name:"原材料产出区",to:[],};
+typeName[99] = {name:"不可到达区",to:[],};
 
 const block = 
 [
 	{
 		id:0,
-		name:"小平原",
+		name:"小片空地",
 		desc:"这是一片小平原，有9个可建设的地块",
 		enter:true,
-		type:1,
+		type:0,
 		img:"00",
 		width:3,
 		cell:
@@ -18,35 +36,38 @@ const block =
 	},
 	{
 		id:1,
-		name:"平原",
+		name:"空地",
 		desc:"这是一片平原，有16个可建设的地块",
 		enter:true,
-		width:4,
-		type:1,
+		width:5,
+		type:0,
 		img:"00",
 		cell:
 		[
-			[0,0,0,0],
-			[0,0,0,0],
-			[0,0,0,0],
-			[0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
+			[0,0,0,0,0],
 		],
 	},
 	{
 		id:2,
-		name:"辽阔平原",
+		name:"大片空地",
 		desc:"这是一片平原，有25个可建设的地块",
 		enter:true,
-		width:5,
-		type:1,
+		width:7,
+		type:0,
 		img:"00",
 		cell:
 		[
-			[0,0,0,0,0],
-			[0,0,0,0,0],
-			[0,0,0,0,0],
-			[0,0,0,0,0],
-			[0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0],
 		],
 	},
 	{
@@ -55,7 +76,7 @@ const block =
 		desc:"这是一片山脉，不可同行和建设。",
 		enter:false,
 		width:0,
-		type:0,
+		type:99,
 		img:"01",
 	},
 	{
@@ -64,7 +85,7 @@ const block =
 		desc:"这是一片树林，有少量的树木",
 		enter:true,
 		width:4,
-		type:2,
+		type:4,
 		img:"02",
 		cell:
 		[
@@ -80,7 +101,7 @@ const block =
 		desc:"这是一片树林，有一些树木",
 		enter:true,
 		width:4,
-		type:2,
+		type:4,
 		img:"02",
 		cell:
 		[
@@ -96,7 +117,7 @@ const block =
 		desc:"这是一片茂密的树林，有大量树木",
 		enter:true,
 		width:5,
-		type:3,
+		type:4,
 		img:"06",
 		cell:
 		[
@@ -128,4 +149,4 @@ const cell =
 	},
 ];
 
-export default { block,cell }; 
+export default { block,cell,typeName }; 

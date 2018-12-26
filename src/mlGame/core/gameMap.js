@@ -4,7 +4,7 @@ const $block = require('../../mlGame/data/area.js').default.block;
 const $cellTile = require('../../mlGame/data/area.js').default.cell;
 const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 const $bdData = require('../../mlGame/data/construct.js').default.construct;
-
+const $typeName = require('../../mlGame/data/area.js').default.typeName
 
 
 //世界地图
@@ -49,10 +49,11 @@ class block
     	this.data.x = data.x;
     	this.data.y = data.y;
     	this.data.id = data.id;
-    	this.data.ownBy = 0;					//被谁占领
-    	this.data.cells = -1;
-    	this.data.idx = data.x*MAXCELL+data.y;	//世界地图数组中的位置
-    	this.data.width = $block[this.data.id].width;
+    	this.data.ownBy = 0;							//被谁占领
+    	this.data.cells = -1;					
+    	this.data.idx = data.x*MAXCELL+data.y;			//世界地图数组中的位置
+    	this.data.width = $block[this.data.id].width;	//宽度
+    	this.data.type = $block[data.id].type;
     }
 
     captureByUnit(u)
@@ -138,6 +139,13 @@ class _mapCtrl
 		return maps[x*MAXCELL+y];
 	}
 
+	setBlockType(x,y,t)
+	{
+		let m = this.getBlockByPos(x,y)
+		if(m.data.type ==0)
+			m.data.type = t;
+	}
+
 	getBlockByIdx(idx)
 	{
 		return maps[idx];
@@ -207,6 +215,15 @@ class _mapCtrl
 	{
 		createWorldTiles();
 		this.renderReady=true;
+		let closeAssign = document.getElementById("closeAssign");
+		closeAssign.onclick = ()=>
+		{
+			let mengban = document.getElementById("mengban");
+			let assign = document.getElementById("build");
+
+			mengban.style.visibility = "hidden";
+			assign.style.visibility = "hidden";
+		};
 	}
 
 	render()
@@ -614,13 +631,15 @@ function showMapTip()
 		let m = mapCtrl.getBlockByPos(x, y);
 		let id = m.data.id;
 		let own = m.data.ownBy;
+		let t = m.data.type;
 		let name= $block[id].name;
 
 		tip.innerText = name+"( "+x+","+y+" )";
 
 		if(own==$ply.side())
 		{
-			tip.innerText = tip.innerText + "，地块属于你";
+			tip.innerText += "，地块属于您";
+			tip.innerText += "，"+$typeName[t].name;
 		}
 		else if(own==0)
 		{
@@ -795,6 +814,54 @@ function onClickBuy()
 
 }
 
+
+function assignBlock()
+{
+	let mengban = document.getElementById("mengban");
+	let assign = document.getElementById("build");
+
+	let x = mapCtrl.worldSelect.x;
+	let y = mapCtrl.worldSelect.y;
+	let m = mapCtrl.getBlockByPos(x, y);
+	let t = m.data.type;
+	let len = $typeName[t].to.length;
+	console.log(len);
+	if(len<1)
+		return;
+
+	let assignTitle = document.getElementById("assignTitle");
+	assignTitle.innerText = $typeName[t].desc;
+	
+
+	let choiceArea = document.getElementById("choiceArea");
+	while (choiceArea.firstChild) {
+    	choiceArea.removeChild(choiceArea.firstChild);
+	}
+
+	for(let i=0;i<len;i++)
+	{
+		let div = document.createElement("div");
+		div.classList.add("choice");
+		div.style.top = 8+2.5*i+"em";
+		div.innerText = "【"+$typeName[$typeName[t].to[i]].name+"】";
+		div.innerText+= "："+$typeName[$typeName[t].to[i]].desc;
+		div.onclick = ()=>
+		{
+			mapCtrl.setBlockType(x,y,$typeName[t].to[i]);
+			mengban.style.visibility = "hidden";
+			assign.style.visibility = "hidden";
+			renderSel();
+			refreshBtn();
+		}
+		choiceArea.appendChild(div);
+	}
+
+	mengban.style.visibility = "visible";
+	assign.style.visibility = "visible";
+
+
+}
+
 function conquer()
 {
 	let x = mapCtrl.worldSelect.x;
@@ -804,7 +871,7 @@ function conquer()
 
 function refreshAcB()
 {
-
+	refreshBtn();
 }
 
 function renderSel()
@@ -865,7 +932,26 @@ function initMapActBtn()
 	let rt = document.getElementById("mapAct");
 	if(mapCtrl.viewMode==0)
 	{
-		adMpAcBtn("建设地块","build",onBlockView,false);
+		let x = mapCtrl.worldSelect.x;
+		let y = mapCtrl.worldSelect.y;
+		if(x==-1||y==-1)
+			return;
+		let m = mapCtrl.getBlockByPos(x, y);
+		let id = m.data.id;
+		let own = m.data.ownBy;
+		let t = m.data.type;
+		if(own==$ply.side())
+		{
+			if(t!=0&&t!=99)
+			{
+				adMpAcBtn("建设地块","build",onBlockView,false);
+			}
+			else if(t==0)
+			{
+				adMpAcBtn("分配建设类型","assign",assignBlock,false);
+			}
+		}
+		
 		adMpAcBtn("显示边界","explore",onClickExplore,false);
 	}
 	else
