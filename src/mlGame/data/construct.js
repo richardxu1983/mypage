@@ -50,6 +50,8 @@ const construct =
 				],
 				upgrade:
 				[
+					{type:'wood',num:5},
+					{type:'stone',num:5},
 				],
 				upg_wait:0,
 				upg_prop:80,
@@ -82,7 +84,7 @@ const construct =
 				max:5,
 				consume:
 				[
-					{type:"food",num:5},
+					{type:"food",num:3},
 				],
 				upgrade:
 				[

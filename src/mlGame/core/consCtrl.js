@@ -53,8 +53,6 @@ var conCtrl =
 
 
 		let idx = builds[side].length-1;
-		console.log("新建筑物,idx="+idx);
-		console.trace()
 
 		builds[side][idx].data.idx = idx;
 		cell.data.build = idx;

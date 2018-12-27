@@ -34,7 +34,6 @@ class cell
 		this.data.idx = data.x*data.width+data.y;
 		this.data.id = data.id;
 		this.data.build = -1;
-		this.data.build_lv = 0;
 		this.data.status = -1;
 	}
 }
@@ -54,6 +53,7 @@ class block
     	this.data.idx = data.x*MAXCELL+data.y;			//世界地图数组中的位置
     	this.data.width = $block[this.data.id].width;	//宽度
     	this.data.type = $block[data.id].type;
+    	this.data.pop = 0;
     }
 
     captureByUnit(u)
@@ -70,6 +70,15 @@ class block
     	if($prop.getV(s,'block')>=$prop.getV(s,'maxBlock'))
     		return;
 
+    	let oldSide = this.data.ownBy;
+    	if(oldSide!=0)
+    	{
+    		let oldProp = $prop.get(oldSide);
+    		oldProp.delBlock(this.data.idx);
+    	}
+    	
+    	let newProp = $prop.get(s)
+    	newProp.addBlock(this.data.idx);
     	this.data.ownBy = s;
     }
 
@@ -618,6 +627,11 @@ class _mapCtrl
 		this.cellSelect.y = j;
 		renderSel();
 	}
+
+	renderSelTip()
+	{
+		showMapTip();
+	}
 }
 
 function showMapTip()
@@ -628,25 +642,34 @@ function showMapTip()
 	{
 		let x = mapCtrl.worldSelect.x;
 		let y = mapCtrl.worldSelect.y;
+		if(x==-1||y==-1)
+			return;
 		let m = mapCtrl.getBlockByPos(x, y);
 		let id = m.data.id;
 		let own = m.data.ownBy;
 		let t = m.data.type;
 		let name= $block[id].name;
 
-		tip.innerText = name+"( "+x+","+y+" )";
-
 		if(own==$ply.side())
 		{
-			tip.innerText += "，地块属于您";
-			tip.innerText += "，"+$typeName[t].name;
+			if(t==0)
+			{
+				tip.innerText = name+" ( "+x+","+y+" )"+"，"+$typeName[t].name;
+			}
+			else
+			{
+				tip.innerText = $typeName[t].name+" ( "+x+","+y+" )";
+			}
+
 		}
 		else if(own==0)
 		{
+			tip.innerText = name+" ( "+x+","+y+" )";
 			//tip.innerText = tip.innerText + "，无主";
 		}
 		else
 		{
+			tip.innerText = name+" ( "+x+","+y+" )";
 			tip.innerText = tip.innerText + "，被占";
 		}
 	}
@@ -952,7 +975,10 @@ function initMapActBtn()
 			}
 		}
 		
-		adMpAcBtn("显示边界","explore",onClickExplore,false);
+		if(!mapCtrl.showBorder)
+			adMpAcBtn("显示边界","explore",onClickExplore,false);
+		else
+			adMpAcBtn("隐藏边界","explore",onClickExplore,false);
 	}
 	else
 	{

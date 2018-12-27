@@ -5,6 +5,7 @@ var dft =
     plySide:1,
     res:
     {
+    	side:1,
         wood:100,
         gold:100,
         food:100,
