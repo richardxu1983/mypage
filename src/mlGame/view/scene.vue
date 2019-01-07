@@ -17,8 +17,6 @@
 
 <script>
 
-import mp from '../../mlGame/core/gameMap.js'
-
 export default 
 {
 	name:"scene",

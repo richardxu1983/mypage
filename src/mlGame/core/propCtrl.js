@@ -93,7 +93,8 @@ class prop
 			return;
 
 		let $build = require('../../mlGame/core/consCtrl.js').default.builds;
-		let $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+		let $mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
+		let $mapView = require('../../mlGame/view/mapView.js').default.mapView;
 
 		let pop = 0;	//总人数
 		let block_idx;	//地块下标
@@ -107,7 +108,7 @@ class prop
 		for(let i=0;i<block_num;i++)
 		{
 			block_idx = this.data.blockList[i];
-			m = $map.getBlockByIdx(block_idx);
+			m = $mapCtrl.getBlockByIdx(block_idx);
 
 			if(m.data.cells!=-1)
 			{
@@ -128,7 +129,7 @@ class prop
 			}
 		}
 
-		$map.renderSelTip();
+		$mapView.renderSelTip();
 	}
 
 	procBuild(b,block)
@@ -143,7 +144,10 @@ class prop
 
 		if(render)
 		{
-			b.render();
+			let $mapView = require('../../mlGame/view/mapView.js').default.mapView;
+			console.log(block);
+			console.log(b);
+			$mapView.renderCell(block.data.idx,b.data.i,b.data.j);
 		}
 	}
 

@@ -2,17 +2,9 @@
 const $ply = require('../../mlGame/core/role.js').default.role;
 const $block = require('../../mlGame/data/area.js').default.block;
 const $cellTile = require('../../mlGame/data/area.js').default.cell;
-const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 const $bdData = require('../../mlGame/data/construct.js').default.construct;
 const $typeName = require('../../mlGame/data/area.js').default.typeName
-
-
-//世界地图
-var maps = [];
-var mapUI = 
-{
-	guihua:false,
-};
+const mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
 
 const MAXCELL = 50;
 const maxx=9;
@@ -23,102 +15,7 @@ const topGap=55;
 const leftGap=175;
 const width = 60;
 
-//世界地图展开后的每个地块，用于建设建筑物
-class cell
-{
-	constructor(data)
-	{
-		this.data = {};
-		this.data.x = data.x;
-		this.data.y = data.y;
-		this.data.idx = data.x*data.width+data.y;
-		this.data.id = data.id;
-		this.data.build = -1;
-		this.data.status = -1;
-	}
-}
-
-//世界地图上的每个地块
-class block
-{ 
-    constructor(data)
-    { 
-    	this.select = {x:-1,y:-1};
-    	this.data = {};
-    	this.data.x = data.x;
-    	this.data.y = data.y;
-    	this.data.id = data.id;
-    	this.data.ownBy = 0;							//被谁占领
-    	this.data.cells = -1;					
-    	this.data.idx = data.x*MAXCELL+data.y;			//世界地图数组中的位置
-    	this.data.width = $block[this.data.id].width;	//宽度
-    	this.data.type = $block[data.id].type;
-    	this.data.pop = 0;
-    }
-
-    captureByUnit(u)
-    {
-    	let s = u.side();
-    	this.captureBySide(s);
-    }
-
-    captureBySide(s)
-    {
-    	if(s==this.data.ownBy)
-    		return;
-
-    	if($prop.getV(s,'block')>=$prop.getV(s,'maxBlock'))
-    		return;
-
-    	let oldSide = this.data.ownBy;
-    	if(oldSide!=0)
-    	{
-    		let oldProp = $prop.get(oldSide);
-    		oldProp.delBlock(this.data.idx);
-    	}
-    	
-    	let newProp = $prop.get(s)
-    	newProp.addBlock(this.data.idx);
-    	this.data.ownBy = s;
-    }
-
-    build(i,j,id)
-    {
-
-    	if(this.data.cells==-1)
-			this.createCell();
-
-    	let $conCtrl = require('../../mlGame/core/consCtrl.js').default.conCtrl;
-
-    	let c = this.data.cells[i*this.data.width+j];
-    	if(c.data.build!=-1)
-    		return;
-
-    	$conCtrl.Build(this.data.idx,i,j,this.data.ownBy,id);
-    }
-
-    createCell()
-    {
-    	if(this.data.cells!=-1)
-    		return;
-
-    	this.data.cells = [];
-
-    	let w = this.data.width;
-    	let id;
-
-    	for(let i=0;i<w;i++)
-    	{
-    		for(let j=0;j<w;j++)
-    		{
-    			id = $block[this.data.id].cell[i][j];
-    			this.data.cells[i*w+j] = new cell({x:i,y:j,'id':id,width:w});
-    		}
-    	}
-    }
-}
-
-class _mapCtrl 
+class _mapView
 {
 	constructor()
 	{
@@ -141,83 +38,6 @@ class _mapCtrl
 	{
 		this.WorldViewCenter.x = x;
 		this.WorldViewCenter.y = y;
-	}
-
-	getBlockByPos(x,y)
-	{
-		return maps[x*MAXCELL+y];
-	}
-
-	setBlockType(x,y,t)
-	{
-		let m = this.getBlockByPos(x,y)
-		if(m.data.type ==0)
-			m.data.type = t;
-	}
-
-	getBlockByIdx(idx)
-	{
-		return maps[idx];
-	}
-
-	build(x,y,i,j,id)
-	{
-		let m = this.getBlockByPos(x,y);
-		m.build(i,j,id);
-	}
-
-	genMapAtPos(x,y,type)
-	{
-		let v=0;
-		let p = Math.random()*100;
-		if(p>80)
-		{
-			v = 2;
-		}
-		else if(p>35&&p<=80)
-		{
-			v = 1;
-		}
-		else if(p>9&&p<=35)
-		{
-			v = 0;
-		}
-		else if(p>2&&p<=9)
-		{
-			v = 4;
-		}
-		else if(p<=2&&p>=0)
-		{
-			v = 6;
-		}
-		else
-		{
-		}
-		var m = new block({'x':x,'y':y,'id':v});
-		maps[m.data.idx] = m;
-	}
-
-	genMapArea(x,y,r)
-	{
-		for(var i=x-r;i<=x+r;i++)
-		{
-			for(var j=y-r;j<=y+r;j++)
-			{
-				this.genMapAtPos(i, j, 0);
-			}
-		}
-	}
-
-	capturePosByUnit(x,y,u)
-	{
-		var m = this.getBlockByPos(x, y);
-		m.captureByUnit(u);
-	}
-
-	capturePosBySide(x,y,s)
-	{
-		var m = this.getBlockByPos(x, y);
-		m.captureBySide(s);
 	}
 
 	createEl()
@@ -275,7 +95,7 @@ class _mapCtrl
 
 		let $builds = require('../../mlGame/core/consCtrl.js').default.builds;
 		let bd = document.getElementById("cell_build_"+i+"_"+j);
-		let m = this.getBlockByIdx(block_idx);
+		let m = mapCtrl.getBlockByIdx(block_idx);
 		let cell = m.data.cells[i*m.data.width+j];
 		let idx = cell.data.build;
 
@@ -347,7 +167,7 @@ class _mapCtrl
 				}
 				//响应左键事件
 				div.onmouseup = (e)=>{
-				    mapCtrl.onLeftCell(i,j);
+				    this.onLeftCell(i,j);
 				}
 				mapRoot.appendChild(div);
 
@@ -370,7 +190,7 @@ class _mapCtrl
 		{
 			let block_x = this.curBlock.x;
 			let block_y = this.curBlock.y;
-			let block = this.getBlockByPos(block_x, block_y);
+			let block = mapCtrl.getBlockByPos(block_x, block_y);
 			if(!block)
 			{
 				this.viewMode = 0;
@@ -423,13 +243,13 @@ class _mapCtrl
 		else
 			div.style.visibility="visible";
 
-		var m = this.getBlockByPos(x, y);
+		var m = mapCtrl.getBlockByPos(x, y);
 		var s = m.data.ownBy;
 
 		//判断上边
 		if(this.inWorldView(x,y+1))
 		{
-			var s1 = this.getBlockByPos(x, y+1).data.ownBy;
+			var s1 = mapCtrl.getBlockByPos(x, y+1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderTop = "";
@@ -449,7 +269,7 @@ class _mapCtrl
 		
 		if(this.inWorldView(x,y-1))
 		{
-			var s1 = this.getBlockByPos(x, y-1).data.ownBy;
+			var s1 = mapCtrl.getBlockByPos(x, y-1).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderBottom = "";
@@ -468,7 +288,7 @@ class _mapCtrl
 		}
 		if(this.inWorldView(x+1,y))
 		{
-			var s1 = this.getBlockByPos(x+1, y).data.ownBy;
+			var s1 = mapCtrl.getBlockByPos(x+1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderRight = "";
@@ -487,7 +307,7 @@ class _mapCtrl
 		}
 		if(this.inWorldView(x-1,y))
 		{
-			var s1 = this.getBlockByPos(x-1, y).data.ownBy;
+			var s1 = mapCtrl.getBlockByPos(x-1, y).data.ownBy;
 			if(s1==s)
 			{
 				div.style.borderLeft = "";
@@ -537,7 +357,7 @@ class _mapCtrl
 			{
 				x = startx+i;
 				y = starty+j;
-				m = this.getBlockByPos(x, y);
+				m = mapCtrl.getBlockByPos(x, y);
 				id = m.data.id;
 				img = document.getElementById("tile_img_"+i+"_"+j);
 				img.src = "/static/img/mlGame/tile_"+$block[id].img+".png"
@@ -634,16 +454,25 @@ class _mapCtrl
 	}
 }
 
+function mapName(m)
+{
+	let t = m.data.type;
+	return $typeName[t].name;
+}
+
 function showMapTip()
 {
 	let tip = document.getElementById("mapInfo");
 	tip.style.visibility = "visible";
-	if(mapCtrl.viewMode==0)
+	if(mapView.viewMode==0)
 	{
-		let x = mapCtrl.worldSelect.x;
-		let y = mapCtrl.worldSelect.y;
+		let x = mapView.worldSelect.x;
+		let y = mapView.worldSelect.y;
 		if(x==-1||y==-1)
+		{
+			tip.innerText = "";
 			return;
+		}
 		let m = mapCtrl.getBlockByPos(x, y);
 		let id = m.data.id;
 		let own = m.data.ownBy;
@@ -675,11 +504,16 @@ function showMapTip()
 	}
 	else
 	{
-		let x = mapCtrl.curBlock.x;
-		let y = mapCtrl.curBlock.y;
+		let i = mapView.cellSelect.x;
+		let j = mapView.cellSelect.y;
+		if(i==-1||j==-1)
+		{
+			tip.innerText = "";
+			return;
+		}
+		let x = mapView.curBlock.x;
+		let y = mapView.curBlock.y;
 		let m = mapCtrl.getBlockByPos(x, y);
-		let i = mapCtrl.cellSelect.x;
-		let j = mapCtrl.cellSelect.y;
 		let cell = m.data.cells[i*m.data.width+j];
     	let cell_id = cell.data.id;
     	let bidx = cell.data.build;
@@ -709,15 +543,13 @@ function showBlockInfo(v)
 	let tip = document.getElementById("blockInfo");
 	if(v)
 	{
-		let x = mapCtrl.curBlock.x;
-		let y = mapCtrl.curBlock.y;
+		let x = mapView.curBlock.x;
+		let y = mapView.curBlock.y;
 		let m = mapCtrl.getBlockByPos(x, y);
-		let id = m.data.id;
-		let name= $block[id].name;
-		tip.innerText = "【"+name+"】"+"( "+x+","+y+" )";
+		tip.style.visibility = "visible";
+		tip.innerText = "【"+mapName(m)+"】"+"( "+x+","+y+" )";
 		if(m.data.ownBy==$ply.side())
 			tip.innerText+="，这块地属于你";
-		tip.style.visibility = "visible";
 	}
 	else
 		tip.style.visibility = "hidden";
@@ -783,7 +615,7 @@ function createWorldTiles()
 			}
 			//响应左键事件
 			div.onmouseup = (e)=>{
-			    mapCtrl.onLeftClickTile(i,j);
+			    mapView.onLeftClickTile(i,j);
 			}
 			/*
 			div.addEventListener("mouseup", (e) => {
@@ -797,29 +629,29 @@ function createWorldTiles()
 
 function onBlockView()
 {
-	mapCtrl.switchView(1);
+	mapView.switchView(1);
 }
 
 function onWorldView()
 {
-	mapCtrl.switchView(0);
+	mapView.switchView(0);
 }
 
 function onClickExplore()
 {
-	if(mapCtrl.showBorder)
+	if(mapView.showBorder)
 	{
-		mapCtrl.showBorder = false;
+		mapView.showBorder = false;
 		document.getElementById("explore").innerText="显示边界";
 	}
 	else
 	{
-		mapCtrl.showBorder = true;
+		mapView.showBorder = true;
 		document.getElementById("explore").innerText="隐藏边界";
 	}
 
-	let startx = mapCtrl.WorldViewCenter.x - centerx + 1;
-	let starty = mapCtrl.WorldViewCenter.y - centery + 1;
+	let startx = mapView.WorldViewCenter.x - centerx + 1;
+	let starty = mapView.WorldViewCenter.y - centery + 1;
 	let x,y;
 	for(var i=0;i<maxx;i++)
 	{
@@ -827,7 +659,7 @@ function onClickExplore()
 		{
 			x = startx+i;
 			y = starty+j;
-			mapCtrl.renderBorderPos(x,y);
+			mapView.renderBorderPos(x,y);
 		}
 	}
 }
@@ -843,8 +675,8 @@ function assignBlock()
 	let mengban = document.getElementById("mengban");
 	let assign = document.getElementById("build");
 
-	let x = mapCtrl.worldSelect.x;
-	let y = mapCtrl.worldSelect.y;
+	let x = mapView.worldSelect.x;
+	let y = mapView.worldSelect.y;
 	let m = mapCtrl.getBlockByPos(x, y);
 	let t = m.data.type;
 	let len = $typeName[t].to.length;
@@ -899,16 +731,16 @@ function refreshAcB()
 
 function renderSel()
 {
-	if(mapCtrl.viewMode==0)
+	if(mapView.viewMode==0)
 	{
-		let px = mapCtrl.worldSelect.x;
-		let py = mapCtrl.worldSelect.y;
+		let px = mapView.worldSelect.x;
+		let py = mapView.worldSelect.y;
 
-		if(!mapCtrl.inWorldView(px,py))
+		if(!mapView.inWorldView(px,py))
 			return;
 
-		let xmin = mapCtrl.WorldViewCenter.x - centerx + 1;
-		let ymin = mapCtrl.WorldViewCenter.y - centery + 1;
+		let xmin = mapView.WorldViewCenter.x - centerx + 1;
+		let ymin = mapView.WorldViewCenter.y - centery + 1;
 		let xmax = xmin + (maxx-1);
 		let ymax = ymin + (maxy-1);
 		if(px>=xmin&&px<=xmax&&py>=ymin&&py<=ymax)
@@ -929,8 +761,8 @@ function renderSel()
 	}
 	else
 	{
-		let i = mapCtrl.cellSelect.x;
-		let j = mapCtrl.cellSelect.y;
+		let i = mapView.cellSelect.x;
+		let j = mapView.cellSelect.y;
 		let div = document.getElementById("cell_"+i+"_"+j);
 		let left = div.offsetLeft;
 		let top = div.offsetTop;
@@ -953,10 +785,10 @@ function hideSel()
 function initMapActBtn()
 {
 	let rt = document.getElementById("mapAct");
-	if(mapCtrl.viewMode==0)
+	if(mapView.viewMode==0)
 	{
-		let x = mapCtrl.worldSelect.x;
-		let y = mapCtrl.worldSelect.y;
+		let x = mapView.worldSelect.x;
+		let y = mapView.worldSelect.y;
 		if(x==-1||y==-1)
 			return;
 		let m = mapCtrl.getBlockByPos(x, y);
@@ -975,7 +807,7 @@ function initMapActBtn()
 			}
 		}
 		
-		if(!mapCtrl.showBorder)
+		if(!mapView.showBorder)
 			adMpAcBtn("显示边界","explore",onClickExplore,false);
 		else
 			adMpAcBtn("隐藏边界","explore",onClickExplore,false);
@@ -1018,6 +850,6 @@ document.onkeydown = ()=>{
 }
 
 
-var mapCtrl = new _mapCtrl();
+var mapView = new _mapView();
 
-export default { mapCtrl,mapUI,maps };
+export default { mapView };

@@ -1,0 +1,190 @@
+const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
+const $block = require('../../mlGame/data/area.js').default.block;
+
+//世界地图
+var maps = [];
+const MAXCELL = 50;
+
+//世界地图展开后的每个地块，用于建设建筑物
+class cell
+{
+	constructor(data)
+	{
+		this.data = {};
+		this.data.x = data.x;
+		this.data.y = data.y;
+		this.data.idx = data.x*data.width+data.y;
+		this.data.id = data.id;
+		this.data.build = -1;
+		this.data.status = -1;
+	}
+}
+
+//世界地图上的每个地块
+class block
+{ 
+    constructor(data)
+    { 
+    	this.select = {x:-1,y:-1};
+    	this.data = {};
+    	this.data.x = data.x;
+    	this.data.y = data.y;
+    	this.data.id = data.id;
+    	this.data.ownBy = 0;							//被谁占领
+    	this.data.cells = -1;					
+    	this.data.idx = data.x*MAXCELL+data.y;			//世界地图数组中的位置
+    	this.data.width = $block[this.data.id].width;	//宽度
+    	this.data.type = $block[data.id].type;
+    	this.data.pop = 0;
+    }
+
+    captureByUnit(u)
+    {
+    	let s = u.side();
+    	this.captureBySide(s);
+    }
+
+    captureBySide(s)
+    {
+    	if(s==this.data.ownBy)
+    		return;
+
+    	if($prop.getV(s,'block')>=$prop.getV(s,'maxBlock'))
+    		return;
+
+    	let oldSide = this.data.ownBy;
+    	if(oldSide!=0)
+    	{
+    		let oldProp = $prop.get(oldSide);
+    		oldProp.delBlock(this.data.idx);
+    	}
+    	
+    	let newProp = $prop.get(s)
+    	newProp.addBlock(this.data.idx);
+    	this.data.ownBy = s;
+    }
+
+    build(i,j,id)
+    {
+
+    	if(this.data.cells==-1)
+			this.createCell();
+
+    	let $conCtrl = require('../../mlGame/core/consCtrl.js').default.conCtrl;
+
+    	let c = this.data.cells[i*this.data.width+j];
+    	if(c.data.build!=-1)
+    		return;
+
+    	$conCtrl.Build(this.data.idx,i,j,this.data.ownBy,id);
+    }
+
+    createCell()
+    {
+    	if(this.data.cells!=-1)
+    		return;
+
+    	this.data.cells = [];
+
+    	let w = this.data.width;
+    	let id;
+
+    	for(let i=0;i<w;i++)
+    	{
+    		for(let j=0;j<w;j++)
+    		{
+    			id = $block[this.data.id].cell[i][j];
+    			this.data.cells[i*w+j] = new cell({x:i,y:j,'id':id,width:w});
+    		}
+    	}
+    }
+}
+
+class _mapCtrl 
+{
+    constructor()
+    {
+
+    }
+
+    getBlockByPos(x,y)
+    {
+        return maps[x*MAXCELL+y];
+    }
+
+    setBlockType(x,y,t)
+    {
+        let m = this.getBlockByPos(x,y)
+        if(m.data.type ==0)
+            m.data.type = t;
+    }
+
+    getBlockByIdx(idx)
+    {
+        return maps[idx];
+    }
+
+    build(x,y,i,j,id)
+    {
+        let m = this.getBlockByPos(x,y);
+        m.build(i,j,id);
+    }
+
+    genMapAtPos(x,y,type)
+    {
+        let v=0;
+        let p = Math.random()*100;
+        if(p>80)
+        {
+            v = 2;
+        }
+        else if(p>35&&p<=80)
+        {
+            v = 1;
+        }
+        else if(p>9&&p<=35)
+        {
+            v = 0;
+        }
+        else if(p>2&&p<=9)
+        {
+            v = 4;
+        }
+        else if(p<=2&&p>=0)
+        {
+            v = 6;
+        }
+        else
+        {
+        }
+        var m = new block({'x':x,'y':y,'id':v});
+        maps[m.data.idx] = m;
+    }
+
+    genMapArea(x,y,r)
+    {
+        for(var i=x-r;i<=x+r;i++)
+        {
+            for(var j=y-r;j<=y+r;j++)
+            {
+                this.genMapAtPos(i, j, 0);
+            }
+        }
+    }
+
+    capturePosByUnit(x,y,u)
+    {
+        var m = this.getBlockByPos(x, y);
+        m.captureByUnit(u);
+    }
+
+    capturePosBySide(x,y,s)
+    {
+        var m = this.getBlockByPos(x, y);
+        m.captureBySide(s);
+    }
+}
+
+var mapCtrl = new _mapCtrl();
+
+export default { mapCtrl };

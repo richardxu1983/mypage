@@ -1,5 +1,6 @@
 
-const $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+
+
 
 var cons = [];
 var builds = [];
@@ -23,10 +24,7 @@ class building
     	this.data.idx = 0;
     }
 
-    render()
-    {
-    	$map.renderCell(this.data.block_idx,this.data.i,this.data.j);
-    }
+
 }
 
 
@@ -35,7 +33,10 @@ var conCtrl =
 {
 	Build:function(block_idx,cell_i,cell_j,side,id)
 	{
-		let m = $map.getBlockByIdx(block_idx);
+		const $mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
+		const $mapView = require('../../mlGame/view/mapView.js').default.mapView;
+
+		let m = $mapCtrl.getBlockByIdx(block_idx);
 
 		if(m.data.ownBy!=side)
 			return -1;
@@ -57,7 +58,7 @@ var conCtrl =
 		builds[side][idx].data.idx = idx;
 		cell.data.build = idx;
 
-		$map.renderCell(block_idx,cell_i,cell_j);
+		$mapView.renderCell(block_idx,cell_i,cell_j);
 
 		return 0;
 	},

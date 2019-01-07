@@ -213,24 +213,12 @@ class Unit
 
     moveTo(x,y)
     {
-        let $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
-        var v = $map.addUnitToPos(x,y,this);
-        if(v==-1)
-            return;
-        var oldIdx = this.attr.pos.m;
-        var oldx = this.attr.pos.x;
-        var oldy = this.attr.pos.y;
-        $map.delUnitAtByIdx(oldx,oldy,oldIdx);
-        this.pos({'x':x,'y':y});
-        this.attr.pos.m = v;
+
     }
 
     setPos(x,y)
     {
-        let $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
-        var v = $map.addUnitToPos(x,y,this);
-        this.pos({'x':x,'y':y});
-        this.attr.pos.m = v;
+
     }
 
     fskl()
