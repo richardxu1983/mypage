@@ -36,6 +36,7 @@ class block
     	this.data.width = $block[this.data.id].width;	//宽度
     	this.data.type = $block[data.id].type;
     	this.data.pop = 0;
+        this.data.hasCell = $block[this.data.id].cell;
     }
 
     captureByUnit(u)
@@ -84,6 +85,9 @@ class block
     	if(this.data.cells!=-1)
     		return;
 
+        if(!this.data.hasCell)
+            return;
+
     	this.data.cells = [];
 
     	let w = this.data.width;
@@ -93,8 +97,7 @@ class block
     	{
     		for(let j=0;j<w;j++)
     		{
-    			id = $block[this.data.id].cell[i][j];
-    			this.data.cells[i*w+j] = new cell({x:i,y:j,'id':id,width:w});
+    			this.data.cells[i*w+j] = new cell({x:i,y:j,'id':0,width:w});
     		}
     	}
     }

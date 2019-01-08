@@ -135,6 +135,7 @@ class prop
 	procBuild(b,block)
 	{
 		let render=false;
+		let $mapView = require('../../mlGame/view/mapView.js').default.mapView;
 
 		//如果是民居
 		if($bdData[b.data.id].type==0)
@@ -144,11 +145,10 @@ class prop
 
 		if(render)
 		{
-			let $mapView = require('../../mlGame/view/mapView.js').default.mapView;
-			console.log(block);
-			console.log(b);
 			$mapView.renderCell(block.data.idx,b.data.i,b.data.j);
 		}
+
+		$mapView.renderBuild(block);
 	}
 
 	procMinJu(b,block)
@@ -173,6 +173,10 @@ class prop
 			{
 				satisfy = false;
 				break;
+			}
+			if(this.data.food<=0)
+			{
+				satisfy = false;
 			}
 		}
 

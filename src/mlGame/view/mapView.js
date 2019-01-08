@@ -191,7 +191,7 @@ class _mapView
 			let block_x = this.curBlock.x;
 			let block_y = this.curBlock.y;
 			let block = mapCtrl.getBlockByPos(block_x, block_y);
-			if(!block)
+			if(!block||!block.data.hasCell)
 			{
 				this.viewMode = 0;
 				return;
@@ -361,15 +361,44 @@ class _mapView
 				id = m.data.id;
 				img = document.getElementById("tile_img_"+i+"_"+j);
 				img.src = "/static/img/mlGame/tile_"+$block[id].img+".png"
-				this.renderBuildPos(x,y);
+				this.renderBuild(m);
 				this.renderBorderPos(x,y);
 			}
 		}
 	}
 
-	renderBuildPos(x,y)
+	renderBuild(b)
 	{
-
+		if(this.viewMode==1)
+			return;
+		
+		let t = b.data.type;
+		if(t==1)
+		{
+			let pop = b.data.pop;
+			if(pop==0)
+			{
+				div.visibility="hidden";
+				return;
+			}
+			let len = $typeName[t].img.length;
+			let img;
+			for(let i=0;i<len;i++)
+			{
+				if(pop>=$typeName[t].img[i].pop)
+				{
+					img = $typeName[t].img[i].img;
+					break;
+				}
+			}
+			let xmin = this.WorldViewCenter.x - centerx + 1;
+			let ymin = this.WorldViewCenter.y - centery + 1;
+			let xi = b.data.x - xmin;	//绘图坐标
+			let xj = b.data.y - ymin;	//绘图坐标
+			let div = document.getElementById("tile_build_"+xi+"_"+xj);
+			div.style.visibility="visible";
+			div.src = "/static/img/mlGame/bt_1_"+img+".png";
+		}
 	}
 
 	posInWorld(px,py)

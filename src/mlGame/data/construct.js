@@ -50,8 +50,9 @@ const construct =
 				],
 				upgrade:
 				[
-					{type:'wood',num:5},
-					{type:'stone',num:5},
+					{type:'wood',num:0},
+					{type:'stone',num:0},
+					{type:'food',num:1},
 				],
 				upg_wait:0,
 				upg_prop:80,
@@ -62,7 +63,7 @@ const construct =
 			{
 				lv:1,
 				name:"帐篷",
-				max:2,
+				max:1,
 				consume:
 				[
 					{type:"food",num:1},
@@ -71,6 +72,7 @@ const construct =
 				[
 					{type:'wood',num:10},
 					{type:'stone',num:10},
+					{type:'food',num:1},
 				],
 				upg_wait:2,
 				upg_prop:80,
@@ -81,22 +83,23 @@ const construct =
 			{
 				lv:2,
 				name:"简陋的房屋",
-				max:5,
+				max:4,
 				consume:
 				[
-					{type:"food",num:3},
+					{type:"food",num:1},
 				],
 				upgrade:
 				[
 					{type:'wood',num:10},
 					{type:'stone',num:10},
 					{type:'gold',num:10},
+					{type:'food',num:1},
 				],
 				upg_wait:4,
 				upg_prop:50,
 				img:'00_02',
 				down_pop:2,
-				tax:3,
+				tax:1,
 			},
 		],
 	},
