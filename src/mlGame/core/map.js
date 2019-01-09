@@ -122,6 +122,15 @@ class _mapCtrl
             m.data.type = t;
     }
 
+    getCellByPos(b,i,j)
+    {
+        let w = b.data.width;
+        let idx = i*w+j;
+        if(b.data.cells==-1)
+            return -1;
+        return b.data.cells[idx];
+    }
+
     getBlockByIdx(idx)
     {
         return maps[idx];

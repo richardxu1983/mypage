@@ -185,6 +185,7 @@ class _mapView
 			showBlockInfo(false);
 			showWorldTiles();
 			this.renderWorld();
+			refreshBtn();
 		}
 		else
 		{
@@ -376,11 +377,11 @@ class _mapView
 		if(t==1)
 		{
 			let pop = b.data.pop;
-			if(pop==0)
-			{
-				div.visibility="hidden";
-				return;
-			}
+			let xmin = this.WorldViewCenter.x - centerx + 1;
+			let ymin = this.WorldViewCenter.y - centery + 1;
+			let xi = b.data.x - xmin;	//绘图坐标
+			let xj = b.data.y - ymin;	//绘图坐标
+			let div = document.getElementById("tile_build_"+xi+"_"+xj);
 			let len = $typeName[t].img.length;
 			let img;
 			for(let i=0;i<len;i++)
@@ -391,11 +392,6 @@ class _mapView
 					break;
 				}
 			}
-			let xmin = this.WorldViewCenter.x - centerx + 1;
-			let ymin = this.WorldViewCenter.y - centery + 1;
-			let xi = b.data.x - xmin;	//绘图坐标
-			let xj = b.data.y - ymin;	//绘图坐标
-			let div = document.getElementById("tile_build_"+xi+"_"+xj);
 			div.style.visibility="visible";
 			div.src = "/static/img/mlGame/bt_1_"+img+".png";
 		}
@@ -466,7 +462,7 @@ class _mapView
 		let x = startx + i;
 		let y = starty + j;
 		this.setworldSelect(x,y,i,j)
-		refreshAcB()
+		refreshAcB();
 		renderSel();
 	}
 
@@ -474,6 +470,7 @@ class _mapView
 	{
 		this.cellSelect.x = i;
 		this.cellSelect.y = j;
+		refreshAcB();
 		renderSel();
 	}
 
@@ -843,8 +840,30 @@ function initMapActBtn()
 	}
 	else
 	{
-		adMpAcBtn("回到世界","build",onWorldView,false);
+		adMpAcBtn("回到世界","back",onWorldView,false);
+
+		let x = mapView.worldSelect.x;
+		let y = mapView.worldSelect.y;
+		if(x==-1||y==-1)
+			return;
+		let m = mapCtrl.getBlockByPos(x, y);
+		let i = mapView.cellSelect.x;
+		let j = mapView.cellSelect.y;
+		if(i!=-1&&j!=-1)
+		{
+			let cell = mapCtrl.getCellByPos(m,i,j);
+			if(cell!=-1)
+			{
+				if(cell.data.build==-1)
+					adMpAcBtn("建造","build",onClickBuild,false,m,i,j);
+			}
+		}
 	}
+}
+
+function onClickBuild(m,i,j)
+{
+	
 }
 
 function refreshBtn()
@@ -856,7 +875,7 @@ function refreshBtn()
 	initMapActBtn();
 }
 
-function adMpAcBtn(name,id,fun,f)
+function adMpAcBtn(name,id,fun,f,p1,p2,p3)
 {
 	let rt = document.getElementById("mapAct");
 	let btn = document.createElement("button");
@@ -864,7 +883,7 @@ function adMpAcBtn(name,id,fun,f)
 	btn.innerText = name;
 	btn.id=id;
 	btn.disabled=f;
-	btn.addEventListener("click", () => {fun()})
+	btn.addEventListener("click", () => {fun(p1,p2,p3)})
 	rt.appendChild(btn);
 }
 

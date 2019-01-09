@@ -193,7 +193,7 @@ class prop
 			let pop = b.data.pop;
 			let max = $bdData[bid].lvl[lvl].max;
 
-			//人口没到上限，考虑加人口
+			//人口远没到上限，考虑加人口
 			if(pop<max)
 			{
 				let add = Math.floor(Math.random()*(max-pop+1));
@@ -233,6 +233,12 @@ class prop
 							//升级
 							b.data.lv++;
 							render=true;
+
+							let max = $bdData[bid].lvl[b.data.lv].max;
+							let r = Math.random();
+							let add = Math.ceil(r*(max-b.data.pop));
+							//console.log(max+","+b.data.pop+","+r+","+r*(max-b.data.pop));
+							b.data.pop+=add;
 						}
 					}
 				}

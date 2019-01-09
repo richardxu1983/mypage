@@ -21,7 +21,7 @@ typeName[1] =
 		{pop:50,img:"3"},
 		{pop:30,img:"2"},
 		{pop:10,img:"1"},
-		{pop:1,img:"0"},
+		{pop:0,img:"0"},
 	],
 };
 typeName[2] = {name:"农业区",desc:"农业区可以建设农田、果园等，提供粮食",to:[],};

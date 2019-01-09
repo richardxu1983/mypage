@@ -26,6 +26,7 @@ var c = {
 		$ply.side($dft.plySide);
 		$mapView.setWorldViewCenter(25,25);
 		$mapCtrl.capturePosBySide(25,25,$dft.plySide);
+		$mapCtrl.setBlockType(25,25,1);
 		$mapCtrl.build(25,25,1,1,0);
 	},
 

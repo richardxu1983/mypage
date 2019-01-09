@@ -12,22 +12,10 @@ const names = {
 
 const cons_sheet = 
 [
-	{
-		name:"基本",
-		list:[0,1,2,3,4,5],
-	},
-	{
-		name:"生产",
-		list:[11,12,13,14],
-	},
-	{
-		name:"原材料",
-		list:[6,7,8,9,10],
-	},
-	{
-		name:"功能",
-		list:[15,16,17],
-	},
+	[],//0
+	[0,1,2],//1
+	[],//2
+	[],//3
 ];
 
 const construct = 
@@ -55,7 +43,7 @@ const construct =
 					{type:'food',num:1},
 				],
 				upg_wait:0,
-				upg_prop:80,
+				upg_prop:200,
 				img:'00_00',
 				down_pop:0,
 				tax:0,
