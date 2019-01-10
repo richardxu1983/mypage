@@ -5,6 +5,7 @@ const $cellTile = require('../../mlGame/data/area.js').default.cell;
 const $bdData = require('../../mlGame/data/construct.js').default.construct;
 const $typeName = require('../../mlGame/data/area.js').default.typeName
 const mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
+const $buildSheet = require('../../mlGame/data/construct.js').default.cons_sheet;
 
 const MAXCELL = 50;
 const maxx=9;
@@ -48,8 +49,13 @@ class _mapView
 		closeAssign.onclick = ()=>
 		{
 			let mengban = document.getElementById("mengban");
-			let assign = document.getElementById("build");
-
+			let assign = document.getElementById("buildUI");
+			let assignTitle = document.getElementById("assignTitle");
+			assignTitle.innerText = "";
+			let choiceArea = document.getElementById("choiceArea");
+			while (choiceArea.firstChild) {
+		    	choiceArea.removeChild(choiceArea.firstChild);
+			}
 			mengban.style.visibility = "hidden";
 			assign.style.visibility = "hidden";
 		};
@@ -111,7 +117,6 @@ class _mapView
 
 		if($bdData[bid].lvl)
 		{
-			console.log("lv="+lv);
 			let img = "/static/img/mlGame/bd_"+$bdData[bid].lvl[lv].img+".png";
 			bd.src=img;
 		}
@@ -699,14 +704,14 @@ function onClickBuy()
 function assignBlock()
 {
 	let mengban = document.getElementById("mengban");
-	let assign = document.getElementById("build");
+	let assign = document.getElementById("buildUI");
 
 	let x = mapView.worldSelect.x;
 	let y = mapView.worldSelect.y;
 	let m = mapCtrl.getBlockByPos(x, y);
 	let t = m.data.type;
 	let len = $typeName[t].to.length;
-	console.log(len);
+
 	if(len<1)
 		return;
 
@@ -864,6 +869,42 @@ function initMapActBtn()
 function onClickBuild(m,i,j)
 {
 	
+	let mengban = document.getElementById("mengban");
+	let assign = document.getElementById("buildUI");
+
+	let assignTitle = document.getElementById("assignTitle");
+	assignTitle.innerText = "选择您需要建设的建筑";
+	
+	let choiceArea = document.getElementById("choiceArea");
+	while (choiceArea.firstChild) {
+    	choiceArea.removeChild(choiceArea.firstChild);
+	}
+
+	let type = m.data.type;
+	let len = $buildSheet[type].length;
+	let buildId;
+
+	for(let p=0;p<len;p++)
+	{
+		let div = document.createElement("div");
+		buildId = $buildSheet[type][p];
+		div.classList.add("choice");
+		div.style.top = 8+2.5*p+"em";
+		div.innerText = "【"+$bdData[buildId].name+"】";
+		div.innerText+= "："+$bdData[buildId].desc;
+		div.onclick = ()=>
+		{
+			mapCtrl.buildByBlock(m,i,j,$buildSheet[type][p]);
+			mengban.style.visibility = "hidden";
+			assign.style.visibility = "hidden";
+			renderSel();
+			refreshBtn();
+		}
+		choiceArea.appendChild(div);
+	}
+
+	mengban.style.visibility = "visible";
+	assign.style.visibility = "visible";
 }
 
 function refreshBtn()

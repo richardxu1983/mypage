@@ -142,6 +142,11 @@ class _mapCtrl
         m.build(i,j,id);
     }
 
+    buildByBlock(m,i,j,id)
+    {
+        m.build(i,j,id);
+    }
+
     genMapAtPos(x,y,type)
     {
         let v=0;

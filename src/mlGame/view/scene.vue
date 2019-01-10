@@ -7,7 +7,7 @@
 		<div class="mapInfo" id="mapInfo"></div>
 		<div class="blockInfo" id="blockInfo"></div>
 		<div class="mapAct" id="mapAct"></div>
-		<div class="build" id="build">
+		<div class="build" id="buildUI">
 			<div class="title" id="assignTitle"></div>
 			<div id="choiceArea"></div>
 			<button class="close" id="closeAssign">关闭</button>
