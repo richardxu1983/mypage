@@ -379,14 +379,15 @@ class _mapView
 			return;
 		
 		let t = b.data.type;
+		let xmin = this.WorldViewCenter.x - centerx + 1;
+		let ymin = this.WorldViewCenter.y - centery + 1;
+		let xi = b.data.x - xmin;	//绘图坐标
+		let xj = b.data.y - ymin;	//绘图坐标
+		let div = document.getElementById("tile_build_"+xi+"_"+xj);
+
 		if(t==1)
 		{
 			let pop = b.data.pop;
-			let xmin = this.WorldViewCenter.x - centerx + 1;
-			let ymin = this.WorldViewCenter.y - centery + 1;
-			let xi = b.data.x - xmin;	//绘图坐标
-			let xj = b.data.y - ymin;	//绘图坐标
-			let div = document.getElementById("tile_build_"+xi+"_"+xj);
 			let len = $typeName[t].img.length;
 			let img;
 			for(let i=0;i<len;i++)
@@ -399,6 +400,12 @@ class _mapView
 			}
 			div.style.visibility="visible";
 			div.src = "/static/img/mlGame/bt_1_"+img+".png";
+		}
+		if(t==2)
+		{
+			let img = $typeName[t].img;
+			div.style.visibility="visible";
+			div.src = "/static/img/mlGame/bt_2_"+img+".png";
 		}
 	}
 
@@ -658,6 +665,11 @@ function createWorldTiles()
 	}	
 }
 
+function onInfo(m)
+{
+
+}
+
 function onBlockView()
 {
 	mapView.switchView(1);
@@ -734,6 +746,7 @@ function assignBlock()
 		div.onclick = ()=>
 		{
 			mapCtrl.setBlockType(x,y,$typeName[t].to[i]);
+			mapView.renderBuild(m);
 			mengban.style.visibility = "hidden";
 			assign.style.visibility = "hidden";
 			renderSel();
@@ -748,11 +761,13 @@ function assignBlock()
 
 }
 
-function conquer()
+function onConquer()
 {
-	let x = mapCtrl.worldSelect.x;
-	let y = mapCtrl.worldSelect.y;
-	mapCtrl.capturePosByUnit(x,y,$ply);
+	let x = mapView.worldSelect.x;
+	let y = mapView.worldSelect.y;
+	mapCtrl.capturePosBySide(x,y,$ply.side());
+	renderSel();
+	refreshBtn();
 }
 
 function refreshAcB()
@@ -830,14 +845,24 @@ function initMapActBtn()
 		{
 			if(t!=0&&t!=99)
 			{
-				adMpAcBtn("建设地块","build",onBlockView,false);
+				if($typeName[t].cell)
+				{
+					adMpAcBtn("建设地块","build",onBlockView,false,m);
+				}
+				else
+				{
+					adMpAcBtn("地块信息","Info",onInfo,false,m);
+				}
 			}
 			else if(t==0)
 			{
 				adMpAcBtn("分配建设类型","assign",assignBlock,false);
 			}
 		}
-		
+		else
+		{
+			adMpAcBtn("获取地块","conquer",onConquer,false);
+		}
 		if(!mapView.showBorder)
 			adMpAcBtn("显示边界","explore",onClickExplore,false);
 		else

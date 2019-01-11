@@ -23,8 +23,20 @@ typeName[1] =
 		{pop:10,img:"1"},
 		{pop:0,img:"0"},
 	],
+	cell:true,
 };
-typeName[2] = {name:"农业区",desc:"农业区可以建设农田、果园等，提供粮食",to:[],};
+typeName[2] = 
+{
+	name:"农业区",
+	desc:"农业区可以建设农田、果园等，提供粮食",
+	to:[],
+	img:"01",
+	minWorker:5,
+	maxWorker:25,
+	minProduct:20,
+	maxProduct:50,
+	cell:false,
+};
 typeName[3] = {name:"手工业区",desc:"生产区可以建设工坊等建筑物，生产区会降低附近一格居民区的人气",to:[],};
 typeName[4] = {name:"原材料产出区",to:[],};
 typeName[99] = {name:"不可到达区",to:[],};

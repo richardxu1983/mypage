@@ -109,24 +109,32 @@ class prop
 		{
 			block_idx = this.data.blockList[i];
 			m = $mapCtrl.getBlockByIdx(block_idx);
-
-			if(m.data.cells!=-1)
+			let type = m.data.type;
+			if(type==1)
 			{
-				//人数置0
-				m.data.pop=0;
-				cell_num = m.data.cells.length;
-
-				//遍历地皮
-				for(let j=0;j<cell_num;j++)
+				if(m.data.cells!=-1)
 				{
-					c = m.data.cells[j];//地皮
-					build_idx = c.data.build;
-					if(build_idx!=-1)
+					//人数置0
+					m.data.pop=0;
+					cell_num = m.data.cells.length;
+
+					//遍历地皮
+					for(let j=0;j<cell_num;j++)
 					{
-						this.procBuild($build[this.data.side][build_idx],m);
+						c = m.data.cells[j];//地皮
+						build_idx = c.data.build;
+						if(build_idx!=-1)
+						{
+							this.procBuild($build[this.data.side][build_idx],m);
+						}
 					}
-				}
+				}				
 			}
+			else if(type==2)
+			{
+				let worker = this.data.worker;
+			}
+
 		}
 
 		$mapView.renderSelTip();

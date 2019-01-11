@@ -37,6 +37,7 @@ class block
     	this.data.type = $block[data.id].type;
     	this.data.pop = 0;
         this.data.hasCell = $block[this.data.id].cell;
+        this.data.worker = 0;
     }
 
     captureByUnit(u)
