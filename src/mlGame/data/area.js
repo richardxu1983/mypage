@@ -31,10 +31,10 @@ typeName[2] =
 	desc:"农业区可以建设农田、果园等，提供粮食",
 	to:[],
 	img:"01",
-	minWorker:5,
-	maxWorker:25,
-	minProduct:20,
-	maxProduct:50,
+	maxWorker:15,
+	minProduct:10,
+	workerAdd:1,
+	productType:"food",
 	cell:false,
 };
 typeName[3] = {name:"手工业区",desc:"生产区可以建设工坊等建筑物，生产区会降低附近一格居民区的人气",to:[],};

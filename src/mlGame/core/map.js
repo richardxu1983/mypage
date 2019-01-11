@@ -1,5 +1,6 @@
 const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 const $block = require('../../mlGame/data/area.js').default.block;
+const $areaType = require('../../mlGame/data/area.js').default.typeName;
 
 //世界地图
 var maps = [];
@@ -38,12 +39,31 @@ class block
     	this.data.pop = 0;
         this.data.hasCell = $block[this.data.id].cell;
         this.data.worker = 0;
+        this.data.product = 0;
     }
 
     captureByUnit(u)
     {
     	let s = u.side();
     	this.captureBySide(s);
+    }
+
+    calProd()
+    {
+        let worker = this.data.worker;
+        let type = this.data.type;
+        let add = $areaType[type].workerAdd;
+        let pd;
+        pd = worker*add;
+        return pd;
+    }
+
+    addWorker(v)
+    {
+        let max = $areaType[this.data.type].maxWorker;
+        this.data.worker+=v;
+        this.data.worker = this.data.worker<0?0:this.data.worker;
+        this.data.worker = this.data.worker>max?max:this.data.worker;
     }
 
     captureBySide(s)

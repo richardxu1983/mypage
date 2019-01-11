@@ -114,6 +114,13 @@ export default
 				height: 1em;
 				width: 34em;
 			}
+			.ctt
+			{
+				position: absolute;
+				padding: .5em .5em .5em .5em;
+				height: 1em;
+				width: 34em;
+			}
 			.choice:hover
 			{
 				background-color: yellow;

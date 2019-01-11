@@ -1,7 +1,7 @@
 
 const $dft = require('../../mlGame/data/gData.js').default.dft;
 const $bdData = require('../../mlGame/data/construct.js').default.construct;
-//const $map = require('../../mlGame/core/gameMap.js').default.mapCtrl;
+const $areaType = require('../../mlGame/data/area.js').default.typeName;
 
 var propList= [];
 
@@ -132,7 +132,11 @@ class prop
 			}
 			else if(type==2)
 			{
-				let worker = this.data.worker;
+
+				let pdType = $areaType[type].productType;
+				let pd = m.calProd();
+				m.data.product = pd;
+				this.ad(pdType,pd);
 			}
 
 		}

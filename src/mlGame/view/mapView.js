@@ -6,6 +6,7 @@ const $bdData = require('../../mlGame/data/construct.js').default.construct;
 const $typeName = require('../../mlGame/data/area.js').default.typeName
 const mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
 const $buildSheet = require('../../mlGame/data/construct.js').default.cons_sheet;
+const $srcName = require('../../mlGame/data/construct.js').default.names;
 
 const MAXCELL = 50;
 const maxx=9;
@@ -48,16 +49,7 @@ class _mapView
 		let closeAssign = document.getElementById("closeAssign");
 		closeAssign.onclick = ()=>
 		{
-			let mengban = document.getElementById("mengban");
-			let assign = document.getElementById("buildUI");
-			let assignTitle = document.getElementById("assignTitle");
-			assignTitle.innerText = "";
-			let choiceArea = document.getElementById("choiceArea");
-			while (choiceArea.firstChild) {
-		    	choiceArea.removeChild(choiceArea.firstChild);
-			}
-			mengban.style.visibility = "hidden";
-			assign.style.visibility = "hidden";
+			closePanal();
 		};
 	}
 
@@ -667,7 +659,87 @@ function createWorldTiles()
 
 function onInfo(m)
 {
+	let mengban = document.getElementById("mengban");
+	let assign = document.getElementById("buildUI");
 
+	let assignTitle = document.getElementById("assignTitle");
+	let str;
+	str = $typeName[m.data.type].name;
+	str+="\n 当前产出类型：【"+$srcName[$typeName[m.data.type].productType]+"】";
+	str+="\n 预计产出："+m.calProd()+"/月";
+	str+="\n 最大劳力："+$typeName[m.data.type].maxWorker;
+	//assignTitle.innerText = $typeName[m.data.type].name;
+	assignTitle.innerText = str;
+	//assignTitle.innerText+="\n 当前产出数量："+m.calProd()+"/月";
+	let div = document.createElement("div");
+	let worker = document.createElement("div");
+	worker.id="txtWorkerNum"
+	worker.innerText="当前劳力数："+m.data.worker;
+	div.appendChild(worker);
+	let add = document.createElement("button");
+	add.innerText = "增加";
+	add.addEventListener("click", () => 
+	{
+		onAddWorker(m,1);
+	})
+	div.appendChild(add);
+	let minus = document.createElement("button");
+	minus.innerText = "减少";
+	minus.addEventListener("click", () => 
+	{
+		onAddWorker(m,-1);
+	})
+	div.appendChild(minus);
+	let choiceArea = document.getElementById("choiceArea");
+	div.classList.add("ctt");
+	div.style.top = "10em";
+	choiceArea.appendChild(div);
+/*
+	let choiceArea = document.getElementById("choiceArea");
+	while (choiceArea.firstChild) {
+    	choiceArea.removeChild(choiceArea.firstChild);
+	}
+
+	let type = m.data.type;
+	let len = $buildSheet[type].length;
+	let buildId;
+
+	for(let p=0;p<len;p++)
+	{
+		let div = document.createElement("div");
+		buildId = $buildSheet[type][p];
+		div.classList.add("choice");
+		div.style.top = 8+2.5*p+"em";
+		div.innerText = "【"+$bdData[buildId].name+"】";
+		div.innerText+= "："+$bdData[buildId].desc;
+		div.onclick = ()=>
+		{
+			mapCtrl.buildByBlock(m,i,j,$buildSheet[type][p]);
+			mengban.style.visibility = "hidden";
+			assign.style.visibility = "hidden";
+			renderSel();
+			refreshBtn();
+		}
+		choiceArea.appendChild(div);
+	}
+*/
+	mengban.style.visibility = "visible";
+	assign.style.visibility = "visible";
+}
+
+function onAddWorker(m,v)
+{
+	m.addWorker(v);
+	let assignTitle = document.getElementById("assignTitle");
+	let worker = document.getElementById("txtWorkerNum");
+	worker.innerText="当前劳力数："+m.data.worker;
+	let str;
+	str = $typeName[m.data.type].name;
+	str+="\n 当前产出类型：【"+$srcName[$typeName[m.data.type].productType]+"】";
+	str+="\n 预计产出："+m.calProd()+"/月";
+	str+="\n 最大劳力："+$typeName[m.data.type].maxWorker;
+	//assignTitle.innerText = $typeName[m.data.type].name;
+	assignTitle.innerText = str;
 }
 
 function onBlockView()
@@ -747,8 +819,7 @@ function assignBlock()
 		{
 			mapCtrl.setBlockType(x,y,$typeName[t].to[i]);
 			mapView.renderBuild(m);
-			mengban.style.visibility = "hidden";
-			assign.style.visibility = "hidden";
+			closePanal();
 			renderSel();
 			refreshBtn();
 		}
@@ -757,8 +828,20 @@ function assignBlock()
 
 	mengban.style.visibility = "visible";
 	assign.style.visibility = "visible";
+}
 
-
+function closePanal()
+{
+	let mengban = document.getElementById("mengban");
+	let assign = document.getElementById("buildUI");
+	let assignTitle = document.getElementById("assignTitle");
+	assignTitle.innerText = "";
+	let choiceArea = document.getElementById("choiceArea");
+	while (choiceArea.firstChild) {
+    	choiceArea.removeChild(choiceArea.firstChild);
+	}
+	mengban.style.visibility = "hidden";
+	assign.style.visibility = "hidden";
 }
 
 function onConquer()
