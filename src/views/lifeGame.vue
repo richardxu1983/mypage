@@ -186,7 +186,7 @@ export default
 	},
 	mounted:function()
 	{
-
+		ranD();
 	},
 	computed:
 	{
