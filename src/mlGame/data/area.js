@@ -24,6 +24,7 @@ typeName[1] =
 		{pop:0,img:"0"},
 	],
 	cell:true,
+	work:false,
 };
 typeName[2] = 
 {
@@ -33,13 +34,14 @@ typeName[2] =
 	img:"01",
 	maxWorker:15,
 	minProduct:10,
-	workerAdd:1,
+	workerAdd:2,
 	productType:"food",
 	cell:false,
+	work:true,
 };
-typeName[3] = {name:"手工业区",desc:"生产区可以建设工坊等建筑物，生产区会降低附近一格居民区的人气",to:[],};
-typeName[4] = {name:"原材料产出区",to:[],};
-typeName[99] = {name:"不可到达区",to:[],};
+typeName[3] = {name:"手工业区",desc:"生产区可以建设工坊等建筑物，生产区会降低附近一格居民区的人气",to:[],work:false};
+typeName[4] = {name:"原材料产出区",to:[],work:false};
+typeName[99] = {name:"不可到达区",to:[],work:false};
 
 const block = 
 [

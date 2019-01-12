@@ -23,10 +23,7 @@ class building
     	this.data.noWorker = 0;
     	this.data.idx = 0;
     }
-
-
 }
-
 
 
 var conCtrl = 
@@ -51,7 +48,6 @@ var conCtrl =
 
 		let b = new building({'id':id,'side':side,'block_idx':block_idx,'i':cell_i,'j':cell_j});
 		builds[side].push(b);
-
 
 		let idx = builds[side].length-1;
 

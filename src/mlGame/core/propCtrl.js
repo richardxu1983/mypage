@@ -19,10 +19,77 @@ class prop
 			iron:v.iron,
 			stone:v.stone,
 			pop:0,
+			idle_pop:0,
 			maxBlock:5,
 			block:0,
 			blockList:[],
+			work_pop:0,
+			work:[],
 		};
+	}
+
+	registerWork(data)
+	{
+		for(let i=0;i<len;i++)
+		{
+			if(this.data.work[i]==-1)
+			{
+				this.data.work[i] = {type:data.type,worker:0,idx:data.idx,};
+				return i;
+			}
+		}
+
+		let len = this.data.work.length;
+		this.data.work.push({
+			type:data.type,	//0:block,1:build
+			worker:0,
+			idx:data.idx,
+		})
+		return len;
+	}
+
+	getWorkerNum(idx)
+	{
+		return this.data.work[idx].worker;
+	}
+
+	unregisterWork(idx)
+	{
+		let worker = this.data.work[idx].worker;
+		this.data.work_pop-=worker;
+		this.data.idle_pop+=worker;
+		this.data.work[idx] = -1;
+	}
+
+	addWork(idx,num)
+	{
+		if(num>=0)
+		{
+			if(this.data.idle_pop<=0)
+				return;
+			let add = num>this.data.idle_pop?this.data.idle_pop:num;
+			let max = 999;
+			if(this.data.work[idx].type==0)
+			{
+				let $mapCtrl = require('../../mlGame/core/map.js').default.mapCtrl;
+				let m = $mapCtrl.getBlockByIdx(this.data.work[idx].idx);
+				max = m.maxWorker();
+				if(this.data.work[idx].worker>=max)
+					return;
+			}
+			add = num>=(max-this.data.work[idx].worker)?(max-this.data.work[idx].worker):num;
+			this.data.work[idx].worker+=add;
+			this.data.work_pop+=add;
+			this.data.idle_pop-=add;
+		}
+		else
+		{
+			let add = num*-1;
+			add = num>this.data.work[idx].worker?this.data.work[idx].worker:num;
+			this.data.work[idx].worker-=add;
+			this.data.work_pop-=add;
+			this.data.idle_pop+=add;
+		}
 	}
 
 	addBlock(block_idx)
@@ -70,6 +137,11 @@ class prop
             return this.data.wood;
 	}
 
+	idle_pop()
+	{
+		return this.data.idle_pop;
+	}
+
 	stone(v)
 	{
 		if(v!=undefined)
@@ -105,6 +177,7 @@ class prop
 
 		this.data.pop = 0;
 
+		//先处理人口
 		for(let i=0;i<block_num;i++)
 		{
 			block_idx = this.data.blockList[i];
@@ -128,19 +201,54 @@ class prop
 							this.procBuild($build[this.data.side][build_idx],m);
 						}
 					}
-				}				
+				}
 			}
-			else if(type==2)
-			{
+		}
 
+		if(this.data.pop>=this.data.work_pop)
+		{
+			this.data.idle_pop = this.data.pop-this.data.work_pop;
+		}
+		else
+		{
+			this.data.idle_pop = 0;
+			let len = this.data.work.length;
+			let work_num;
+			for(let i=0;i<len;i++)
+			{
+				if(this.data.work[i]!=-1)
+				{
+					work_num = this.data.work[i].worker;
+					if(this.data.work_pop - this.data.pop<work_num)
+					{
+						let num = this.data.work_pop - this.data.pop;
+						this.data.work[i].worker -= num;
+						this.data.work_pop -= num;
+						break;
+					}
+					else
+					{
+						this.data.work[i].worker = 0;
+						this.data.work_pop -= work_num;
+					}
+				}
+			}
+		}
+
+		//再计算生产
+		for(let i=0;i<block_num;i++)
+		{
+			block_idx = this.data.blockList[i];
+			m = $mapCtrl.getBlockByIdx(block_idx);
+			let type = m.data.type;
+			if(type==2)
+			{
 				let pdType = $areaType[type].productType;
 				let pd = m.calProd();
 				m.data.product = pd;
 				this.ad(pdType,pd);
 			}
-
 		}
-
 		$mapView.renderSelTip();
 	}
 
@@ -148,9 +256,10 @@ class prop
 	{
 		let render=false;
 		let $mapView = require('../../mlGame/view/mapView.js').default.mapView;
+		let type = $bdData[b.data.id].type;
 
 		//如果是民居
-		if($bdData[b.data.id].type==0)
+		if(type==0)
 		{
 			render = this.procMinJu(b,block);
 		}

@@ -11,6 +11,7 @@
 			</div>
 			<div class="rightRes">
 				<div class="cell">金币：{{gold}}</div>
+				<div class="cell">空闲：{{idle}}</div>
 				<div class="cell">人口：{{pop}}</div>
 				<div class="cell">地块：{{block}}/{{maxBlock}}</div>
 			</div>
@@ -85,6 +86,10 @@ export default {
 		pop:function()
 		{
 			return this.fmat($ply.pop());
+		},
+		idle:function()
+		{
+			return this.fmat($ply.idle_pop());
 		},
 		block:function()
 		{
@@ -188,7 +193,7 @@ export default {
 		.res
 		{
 			position: absolute;
-			left:14em;
+			left:12em;
 			.cell
 			{
 				float: left;

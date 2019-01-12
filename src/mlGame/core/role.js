@@ -51,6 +51,11 @@ class _role
         return $prop.getV(side,'pop');
     }
 
+    idle_pop()
+    {
+         return $prop.getV(side,'idle_pop');
+    }
+
     block()
     {
         return $prop.getV(side,'block');

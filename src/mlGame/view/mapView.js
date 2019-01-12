@@ -666,7 +666,6 @@ function onInfo(m)
 	let str;
 	str = $typeName[m.data.type].name;
 	str+="\n 当前产出类型：【"+$srcName[$typeName[m.data.type].productType]+"】";
-	str+="\n 预计产出："+m.calProd()+"/月";
 	str+="\n 最大劳力："+$typeName[m.data.type].maxWorker;
 	//assignTitle.innerText = $typeName[m.data.type].name;
 	assignTitle.innerText = str;
@@ -674,7 +673,7 @@ function onInfo(m)
 	let div = document.createElement("div");
 	let worker = document.createElement("div");
 	worker.id="txtWorkerNum"
-	worker.innerText="当前劳力数："+m.data.worker;
+	worker.innerText="当前劳力数："+m.workerNum()+"，预计产出：【"+$srcName[$typeName[m.data.type].productType]+"】："+m.calProd()+"/月";
 	div.appendChild(worker);
 	let add = document.createElement("button");
 	add.innerText = "增加";
@@ -732,11 +731,10 @@ function onAddWorker(m,v)
 	m.addWorker(v);
 	let assignTitle = document.getElementById("assignTitle");
 	let worker = document.getElementById("txtWorkerNum");
-	worker.innerText="当前劳力数："+m.data.worker;
+	worker.innerText="当前劳力数："+m.workerNum()+"，预计产出：【"+$srcName[$typeName[m.data.type].productType]+"】："+m.calProd()+"/月";
 	let str;
 	str = $typeName[m.data.type].name;
 	str+="\n 当前产出类型：【"+$srcName[$typeName[m.data.type].productType]+"】";
-	str+="\n 预计产出："+m.calProd()+"/月";
 	str+="\n 最大劳力："+$typeName[m.data.type].maxWorker;
 	//assignTitle.innerText = $typeName[m.data.type].name;
 	assignTitle.innerText = str;
@@ -1003,8 +1001,7 @@ function onClickBuild(m,i,j)
 		div.onclick = ()=>
 		{
 			mapCtrl.buildByBlock(m,i,j,$buildSheet[type][p]);
-			mengban.style.visibility = "hidden";
-			assign.style.visibility = "hidden";
+			closePanal()
 			renderSel();
 			refreshBtn();
 		}

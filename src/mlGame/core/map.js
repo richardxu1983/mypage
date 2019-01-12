@@ -1,6 +1,7 @@
 const $prop = require('../../mlGame/core/propCtrl.js').default.propCtrl;
 const $block = require('../../mlGame/data/area.js').default.block;
 const $areaType = require('../../mlGame/data/area.js').default.typeName;
+const $ply = require('../../mlGame/core/role.js').default.role;
 
 //世界地图
 var maps = [];
@@ -38,7 +39,7 @@ class block
     	this.data.type = $block[data.id].type;
     	this.data.pop = 0;
         this.data.hasCell = $block[this.data.id].cell;
-        this.data.worker = 0;
+        this.data.worker = -1;
         this.data.product = 0;
     }
 
@@ -50,7 +51,11 @@ class block
 
     calProd()
     {
-        let worker = this.data.worker;
+        let idx = this.data.worker;
+        if(idx==-1)
+            return 0;
+        let p = $prop.get($ply.side());
+        let worker = p.getWorkerNum(idx);
         let type = this.data.type;
         let add = $areaType[type].workerAdd;
         let pd;
@@ -60,10 +65,21 @@ class block
 
     addWorker(v)
     {
-        let max = $areaType[this.data.type].maxWorker;
-        this.data.worker+=v;
-        this.data.worker = this.data.worker<0?0:this.data.worker;
-        this.data.worker = this.data.worker>max?max:this.data.worker;
+        let idx = this.data.worker;
+        let p = $prop.get($ply.side());
+        p.addWork(idx,v);
+    }
+
+    workerNum()
+    {
+        let idx = this.data.worker;
+        let p = $prop.get($ply.side());
+        return p.getWorkerNum(idx);
+    }
+
+    maxWorker()
+    {
+        return $areaType[this.data.type].maxWorker;
     }
 
     captureBySide(s)
@@ -141,6 +157,12 @@ class _mapCtrl
         let m = this.getBlockByPos(x,y)
         if(m.data.type ==0)
             m.data.type = t;
+        if($areaType[m.data.type].work==true&&m.data.worker==-1)
+        {
+            let p = $prop.get($ply.side());
+            let idx = p.registerWork({type:0,idx:m.data.idx});
+            m.data.worker = idx;
+        }
     }
 
     getCellByPos(b,i,j)
