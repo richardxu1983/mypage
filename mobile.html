@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/github-markdown-css/2.10.0/github-markdown.css">
+    <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/marked/0.4.0/marked.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        // PC端 移动端 跳转
+        var is_mobi = navigator.userAgent.toLowerCase().match(/(ipod|iphone|android|coolpad|mmp|smartphone|midp|wap|xoom|symbian|j2me|blackberry|wince)/i) != null;
+        console.log(navigator.userAgent);
+        if (is_mobi) {
+            //window.location.href = "mobile.html";
+        }else{
+            window.location.href="index.html";
+        }
+    </script>
+    <title>小破站</title>
+</head>
+<body>
+    移动端网站建设中
+</body>
+</html>
