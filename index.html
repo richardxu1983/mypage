@@ -7,6 +7,7 @@
 	<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
 	<script src="https://cdn.bootcss.com/marked/0.4.0/marked.min.js"></script>
 	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="src/css/style.css">
 	<script>
 		// PC端 移动端 跳转
@@ -21,9 +22,11 @@
 	<div class="nav">
 		<div class="pageTitle">星际漫游者</div>
 	</div>
-	<div class="content">
-		网站建设中
+	<div id="app" class="content">
+		<div>{{playerMainShip.name}}</div>
+		<button @click="change">改名字</button>
 	</div>
 </body>
 <script src="src/js/starRover.js"></script>
+<script src="src/js/roverVue.js"></script>
 </html>
