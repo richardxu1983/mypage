@@ -19,12 +19,25 @@
 	<title>小破站</title>
 </head>
 <body>
-	<div class="nav">
+	<div class="top">
 		<div class="pageTitle">星际漫游者</div>
 	</div>
 	<div id="app" class="content">
-		<div>{{playerMainShip.name}}</div>
-		<button @click="change">改名字</button>
+		<div class="left cl">
+			<div>{{playerMainShip.name}}</div>
+			<button @click="change">改名字</button>
+		</div>
+		<div class="mid cl">
+			<div class="g-nav">
+				冒险
+			</div>
+			<div class="box">
+				<button @click="fight">战斗</button>
+			</div>
+		</div>
+		<div class="right cl">
+			右侧
+		</div>
 	</div>
 </body>
 <script src="src/js/starRover.js"></script>

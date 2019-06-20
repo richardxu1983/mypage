@@ -6,6 +6,10 @@ var app = new Vue({
     methods: {
         change: function () {
             this.playerMainShip.changeName("new name");
+        },
+        fight:function()
+        {
+            
         }
     }
 })
