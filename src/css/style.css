@@ -7,6 +7,12 @@ html,body
     margin: 0;
     font-size: 14px;
     background-color: white;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currentlynot supported by any browser */
 }
 
 .top{
@@ -26,17 +32,34 @@ html,body
     margin: 0;
     display: -webkit-flex; /* Safari */
     display: flex;
+    font-size: 14px;
+}
+
+.content div{
+    margin-bottom: .3em;
+}
+
+.content a{
+    margin-left: .5em;
+    margin-right: .5em;
+}
+
+a:hover
+{
+    color: #aaa;
+    cursor: pointer;
 }
 
 .cl
 {
     margin: .5em;
     padding: .5em;
-    background-color: #eee;
 }
 
 .left,.right{
-    width: 25%;
+    width: 23%;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .mid{
