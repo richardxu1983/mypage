@@ -46,7 +46,14 @@
 				</ul>
 			</div>
 			<br>
-			<div>货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）</div>
+			<div class="ship-info">
+				货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）
+			</div>
+			<div class="ship-info">
+				<div v-for="item in playerMainShip.room" v-if="item!=undefined">
+					{{item}}
+				</div>
+			</div>
 		</div>
 		<div class="mid cl">
 			<div class="g-nav">
