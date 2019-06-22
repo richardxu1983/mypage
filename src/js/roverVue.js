@@ -1,15 +1,16 @@
 var app = new Vue({
     el: '#app',
     data: {
-        playerMainShip: playerData.mainShip
+        playerMainShip: playerData.mainShip,
+        mainShipInfo:false,
     },
     methods: {
-        change: function () {
-            this.playerMainShip.changeName("new name");
+        switchMainShipInfo: function () {
+            this.mainShipInfo = !this.mainShipInfo;
         },
         fight:function()
         {
-            
+
         }
     }
 })

@@ -25,7 +25,26 @@
 	<div id="app" class="content">
 		<div class="left cl">
 			<div><b>主舰</b></div>
-			<div>{{playerMainShip.name}} [ 结构:{{playerMainShip.structure}} , 护盾:{{playerMainShip.shield}} ]</div>
+			<div class="ship-info">
+				<b>{{playerMainShip.name}}</b>
+				<span>[ 结构:{{playerMainShip.structure}}/{{playerMainShip.maxStructure}} , 护盾:{{playerMainShip.shield}}/{{playerMainShip.maxShield}} ]</span>
+				<a v-if="mainShipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
+				<a v-if="mainShipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
+			</div>
+			<div v-if="mainShipInfo==true">
+				武器组
+				<ul>
+					<li v-for="wp in playerMainShip.weapon">
+						武器{{wp.idx}}：{{wp.name}}
+					</li>
+				</ul>
+				升级模块
+				<ul>
+					<li v-for="md in playerMainShip.module">
+						模块{{md.idx}}：{{md.name}}
+					</li>
+				</ul>
+			</div>
 		</div>
 		<div class="mid cl">
 			<div class="g-nav">

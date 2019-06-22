@@ -38,7 +38,9 @@ html,body
 .content div{
     margin-bottom: .3em;
 }
-
+.content ul{
+    margin: 0;
+}
 .content a{
     margin-left: .5em;
     margin-right: .5em;
@@ -48,6 +50,11 @@ a:hover
 {
     color: #aaa;
     cursor: pointer;
+}
+
+.fl-right
+{
+    float:right;
 }
 
 .cl
@@ -60,6 +67,10 @@ a:hover
     width: 23%;
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.ship-info{
+    width: 85%;
 }
 
 .mid{
