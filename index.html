@@ -31,20 +31,22 @@
 				<a v-if="mainShipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
 				<a v-if="mainShipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
 			</div>
-			<div v-if="mainShipInfo==true">
+			<div class="ship-info" v-if="mainShipInfo==true">
 				武器组
 				<ul>
 					<li v-for="wp in playerMainShip.weapon">
-						武器{{wp.idx}}：{{wp.name}}
+						武器{{wp.idx}}：{{wp.name}}<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a>
 					</li>
 				</ul>
-				升级模块
+				模块
 				<ul>
 					<li v-for="md in playerMainShip.module">
 						模块{{md.idx}}：{{md.name}}
 					</li>
 				</ul>
 			</div>
+			<br>
+			<div>货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）</div>
 		</div>
 		<div class="mid cl">
 			<div class="g-nav">

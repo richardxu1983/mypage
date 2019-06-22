@@ -8,6 +8,10 @@ var app = new Vue({
         switchMainShipInfo: function () {
             this.mainShipInfo = !this.mainShipInfo;
         },
+        unloadWp:function(pos)
+        {
+            unLoadWpByIdx(playerData.mainShip,pos);
+        },
         fight:function()
         {
 
