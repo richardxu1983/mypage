@@ -56,7 +56,7 @@
 			</div>
 		</div>
 		<div class="mid cl">
-			<div class="g-nav">
+			<div>
 				冒险
 			</div>
 			<div class="box">
@@ -64,7 +64,16 @@
 			</div>
 		</div>
 		<div class="right cl">
-			<a>日志</a>|<a>查看战斗记录</a>
+			<div>{{timeS()}}</div>
+			<a :class="{underline:rightSel==1}" @click="clickRightMenu(1)">日志</a>|<a :class="{underline:rightSel==2}" @click="clickRightMenu(2)">查看战斗记录</a>
+			<br>
+			<hr>
+			<div id="info" class="info" v-if="rightSel==1">
+				<div class="info-cell" v-for="item in msg" v-html="item">&emsp;{{item}}</div>
+			</div>
+			<div id="info" class="info" v-if="rightSel==2">
+				<div class="info-cell" v-for="item in ftMsg" v-html="item">&emsp;{{item}}</div>
+			</div>
 		</div>
 	</div>
 </body>

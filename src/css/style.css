@@ -6,6 +6,7 @@ html,body
     padding: 0;
     margin: 0;
     font-size: 14px;
+    font-family:Consolas,"Microsoft YaHei","微软雅黑","SimSun","宋体",Menlo,Monaco,Andale Mono,lucida console,"Courier New",monospace;
     background-color: white;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
@@ -46,10 +47,20 @@ html,body
     margin-right: .5em;
 }
 
+.content hr{
+    margin: 1em 0 1em 0;
+}
+
 a:hover
 {
     color: #aaa;
     cursor: pointer;
+}
+
+.underline
+{
+    border-bottom: black 1px solid;
+    font-weight: bold;
 }
 
 .fl-right
@@ -64,9 +75,19 @@ a:hover
 }
 
 .left,.right{
-    width: 23%;
+    width: 24%;
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.info{
+    height: 28em;
+    overflow:auto;
+}
+
+.info div{
+    margin: 0;
+    padding: 0;
 }
 
 .ship-info{

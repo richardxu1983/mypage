@@ -3,18 +3,40 @@ var app = new Vue({
     data: {
         playerMainShip: playerData.mainShip,
         mainShipInfo:false,
+        rightSel:1,
+        msg:infoMsg,
+        ftMsg:fightMsg,
+        dayTime:day,
+        hr:hour,
     },
+    updated:function(){
+        this.scrollToBottom();
+    },
+
     methods: {
-        switchMainShipInfo: function () {
+        switchMainShipInfo(){
             this.mainShipInfo = !this.mainShipInfo;
         },
-        unloadWp:function(pos)
+        unloadWp(pos)
         {
             unLoadWpByIdx(playerData.mainShip,pos);
         },
-        fight:function()
+        clickRightMenu(sel)
         {
-
+            this.rightSel = sel;
+        },
+        timeS()
+        {
+            return timeStr();
+        },
+        scrollToBottom(){
+            this.$nextTick(() => {
+               var container = document.getElementById("info");
+               container.scrollTop = container.scrollHeight;
+        })},
+        fight(){
+            //printMsg("aabb");
+            testFight();
         }
     }
 })
