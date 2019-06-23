@@ -17,9 +17,9 @@ function addFightMsg(str)
 
 function checkArray(array)
 {
-    if(array.length>=100)
+    if(array.length>=300)
     {
-        array.splice(0,50);
+        array.splice(0,100);
     }
 }
 
@@ -157,7 +157,7 @@ function createShip(data,side)
             {
                 wp.ft = t + wpData[wp.id].speed;
                 dmg = wpData[wp.id].atk;
-                addFightMsg(ship.colorName() + "的" +wp.name  +"对"+enmy.colorName()+"发动攻击，伤害为"+dmg);
+                addFightMsg(ship.colorName() + "的" +wp.name  +"对"+enmy.colorName()+"发动攻击");
                 enmy.takeDmg(dmg);
                 if(enmy.structure<=0)
                 {
@@ -199,9 +199,9 @@ function playerShipFightWith(enmy)
         return;
     }
 
-    printMsg("于"+timeStr()+"，你的["+playerData.mainShip.colorName()+"]与["+enmy.colorName()+"]发生了战斗");
+    printMsg(timeStr()+"，你的["+playerData.mainShip.colorName()+"]与["+enmy.colorName()+"]发生了战斗");
     addFightMsg("");
-    addFightMsg("于"+timeStr()+"，你的["+playerData.mainShip.colorName()+"]与["+enmy.colorName()+"]发生了战斗");
+    addFightMsg(timeStr()+"，你的["+playerData.mainShip.colorName()+"]与["+enmy.colorName()+"]发生了战斗");
 
     var t = 2000;    //时间为0开始，每次步进250毫秒
     let dmg = 0;
