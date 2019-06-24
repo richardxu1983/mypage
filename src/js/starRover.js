@@ -1,45 +1,12 @@
 
 var playerData = {};
 
-var infoMsg = [];
-var fightMsg = [];
-function printMsg(str)
-{
-    infoMsg.push(">&emsp; "+str);
-    checkArray(infoMsg);
-}
-
-function addFightMsg(str)
-{
-    fightMsg.push(">&emsp; "+str);
-    checkArray(fightMsg);
-}
-
-function checkArray(array)
-{
-    if(array.length>=300)
-    {
-        array.splice(0,100);
-    }
-}
-
-var day = 1;
-var hour = 0;
-var hourStr = ["早晨","上午","下午","晚上","半夜"];
-function timeStr()
-{
-    return "第"+day+"天"+hourStr[hour];
-}
-function addHour()
-{
-    var step=2;
-    hour+=step;
-    if(hour>=5)
-    {
-        hour-=5;
-        day++;
-    }
-}
+/**
+ * 道具类型
+ * 0:不可使用、装载类道具
+ * 1:武器
+ * 2:升级模块
+ */
 
 /**
  * 武器类型：
@@ -47,12 +14,14 @@ function addHour()
  * 2：导弹类
  * 3：激光类
  */
-var wpData = [];
-wpData[0] = {
+var itemData = [];
+itemData[0] = {
     id:0,
     name:"弹射炮",
     desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
     type:1,     //类型为1
+    subType:1,  //子类型为1
+    stack:100,  //最大堆叠数100
     atk:15,     //基本伤害15
     speed:1500, //武器速度1.5秒
     start:1000, //装填速度1秒
@@ -75,7 +44,65 @@ function createShip(data,side)
     ship.weapon = new Array(ship.weaponNum);
     ship.room = new Array(ship.roomSize);
 
-    ship.colorName = function()
+    ship.addItem = (id,num)=>{
+        //满了
+        if(ship.roomOccupy>=ship.roomSize) return;
+
+        let NumToAdd = num;
+
+        //寻找同样的
+        for(let it=0; it<ship.room.length;it++)
+        {
+            if(ship.room[it]!=undefined)
+            {
+                if(ship.room[it].id==id && ship.room[it].num<itemData[id].stack)
+                {
+                    ship.room[it].num += NumToAdd;
+                    if((ship.room[it].num+NumToAdd)>itemData[id].stack)
+                    {
+                        NumToAdd = NumToAdd - (itemData[id].stack-ship.room[it].num);
+                        ship.room[it].num = itemData[id].stack;
+                    }
+                    else
+                    {
+                        ship.room[it].num+=NumToAdd;
+                        NumToAdd = 0;
+                    }
+                }
+            }
+        }
+
+        //如果已经和同样的堆叠完了
+        if(NumToAdd==0) return;
+        
+        //寻找空位
+        for(let it=0; it<ship.room.length;it++)
+        {
+            if(ship.room[it]==undefined||ship.room[it].id==-1)
+            {
+                ship.room[it] = {
+                    'id':id,
+                    num:0,
+                    name:itemData[id].name,
+                }
+                if(NumToAdd>itemData[id].stack)
+                {
+                    ship.room[it].num = itemData[id].stack;
+                    NumToAdd -= itemData[id].stack;
+                }
+                else
+                {
+                    ship.room[it].num = NumToAdd;
+                    NumToAdd = 0;
+                }
+                ship.roomOccupy++;
+                if(ship.roomOccupy>=ship.roomSize) return;
+            }
+            if(NumToAdd==0) return;
+        }
+    }
+
+    ship.colorName = ()=>
     {
         if(ship.owner==0)
         {
@@ -102,7 +129,7 @@ function createShip(data,side)
             name:"空",
         };
     }
-    ship.fightInit = function()
+    ship.fightInit = ()=>
     {
         let wpId = 0;
         for(let i=0; i<ship.weapon.length;i++)
@@ -110,11 +137,11 @@ function createShip(data,side)
             wpId = ship.weapon[i].id;
             if(wpId>=0)
             {
-                ship.weapon[i].ft = wpData[wpId].start;
+                ship.weapon[i].ft = itemData[wpId].start;
             }
         }
     }
-    ship.takeDmg = function(dmg)
+    ship.takeDmg = (dmg)=>
     {
         if(ship.shield>dmg)
         {
@@ -155,8 +182,8 @@ function createShip(data,side)
         {
             if(wp.id>=0&&t>=wp.ft)
             {
-                wp.ft = t + wpData[wp.id].speed;
-                dmg = wpData[wp.id].atk;
+                wp.ft = t + itemData[wp.id].speed;
+                dmg = itemData[wp.id].atk;
                 addFightMsg(ship.colorName() + "的" +wp.name  +"对"+enmy.colorName()+"发动攻击");
                 enmy.takeDmg(dmg);
                 if(enmy.structure<=0)
@@ -167,7 +194,7 @@ function createShip(data,side)
         }
         return 0;
     }
-    ship.changeName = function(str)
+    ship.changeName = (str)=>
     {
         this.name = str;
     }
@@ -182,14 +209,16 @@ function loadWpByIdIdx(id,ship,idx)
         return;
     }
     ship.weapon[pos].id = id;
-    ship.weapon[pos].name = wpData[id].name;
+    ship.weapon[pos].name = itemData[id].name;
 }
 
 function unLoadWpByIdx(ship,idx)
 {
-    var pos = idx-1;
+    let pos = idx-1;
+    let id = ship.weapon[pos].id;
     ship.weapon[pos].id = -1;
     ship.weapon[pos].name = "空";
+    ship.addItem(id,1);
 }
 
 function playerShipFightWith(enmy)

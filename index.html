@@ -46,12 +46,13 @@
 				</ul>
 			</div>
 			<br>
+			<br>
 			<div class="ship-info">
 				货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）
 			</div>
 			<div class="ship-info">
 				<div v-for="item in playerMainShip.room" v-if="item!=undefined">
-					{{item}}
+					{{item.name}}({{item.num}})
 				</div>
 			</div>
 		</div>
@@ -77,6 +78,8 @@
 		</div>
 	</div>
 </body>
+<script src="src/js/info.js"></script>
+<script src="src/js/time.js"></script>
 <script src="src/js/starRover.js"></script>
 <script src="src/js/roverVue.js"></script>
 </html>
