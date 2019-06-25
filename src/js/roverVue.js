@@ -19,11 +19,15 @@ var app = new Vue({
         },
         unloadWp(pos)
         {
-            unLoadWpByIdx(playerData.mainShip,pos);
+            this.playerMainShip.unLoadWpByIdx(playerData.mainShip,pos);
         },
         clickRightMenu(sel)
         {
             this.rightSel = sel;
+        },
+        tryToLoadWp(idx)
+        {
+            this.playerMainShip.tryToLdWpByItemIdx(idx);
         },
         timeS()
         {

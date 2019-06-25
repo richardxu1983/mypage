@@ -27,6 +27,18 @@ itemData[0] = {
     start:1000, //装填速度1秒
 };
 
+itemData[1] = {
+    id:0,
+    name:"矿石",
+    desc:"宇宙中常见的矿物，可以用来制造、修补",
+    type:0,     //类型为1
+    subType:0,  //子类型为1
+    stack:10000,
+    atk:0, 
+    speed:0,
+    start:0,
+};
+
 function createShip(data,side)
 {
     var ship = new Object;
@@ -57,7 +69,6 @@ function createShip(data,side)
             {
                 if(ship.room[it].id==id && ship.room[it].num<itemData[id].stack)
                 {
-                    ship.room[it].num += NumToAdd;
                     if((ship.room[it].num+NumToAdd)>itemData[id].stack)
                     {
                         NumToAdd = NumToAdd - (itemData[id].stack-ship.room[it].num);
@@ -81,6 +92,7 @@ function createShip(data,side)
             if(ship.room[it]==undefined||ship.room[it].id==-1)
             {
                 ship.room[it] = {
+                    idx:it,
                     'id':id,
                     num:0,
                     name:itemData[id].name,
@@ -99,6 +111,41 @@ function createShip(data,side)
                 if(ship.roomOccupy>=ship.roomSize) return;
             }
             if(NumToAdd==0) return;
+        }
+    }
+
+    ship.tryToLdWpByItemIdx = (idx)=>
+    {
+        if(ship.room[idx]==undefined) return;
+        if(ship.room[idx].id<0) return;
+        let WpId = ship.room[idx].id;
+        if(itemData[WpId].type!=1) return;
+
+        let WpIdx = -1;
+        for(let i=0; i<ship.weapon.length;i++)
+        {
+            if(ship.weapon[i].id==-1)
+            {
+                WpIdx = i+1;
+                break;
+            }
+        }
+        if(WpIdx==-1) return;
+        ship.delItemAtIdx(idx,1);
+        ship.loadWpByIdIdx(WpId,WpIdx);
+    }
+
+    ship.delItemAtIdx = (idx,num)=>
+    {
+        if(ship.room[idx]==undefined) return;
+        if(ship.room[idx].id<0) return;
+        ship.room[idx].num-=num;
+        if(ship.room[idx].num<=0)
+        {
+            ship.room[idx].id = -1;
+            ship.room[idx].num = 0;
+            ship.room[idx].name = "";
+            ship.roomOccupy--;
         }
     }
 
@@ -171,11 +218,10 @@ function createShip(data,side)
                     printMsg("["+ship.colorName()+"]被击毁了");
                     addFightMsg("["+ship.colorName()+"]被击毁了");
                 }
-                //console.log(ship.name+"被击毁了");
             }
         }
     }
-    ship.atkEnmy = function(t,enmy)
+    ship.atkEnmy = (t,enmy)=>
     {
         let dmg = 0;
         for(let wp of ship.weapon)
@@ -194,31 +240,32 @@ function createShip(data,side)
         }
         return 0;
     }
+
+    ship.loadWpByIdIdx = (id,idx)=>
+    {
+        var pos = idx-1;
+        if(ship.weapon[pos].id!=-1)
+        {
+            return;
+        }
+        ship.weapon[pos].id = id;
+        ship.weapon[pos].name = itemData[id].name;
+    }
+
+    ship.unLoadWpByIdx = (ship,idx)=>
+    {
+        let pos = idx-1;
+        let id = ship.weapon[pos].id;
+        ship.weapon[pos].id = -1;
+        ship.weapon[pos].name = "空";
+        ship.addItem(id,1);
+    }
+
     ship.changeName = (str)=>
     {
         this.name = str;
     }
     return ship;
-}
-
-function loadWpByIdIdx(id,ship,idx)
-{
-    var pos = idx-1;
-    if(ship.weapon[pos].id!=-1)
-    {
-        return;
-    }
-    ship.weapon[pos].id = id;
-    ship.weapon[pos].name = itemData[id].name;
-}
-
-function unLoadWpByIdx(ship,idx)
-{
-    let pos = idx-1;
-    let id = ship.weapon[pos].id;
-    ship.weapon[pos].id = -1;
-    ship.weapon[pos].name = "空";
-    ship.addItem(id,1);
 }
 
 function playerShipFightWith(enmy)
@@ -260,7 +307,7 @@ function testFight()
         roomSize:0,
     },999);
     
-    loadWpByIdIdx(0,test,1);
+    test.loadWpByIdIdx(0,1);
 
     playerShipFightWith(test);
 
@@ -273,12 +320,14 @@ function gameInit()
         name:"佛尔斯特号",
         maxStructure:1000,
         maxShield:100,
-        weaponNum:1,
+        weaponNum:2,
         moduleNum:2,
         roomSize:50,
     },0);
     
-    loadWpByIdIdx(0,playerData.mainShip,1);
+    playerData.mainShip.loadWpByIdIdx(0,1);
+    playerData.mainShip.loadWpByIdIdx(0,2);
+    playerData.mainShip.addItem(1,100);
 }
 
 gameInit();

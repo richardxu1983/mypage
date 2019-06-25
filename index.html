@@ -35,13 +35,13 @@
 				武器组
 				<ul>
 					<li v-for="wp in playerMainShip.weapon">
-						武器{{wp.idx}}：{{wp.name}}<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a>
+						<div class=item-cell>武器{{wp.idx}}：{{wp.name}}<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a></div>
 					</li>
 				</ul>
 				模块
 				<ul>
 					<li v-for="md in playerMainShip.module">
-						模块{{md.idx}}：{{md.name}}
+						<div class=item-cell>模块{{md.idx}}：{{md.name}}</div>
 					</li>
 				</ul>
 			</div>
@@ -51,8 +51,8 @@
 				货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）
 			</div>
 			<div class="ship-info">
-				<div v-for="item in playerMainShip.room" v-if="item!=undefined">
-					{{item.name}}({{item.num}})
+				<div v-for="item in playerMainShip.room" v-if="item!=undefined&&item.id>=0">
+					<div class=item-cell>{{item.name}}({{item.num}})<a v-if="itemData[item.id].type==1" class="fl-right" @click="tryToLoadWp(item.idx)">[装载]</a></div>
 				</div>
 			</div>
 		</div>
