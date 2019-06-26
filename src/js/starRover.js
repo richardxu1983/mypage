@@ -114,6 +114,38 @@ function createShip(data,side)
         }
     }
 
+    ship.tryToFix = ()=>
+    {
+
+        let stToFix = ship.maxStructure - ship.structure;
+        if(stToFix==0) return;
+        let fixMatIdx = getItemIdx(ship,1);
+        if(fixMatIdx==-1)
+        {
+            printMsg("你没有足够的矿石");
+            return;
+        }
+        let num = ship.room[fixMatIdx].num;
+        let ToUse = 0;
+        if(stToFix*2>num)
+        {
+            ToUse = num - num%2;
+            if(ToUse==0)
+            {
+                printMsg("你没有足够的矿石");
+                return
+            };
+        }
+        else
+        {
+            ToUse = stToFix*2;
+        }
+        let fix = Math.floor(ToUse/2);
+        ship.structure += fix;
+        ship.delItemAtIdx(fixMatIdx,ToUse);
+        printMsg("你使用了"+ToUse+"的矿石修复了["+ship.colorName()+"]"+fix+"的结构");
+    }
+
     ship.tryToLdWpByItemIdx = (idx)=>
     {
         if(ship.room[idx]==undefined) return;
@@ -268,6 +300,20 @@ function createShip(data,side)
     return ship;
 }
 
+function getItemIdx(ship,id)
+{
+    let idx = -1;
+    //寻找
+    for(let it=0; it<ship.room.length;it++)
+    {
+        if(ship.room[it]!=undefined&&ship.room[it].id==id)
+        {
+            return it;
+        }
+    }
+    return idx;
+}
+
 function playerShipFightWith(enmy)
 {
     if(playerData.mainShip.structure<=0)
@@ -319,7 +365,7 @@ function gameInit()
     playerData.mainShip = createShip({
         name:"佛尔斯特号",
         maxStructure:1000,
-        maxShield:100,
+        maxShield:1,
         weaponNum:2,
         moduleNum:2,
         roomSize:50,

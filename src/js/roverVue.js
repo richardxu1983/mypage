@@ -29,6 +29,10 @@ var app = new Vue({
         {
             this.playerMainShip.tryToLdWpByItemIdx(idx);
         },
+        tryToFix()
+        {
+            this.playerMainShip.tryToFix();
+        },
         timeS()
         {
             return timeStr();

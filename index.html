@@ -31,6 +31,7 @@
 				<a v-if="mainShipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
 				<a v-if="mainShipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
 			</div>
+			<div><a v-if="playerMainShip.maxStructure>playerMainShip.structure" @click="tryToFix">[维修]</a></div>
 			<div class="ship-info" v-if="mainShipInfo==true">
 				武器组
 				<ul>

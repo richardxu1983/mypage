@@ -97,6 +97,11 @@ a:hover
     overflow:auto;
 }
 
+.info-cell{
+    line-height: 1.75em;
+    height: 1.75em;
+}
+
 .info div{
     margin: 0;
     padding: 0;
