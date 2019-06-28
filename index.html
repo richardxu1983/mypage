@@ -26,22 +26,23 @@
 		<div class="left cl">
 			<div><b>主舰</b></div>
 			<div class="ship-info">
-				<b>{{playerMainShip.name}}</b>
-				<span>[ 结构:{{playerMainShip.structure}}/{{playerMainShip.maxStructure}} , 护盾:{{playerMainShip.shield}}/{{playerMainShip.maxShield}} ]</span>
-				<a v-if="mainShipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
-				<a v-if="mainShipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
+				<div class=item-cell>
+					<span><b>{{playerShip.name}}</b>[ 结构:{{playerShip.structure}}/{{playerShip.maxStructure}} , 护盾:{{playerShip.shield}}/{{playerShip.maxShield}} ]</span>
+					<a v-if="shipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
+					<a v-if="shipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
+				</div>
 			</div>
-			<div><a v-if="playerMainShip.maxStructure>playerMainShip.structure" @click="tryToFix">[维修]</a></div>
-			<div class="ship-info" v-if="mainShipInfo==true">
+			<div><a v-if="playerShip.maxStructure>playerShip.structure" @click="tryToFix">[维修]</a></div>
+			<div class="ship-info" v-if="shipInfo==true">
 				武器组
 				<ul>
-					<li v-for="wp in playerMainShip.weapon">
+					<li v-for="wp in playerShip.weapon">
 						<div class=item-cell>武器{{wp.idx}}：{{wp.name}}<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a></div>
 					</li>
 				</ul>
 				模块
 				<ul>
-					<li v-for="md in playerMainShip.module">
+					<li v-for="md in playerShip.module">
 						<div class=item-cell>模块{{md.idx}}：{{md.name}}</div>
 					</li>
 				</ul>
@@ -49,15 +50,19 @@
 			<br>
 			<br>
 			<div class="ship-info">
-				宇航员仓
+				<div class=item-cell>
+					<span>宇航员仓({{playerShip.staffNum}}/{{playerShip.maxStaff}})</span>
+					<a v-if="staffInfo==false" class="fl-right" @click="switchStaffInfo">▽展开</a>
+					<a v-if="staffInfo==true" class="fl-right" @click="switchStaffInfo">△收起</a>
+				</div>
 			</div>
 			<br>
 			<br>
 			<div class="ship-info">
-				货柜仓（{{playerMainShip.roomOccupy}}/{{playerMainShip.roomSize}}）
+				货柜仓（{{playerShip.roomOccupy}}/{{playerShip.roomSize}}）
 			</div>
 			<div class="ship-info">
-				<div v-for="item in playerMainShip.room" v-if="item!=undefined&&item.id>=0">
+				<div v-for="item in playerShip.room" v-if="item!=undefined&&item.id>=0">
 					<div class=item-cell>{{item.name}}({{item.num}})<a v-if="itemData[item.id].type==1" class="fl-right" @click="tryToLoadWp(item.idx)">[装载]</a></div>
 				</div>
 			</div>
@@ -87,5 +92,7 @@
 <script src="src/js/info.js"></script>
 <script src="src/js/time.js"></script>
 <script src="src/js/starRover.js"></script>
+<script src="src/js/staff.js"></script>
+<script src="src/js/game.js"></script>
 <script src="src/js/roverVue.js"></script>
 </html>

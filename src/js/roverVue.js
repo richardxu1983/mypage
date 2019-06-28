@@ -1,8 +1,10 @@
 var app = new Vue({
     el: '#app',
     data: {
-        playerMainShip: playerData.mainShip,
-        mainShipInfo:false,
+        playerShip: playerData.ship,
+        playerStaff:playerData.staff,
+        shipInfo:false,
+        staffInfo:false,
         rightSel:1,
         msg:infoMsg,
         ftMsg:fightMsg,
@@ -15,11 +17,11 @@ var app = new Vue({
 
     methods: {
         switchMainShipInfo(){
-            this.mainShipInfo = !this.mainShipInfo;
+            this.shipInfo = !this.shipInfo;
         },
         unloadWp(pos)
         {
-            this.playerMainShip.unLoadWpByIdx(playerData.mainShip,pos);
+            this.playerShip.unLoadWpByIdx(playerData.ship,pos);
         },
         clickRightMenu(sel)
         {
@@ -27,11 +29,15 @@ var app = new Vue({
         },
         tryToLoadWp(idx)
         {
-            this.playerMainShip.tryToLdWpByItemIdx(idx);
+            this.playerShip.tryToLdWpByItemIdx(idx);
+        },
+        switchStaffInfo()
+        {
+            this.staffInfo = !this.staffInfo;
         },
         tryToFix()
         {
-            this.playerMainShip.tryToFix();
+            this.playerShip.tryToFix();
         },
         timeS()
         {

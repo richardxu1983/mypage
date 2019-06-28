@@ -40,11 +40,13 @@ itemData[1] = {
     start:0,
 };
 
-function createShip(data,side)
+//side:0:玩家,999:野怪
+function createShip(data,side,cap)
 {
     var ship = new Object;
     ship.name = data.name;
     ship.owner = side;
+    ship.cap = cap;
     ship.structure = data.maxStructure;
     ship.maxStructure = data.maxStructure;
     ship.shield = data.maxShield;
@@ -55,7 +57,6 @@ function createShip(data,side)
     ship.maxStaff = data.maxStaff;
     ship.roomOccupy = 0;
     ship.staffNum = 0;
-    ship.staff = new Array(ship.maxStaff);
     ship.module = new Array(ship.moduleNum);
     ship.weapon = new Array(ship.weaponNum);
     ship.room = new Array(ship.roomSize);
@@ -340,24 +341,24 @@ function getItemIdx(ship,id)
 
 function playerShipFightWith(enmy)
 {
-    if(playerData.mainShip.structure<=0)
+    if(playerData.ship.structure<=0)
     {
         return;
     }
 
-    printMsg(timeStr()+"，你的"+playerData.mainShip.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    printMsg(timeStr()+"，你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
     addFightMsg("");
-    addFightMsg(timeStr()+"，你的"+playerData.mainShip.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    addFightMsg(timeStr()+"，你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
 
     var t = 2000;    //时间为0开始，每次步进250毫秒
     let dmg = 0;
 
-    playerData.mainShip.fightInit();
+    playerData.ship.fightInit();
     enmy.fightInit();
 
-    while((playerData.mainShip.structure>0)&&(enmy.structure>0))
+    while((playerData.ship.structure>0)&&(enmy.structure>0))
     {
-        if(playerData.mainShip.atkEnmy(t,enmy)==1 || enmy.atkEnmy(t,playerData.mainShip)==1)
+        if(playerData.ship.atkEnmy(t,enmy)==1 || enmy.atkEnmy(t,playerData.ship)==1)
         {
             return;
         }
@@ -376,7 +377,7 @@ function testFight()
         moduleNum:0,
         roomSize:0,
         maxStaff:1,
-    },999);
+    },999,-1);
     
     test.loadWpByIdIdx(0,1);
 
@@ -384,22 +385,3 @@ function testFight()
 
     addHour();
 }
-
-function gameInit()
-{
-    playerData.mainShip = createShip({
-        name:"佛尔斯特号",
-        maxStructure:1000,
-        maxShield:1,
-        weaponNum:2,
-        moduleNum:2,
-        roomSize:50,
-        maxStaff:10,
-    },0);
-    
-    playerData.mainShip.loadWpByIdIdx(0,1);
-    playerData.mainShip.loadWpByIdIdx(0,2);
-    playerData.mainShip.addItem(1,100);
-}
-
-gameInit();
