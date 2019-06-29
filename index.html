@@ -55,6 +55,11 @@
 					<a v-if="staffInfo==false" class="fl-right" @click="switchStaffInfo">▽展开</a>
 					<a v-if="staffInfo==true" class="fl-right" @click="switchStaffInfo">△收起</a>
 				</div>
+				<div class="ship-info" v-if="staffInfo==true">
+					<div v-for="staff in player.staff" v-if="staff.id!=-1">
+						<div class=item-cell>{{staff.name}}</div>
+					</div>
+				</div>
 			</div>
 			<br>
 			<br>
@@ -96,7 +101,7 @@
 			</div>
 			<div class="box">
 				<button @click="fight">战斗</button>
-				<button @click="">添加船员</button>
+				<button @click="testAddStaff">添加船员</button>
 			</div>
 		</div>
 		<div class="right cl">

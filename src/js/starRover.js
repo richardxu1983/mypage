@@ -294,16 +294,23 @@ function createShip(data,side,cap)
     {
         let dmg = 0;
         let aim = 0;
+        let tip = false;
         for(let wp of ship.weapon)
         {
             if(wp.id>=0&&t>=wp.ft)
             {
                 wp.ft = t + itemData[wp.id].speed;
-                addFightMsg(ship.brcName() + "的"+wp.posName+":"+wp.name  +"对"+enmy.brcName()+"发动攻击");
+                if(!tip)
+                {
+                    addFightMsg("--------------------------");
+                    addFightMsg(ship.brcName()+"发动攻击");
+                    tip = true;
+                }
+                addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
                 aim = itemData[wp.id].aim;
                 if(Math.random()*100 > aim)
                 {
-                    addFightMsg(ship.brcName() + "的" +wp.posName+":"+wp.name  +"攻击<font color=#FF6600>未命中</color>");
+                    addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
                 }
                 else
                 {

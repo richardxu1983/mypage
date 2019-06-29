@@ -34,5 +34,20 @@ function initCaptain(cap,data)
 //添加船员
 function addStaff(cap,data)
 {
-    
+    if(cap.maxStaff<=0||(cap.staffNum>=cap.maxStaff)) return;
+
+    let idx = -1;
+    for(let i=0;i<cap.maxStaff;i++)
+    {
+        if(cap.staff[i].type==-1)
+        {
+            idx = i;
+            break;
+        }
+    }
+    if(idx==-1) return;
+    cap.staffNum++;
+    cap.staff[idx].id = data.id;
+    cap.staff[idx].name = data.name;
+    cap.staff[idx].type = data.type;
 }

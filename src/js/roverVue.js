@@ -20,22 +20,25 @@ var app = new Vue({
     computed:
     {
         wpTipDmg(){
-            return itemData[this.playerShip.weapon[this.wpTipIdx-1].id].atk;
+            return itemData[this.getTipWpId()].atk;
         },
         wpTipSpeed()
         {
-            return itemData[this.playerShip.weapon[this.wpTipIdx-1].id].speed;
+            return itemData[this.getTipWpId()].speed;
         },
         wpTipIT()
         {
-            return itemData[this.playerShip.weapon[this.wpTipIdx-1].id].start;
+            return itemData[this.getTipWpId()].start;
         },
         wpAim()
         {
-            return itemData[this.playerShip.weapon[this.wpTipIdx-1].id].aim;
+            return itemData[this.getTipWpId()].aim;
         }
     },
     methods: {
+        getTipWpId(){
+            return this.playerShip.weapon[this.wpTipIdx-1].id;
+        },
         switchMainShipInfo(){
             this.shipInfo = !this.shipInfo;
         },
@@ -89,6 +92,10 @@ var app = new Vue({
                 $("#wpTip").css({'left':left+"px",'top':top+"px"});
             }
             
+        },
+        testAddStaff()
+        {
+            addStaff(this.player,{id:1,name:"Mary",type:1});
         },
         onmouseleave(str,$event)
         {
