@@ -24,7 +24,7 @@ itemData[0] = {
     stack:100,  //最大堆叠数100
     atk:15,     //基本伤害15
     speed:1500, //武器速度1.5秒
-    start:1000, //装填速度1秒
+    start:1250, //装填速度1秒
     aim:65,     //命中率65
 };
 
@@ -38,6 +38,19 @@ itemData[1] = {
     atk:0, 
     speed:0,
     start:0,
+};
+
+itemData[2] = {
+    id:0,
+    name:"慢速弹射炮",
+    desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
+    type:1,     //类型为1
+    subType:1,  //子类型为1
+    stack:100,  //最大堆叠数100
+    atk:15,     //基本伤害15
+    speed:2500, //武器速度1.5秒
+    start:1000, //装填速度1秒
+    aim:85,     //命中率65
 };
 
 //side:0:玩家,999:野怪
@@ -54,9 +67,7 @@ function createShip(data,side,cap)
     ship.weaponNum = data.weaponNum;
     ship.moduleNum = data.moduleNum;
     ship.roomSize = data.roomSize;
-    ship.maxStaff = data.maxStaff;
     ship.roomOccupy = 0;
-    ship.staffNum = 0;
     ship.module = new Array(ship.moduleNum);
     ship.weapon = new Array(ship.weaponNum);
     ship.room = new Array(ship.roomSize);
@@ -158,18 +169,27 @@ function createShip(data,side,cap)
         let WpId = ship.room[idx].id;
         if(itemData[WpId].type!=1) return;
 
+        if(ship.loadWp(WpId)==1)
+        {
+            ship.delItemAtIdx(idx,1);
+        }
+    }
+
+    ship.loadWp = (WpId)=>
+    {
         let WpIdx = -1;
         for(let i=0; i<ship.weapon.length;i++)
         {
             if(ship.weapon[i].id==-1)
             {
-                WpIdx = i+1;
+                WpIdx = i;
                 break;
             }
         }
-        if(WpIdx==-1) return;
-        ship.delItemAtIdx(idx,1);
-        ship.loadWpByIdIdx(WpId,WpIdx);
+        if(WpIdx==-1) return 0;
+        ship.weapon[WpIdx].id = WpId;
+        ship.weapon[WpIdx].name = itemData[WpId].name;
+        return 1;
     }
 
     ship.delItemAtIdx = (idx,num)=>
@@ -210,6 +230,7 @@ function createShip(data,side,cap)
     for(let i=0; i<ship.weapon.length;i++)
     {
         ship.weapon[i] = {
+            posName:"武器"+(i+1),
             idx:i+1,
             id:-1,
             name:"空",
@@ -278,11 +299,11 @@ function createShip(data,side,cap)
             if(wp.id>=0&&t>=wp.ft)
             {
                 wp.ft = t + itemData[wp.id].speed;
-                addFightMsg(ship.brcName() + "的" +wp.name  +"对"+enmy.brcName()+"发动攻击");
+                addFightMsg(ship.brcName() + "的"+wp.posName+":"+wp.name  +"对"+enmy.brcName()+"发动攻击");
                 aim = itemData[wp.id].aim;
                 if(Math.random()*100 > aim)
                 {
-                    addFightMsg(ship.brcName() + "的" +wp.name  +"攻击<font color=#FF6600>未命中</color>");
+                    addFightMsg(ship.brcName() + "的" +wp.posName+":"+wp.name  +"攻击<font color=#FF6600>未命中</color>");
                 }
                 else
                 {
@@ -367,21 +388,16 @@ function playerShipFightWith(enmy)
     addFightMsg("");
 }
 
-function testFight()
+function createCapWithShip(shipdata,capdata)
 {
-    var test = createShip({
-        name:"海盗号",
-        maxStructure:50,
-        maxShield:50,
-        weaponNum:1,
-        moduleNum:0,
-        roomSize:0,
-        maxStaff:1,
-    },999,-1);
-    
-    test.loadWpByIdIdx(0,1);
-
-    playerShipFightWith(test);
-
-    addHour();
+    var cap = {};
+    cap.ship = createShip(shipdata,0,cap);
+    initCaptain(cap,capdata);
+    initStaff(cap,capdata.stuffNum);
+    for(const wpId of shipdata.wp)
+    {
+        cap.ship.loadWp(wpId);
+    }
+    cap.money = capdata.money;
+    return cap;
 }
