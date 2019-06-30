@@ -4,10 +4,16 @@ var app = new Vue({
         playerShip: playerData.ship,
         player:playerData,
         shipInfo:false,
-        staffInfo:false,
+        staffInfo:true,
         shipTip:false,
         wpTip:false,
+        modal:false,
+        staffTip:false,
+        assignDiv:false,
         wpTipIdx:-1,
+        staffTipIdx:-1,
+        wpAssignIdx:-1,
+        currentJobType:"",
         rightSel:1,
         msg:infoMsg,
         ftMsg:fightMsg,
@@ -62,6 +68,35 @@ var app = new Vue({
         {
             this.playerShip.tryToFix();
         },
+        assign(job,idx)
+        {
+            this.modal = true;
+            this.assignDiv=true;
+            this.currentJobType = job;
+            if(job=='wp')
+            {
+                this.wpAssignIdx = idx;
+            }
+        },
+        deAssign(job,idx)
+        {
+            this.playerShip.deAssign(job,idx);
+        },
+        closeAssign()
+        {
+            this.modal = false;
+            this.assignDiv=false;
+        },
+        assignStaff(staffIdx)
+        {
+            if(this.currentJobType=='wp')
+            {
+                let wpIdx = this.wpAssignIdx;
+                if(wpIdx==-1) return;
+                this.playerShip.assign(this.currentJobType,wpIdx,staffIdx);
+            }
+            this.closeAssign();
+        },
         timeS()
         {
             return timeStr();
@@ -91,11 +126,28 @@ var app = new Vue({
                 this.wpTip=true;
                 $("#wpTip").css({'left':left+"px",'top':top+"px"});
             }
-            
+            else if(str=="staff")
+            {
+                this.staffTip=true;
+                this.staffTipIdx = idx;
+                left = rect.left+10;
+                $("#staffTip").css({'left':left+"px",'top':top+"px"});
+            }
         },
         testAddStaff()
         {
-            addStaff(this.player,{id:1,name:"Mary",type:1});
+            let p = createPerson();
+            addStaff(this.player,p);
+        },
+        jobDesc(idx)
+        {
+            let jobType = this.player.staff[idx].jobType;
+            let jobIdx = this.player.staff[idx].jobIdx;
+
+            if(jobType=='wp')
+            {
+                return "操作"+playerData.ship.weapon[jobIdx].posName;
+            }
         },
         onmouseleave(str,$event)
         {
@@ -107,6 +159,10 @@ var app = new Vue({
             else if(str=="wp")
             {
                 this.wpTip=false;
+            }
+            else if(str=="staff")
+            {
+                this.staffTip=false;
             }
         },
         fight(){

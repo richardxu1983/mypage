@@ -3,13 +3,13 @@ function testFight()
 {
     let test = createShip({
         name:"海盗号",
-        maxStructure:50,
-        maxShield:50,
+        maxStructure:20,
+        maxShield:20,
         weaponNum:1,
         moduleNum:0,
         roomSize:0,
         maxStaff:1,
-    },999,-1);
+    },-1);
     
     test.loadWp(0);
 
@@ -24,8 +24,8 @@ function gameInit()
     playerData = createCapWithShip(
         {
             name:"佛尔斯特号",
-            maxStructure:1000,
-            maxShield:1,
+            maxStructure:100,
+            maxShield:20,
             weaponNum:2,
             moduleNum:2,
             roomSize:50,
@@ -36,6 +36,7 @@ function gameInit()
             type:1,
             name:"Jacky Chen",
             money:100,
+            side:1,
             stuffNum:MAX_STAFF,
         });
 

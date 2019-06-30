@@ -25,7 +25,7 @@ itemData[0] = {
     atk:15,     //基本伤害15
     speed:1500, //武器速度1.5秒
     start:1250, //装填速度1秒
-    aim:65,     //命中率65
+    aim:50,     //命中率65
 };
 
 itemData[1] = {
@@ -50,16 +50,16 @@ itemData[2] = {
     atk:15,     //基本伤害15
     speed:2500, //武器速度1.5秒
     start:1000, //装填速度1秒
-    aim:85,     //命中率65
+    aim:65,     //命中率65
 };
 
 //side:0:玩家,999:野怪
-function createShip(data,side,cap)
+function createShip(data,cap)
 {
     var ship = new Object;
     ship.name = data.name;
-    ship.owner = side;
     ship.cap = cap;
+    ship.side = cap!=-1?cap.side:999;
     ship.structure = data.maxStructure;
     ship.maxStructure = data.maxStructure;
     ship.shield = data.maxShield;
@@ -207,7 +207,7 @@ function createShip(data,side,cap)
     }
     ship.brcName = ()=>
     {
-        if(ship.owner==0)
+        if(ship.side==0)
         {
             return "[<font color=blue>"+ship.name+"</font>]";
         }
@@ -218,7 +218,7 @@ function createShip(data,side,cap)
     }
     ship.colorName = ()=>
     {
-        if(ship.owner==0)
+        if(ship.side==0)
         {
             return "<font color=blue>"+ship.name+"</font>";
         }
@@ -277,7 +277,7 @@ function createShip(data,side,cap)
             if(ship.structure<0)
             {
                 ship.structure = 0;
-                if(ship.owner==0)
+                if(ship.side==0)
                 {
                     printMsg("你的"+ship.brcName()+"被击毁了");
                     addFightMsg("你的"+ship.brcName()+"被击毁了");
@@ -295,6 +295,7 @@ function createShip(data,side,cap)
         let dmg = 0;
         let aim = 0;
         let tip = false;
+        let ran;
         for(let wp of ship.weapon)
         {
             if(wp.id>=0&&t>=wp.ft)
@@ -308,7 +309,9 @@ function createShip(data,side,cap)
                 }
                 addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
                 aim = itemData[wp.id].aim;
-                if(Math.random()*100 > aim)
+                ran = Math.random() * 100;
+                //addFightMsg("ran="+ran);
+                if(ran > aim)
                 {
                     addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
                 }
@@ -335,6 +338,34 @@ function createShip(data,side,cap)
         }
         ship.weapon[pos].id = id;
         ship.weapon[pos].name = itemData[id].name;
+    }
+
+    ship.assign = (job,jobIdx,staffIdx)=>
+    {
+        if(staffIdx==-1) return;
+        if(job=="wp")
+        {
+            if(ship.weapon[jobIdx].staff!=-1) return;
+            ship.weapon[jobIdx].staff = staffIdx;
+            ship.cap.validStaff--;
+            ship.cap.staff[staffIdx].jobType = 'wp';
+            ship.cap.staff[staffIdx].jobIdx = jobIdx;
+            printMsg(printTimeC()+"你安排"+ship.cap.staff[staffIdx].name+"操作"+ship.weapon[jobIdx].posName);
+        }
+    }
+
+    ship.deAssign = (job,jobIdx)=>
+    {
+        if(job=='wp')
+        {
+            let staffIdx = ship.weapon[jobIdx].staff;
+            if(staffIdx==-1) return;
+            ship.cap.staff[staffIdx].jobType = -1;
+            ship.cap.staff[staffIdx].jobIdx = -1;
+            ship.weapon[jobIdx].staff = -1;
+            ship.cap.validStaff++;
+            printMsg(printTimeC()+"你取消了"+ship.cap.staff[staffIdx].name+"的指派");
+        }
     }
 
     ship.unLoadWpByIdx = (ship,idx)=>
@@ -374,11 +405,13 @@ function playerShipFightWith(enmy)
         return;
     }
 
-    printMsg(timeStr()+"，你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    printMsg(printTimeC()+"你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
     addFightMsg("");
     addFightMsg(timeStr()+"，你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    addFightMsg(playerData.ship.brcName()+"结构："+playerData.ship.structure+",护盾："+playerData.ship.shield);
+    addFightMsg(enmy.brcName()+"结构："+enmy.structure+",护盾："+enmy.shield);
 
-    var t = 2000;    //时间为0开始，每次步进250毫秒
+    var t = 0; 
     let dmg = 0;
 
     playerData.ship.fightInit();
@@ -386,11 +419,18 @@ function playerShipFightWith(enmy)
 
     while((playerData.ship.structure>0)&&(enmy.structure>0))
     {
+        if(t>=60000)
+        {
+            addFightMsg("战斗时间过长，胜负未分，双方已离开战场");
+            printMsg("胜负未分，双方离开战场");
+            return;
+        }
+
         if(playerData.ship.atkEnmy(t,enmy)==1 || enmy.atkEnmy(t,playerData.ship)==1)
         {
             return;
         }
-        t += 200;
+        t += 200;//每次步进200毫秒
     }
     addFightMsg("");
 }
@@ -398,8 +438,8 @@ function playerShipFightWith(enmy)
 function createCapWithShip(shipdata,capdata)
 {
     var cap = {};
-    cap.ship = createShip(shipdata,0,cap);
     initCaptain(cap,capdata);
+    cap.ship = createShip(shipdata,cap);
     initStaff(cap,capdata.stuffNum);
     for(const wpId of shipdata.wp)
     {

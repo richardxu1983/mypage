@@ -65,6 +65,10 @@ div{
     padding: 0;
 }
 
+ul{
+    padding-left: 2.5em;
+}
+
 .line{
     height: 2em;
     line-height: 2em;
@@ -74,13 +78,59 @@ div{
     border-bottom: 1px solid #ddd;
 }
 
+.topine{
+    border-top: 1px solid #ddd;
+}
+
+.center{
+    display: block;
+    margin: 0 auto;
+}
+
+.widthFull{
+    width: 100%;
+}
+
+.halfWidth
+{
+
+    width: 70%;
+}
+
+.fl-left
+{
+    float: left;
+}
+
+.assignPad
+{
+    height: 15em;
+}
+
+.y-scroll
+{
+    overflow-y: auto;
+}
+
 .topPad{
     padding-top: .5em;
+}
+.topPad-big{
+    padding-top: 1em;
+}
+
+.bottomad{
+    padding-bottom: .5em;
+}
+
+.bottomad-big{
+    padding-bottom: 1em;
 }
 
 .leftVoid
 {
     padding-left: .5em;
+    padding-right: .5em;
 }
 
 .shipTip{
@@ -145,7 +195,7 @@ a:hover
 }
 
 .ship-info{
-    width: 85%;
+    width: 95%;
 }
 
 .mid{
@@ -161,4 +211,25 @@ a:hover
     background-color: white;
 }
 
+.modal{
+    position: fixed;
+    top:0;
+    left:0;
+    background: rgba(255, 255, 255, 0.8) !important;/* 兼容ie几不知道，好像ie5 */
+    background:#fff;
+    filter:Alpha(opacity=80);
+    height: 100%;
+    width: 100%;
+    pointer-events: auto;
+}
 
+.assign-div{
+    position: absolute;
+    left:50%;
+    top:10em;
+    width: 18em;
+    background-color: #fff;
+    border: solid 1px black;
+    height: auto;
+    margin-left: -10em;
+}
