@@ -3,7 +3,7 @@ var app = new Vue({
     data: {
         playerShip: playerData.ship,
         player:playerData,
-        shipInfo:false,
+        shipInfo:true,
         staffInfo:true,
         shipTip:false,
         wpTip:false,
