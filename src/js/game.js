@@ -30,6 +30,7 @@ function gameInit()
             moduleNum:2,
             roomSize:50,
             maxStaff:10,
+            shieldRec:20,
             wp:[0,2],
         },
         {

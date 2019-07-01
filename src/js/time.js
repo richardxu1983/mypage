@@ -33,12 +33,9 @@ function printTimeC()
             printMsg("");
         }
         lastTime = timeStr;
-        return timeStr+"，";
+        printMsg(timeStr);
     }
-    else
-    {
-        return "";
-    }
+    return "";
 }
 
 function addHour()
@@ -49,5 +46,6 @@ function addHour()
     {
         hour-=5;
         day++;
+        playerData.ship.recShield();
     }
 }

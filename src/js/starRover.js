@@ -63,6 +63,7 @@ function createShip(data,cap)
     ship.structure = data.maxStructure;
     ship.maxStructure = data.maxStructure;
     ship.shield = data.maxShield;
+    ship.shieldRec = data.shieldRec||0;
     ship.maxShield = data.maxShield;
     ship.weaponNum = data.weaponNum;
     ship.moduleNum = data.moduleNum;
@@ -128,6 +129,13 @@ function createShip(data,cap)
             }
             if(NumToAdd==0) return;
         }
+    }
+
+    ship.recShield = ()=>
+    {
+        if(ship.shield>ship.maxShield) return;
+        ship.shield += ship.shieldRec;
+        if(ship.shield>ship.maxShield) ship.shield = ship.maxShield;
     }
 
     ship.tryToFix = ()=>
@@ -227,6 +235,8 @@ function createShip(data,cap)
             return "<font color=red>"+ship.name+"</font>";
         }
     }
+
+
     for(let i=0; i<ship.weapon.length;i++)
     {
         ship.weapon[i] = {
@@ -237,6 +247,7 @@ function createShip(data,cap)
             staff:-1,
         };
     }
+
     for(let i=0; i<ship.module.length;i++)
     {
         ship.module[i] = {
@@ -354,12 +365,15 @@ function createShip(data,cap)
         }
     }
 
-    ship.deAssign = (job,jobIdx)=>
+    ship.deAssign = (staffIdx)=>
     {
+        if(staffIdx==-1) return;
+        let job = ship.cap.staff[staffIdx].jobType;
+        if(job==-1) return;
+        let jobIdx = ship.cap.staff[staffIdx].jobIdx;
+    
         if(job=='wp')
         {
-            let staffIdx = ship.weapon[jobIdx].staff;
-            if(staffIdx==-1) return;
             ship.cap.staff[staffIdx].jobType = -1;
             ship.cap.staff[staffIdx].jobIdx = -1;
             ship.weapon[jobIdx].staff = -1;

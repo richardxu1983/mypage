@@ -78,9 +78,9 @@ var app = new Vue({
                 this.wpAssignIdx = idx;
             }
         },
-        deAssign(job,idx)
+        deAssign(staffIdx)
         {
-            this.playerShip.deAssign(job,idx);
+            this.playerShip.deAssign(staffIdx);
         },
         closeAssign()
         {
@@ -138,6 +138,10 @@ var app = new Vue({
         {
             let p = createPerson();
             addStaff(this.player,p);
+        },
+        testAddHour()
+        {
+            addHour();
         },
         jobDesc(idx)
         {
