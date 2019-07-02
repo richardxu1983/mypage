@@ -1,57 +1,7 @@
 
 var playerData = {};
 
-/**
- * 道具类型
- * 0:不可使用、装载类道具
- * 1:武器
- * 2:升级模块
- */
-
-/**
- * 武器类型：
- * 1：炮类
- * 2：导弹类
- * 3：激光类
- */
-var itemData = [];
-itemData[0] = {
-    id:0,
-    name:"弹射炮",
-    desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
-    type:1,     //类型为1
-    subType:1,  //子类型为1
-    stack:100,  //最大堆叠数100
-    atk:15,     //基本伤害15
-    speed:1500, //武器速度1.5秒
-    start:1250, //装填速度1秒
-    aim:50,     //命中率65
-};
-
-itemData[1] = {
-    id:0,
-    name:"矿石",
-    desc:"宇宙中常见的矿物，可以用来制造、修补",
-    type:0,     //类型为1
-    subType:0,  //子类型为1
-    stack:10000,
-    atk:0, 
-    speed:0,
-    start:0,
-};
-
-itemData[2] = {
-    id:0,
-    name:"慢速弹射炮",
-    desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
-    type:1,     //类型为1
-    subType:1,  //子类型为1
-    stack:100,  //最大堆叠数100
-    atk:15,     //基本伤害15
-    speed:2500, //武器速度1.5秒
-    start:1000, //装填速度1秒
-    aim:65,     //命中率65
-};
+const STAFF_ADD_TO_AIM = 15;
 
 //side:0:玩家,999:野怪
 function createShip(data,cap)
@@ -197,6 +147,7 @@ function createShip(data,cap)
         if(WpIdx==-1) return 0;
         ship.weapon[WpIdx].id = WpId;
         ship.weapon[WpIdx].name = itemData[WpId].name;
+        ship.weapon[WpIdx].check();
         return 1;
     }
 
@@ -236,7 +187,7 @@ function createShip(data,cap)
         }
     }
 
-
+    //初始化武器
     for(let i=0; i<ship.weapon.length;i++)
     {
         ship.weapon[i] = {
@@ -245,7 +196,28 @@ function createShip(data,cap)
             id:-1,
             name:"空",
             staff:-1,
+            aimAdd:0,
         };
+        ship.weapon[i].aim=()=>
+        {
+            let self = ship.weapon[i];
+            let id = self.id;
+            if(id==-1) return 0;
+            return self.aimAdd + itemData[id].aim;
+        }
+        ship.weapon[i].check=()=>
+        {
+            let self = ship.weapon[i];
+            let staffId = self.staff;
+            if(staffId==-1)
+            {
+                self.aimAdd=0;
+            }
+            else
+            {
+                self.aimAdd = STAFF_ADD_TO_AIM;
+            }
+        }
     }
 
     for(let i=0; i<ship.module.length;i++)
@@ -256,6 +228,7 @@ function createShip(data,cap)
             name:"空",
         };
     }
+
     ship.fightInit = ()=>
     {
         let wpId = 0;
@@ -268,6 +241,7 @@ function createShip(data,cap)
             }
         }
     }
+
     ship.takeDmg = (dmg)=>
     {
         if(ship.shield>dmg)
@@ -319,10 +293,10 @@ function createShip(data,cap)
                     tip = true;
                 }
                 addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
-                aim = itemData[wp.id].aim;
+
                 ran = Math.random() * 100;
-                //addFightMsg("ran="+ran);
-                if(ran > aim)
+                //addFightMsg("ran="+ran+",aim="+wp.aim());
+                if(ran > wp.aim())
                 {
                     addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
                 }
@@ -351,6 +325,7 @@ function createShip(data,cap)
         ship.weapon[pos].name = itemData[id].name;
     }
 
+    //派遣工作
     ship.assign = (job,jobIdx,staffIdx)=>
     {
         if(staffIdx==-1) return;
@@ -361,10 +336,12 @@ function createShip(data,cap)
             ship.cap.validStaff--;
             ship.cap.staff[staffIdx].jobType = 'wp';
             ship.cap.staff[staffIdx].jobIdx = jobIdx;
+            ship.weapon[jobIdx].check();
             printMsg(printTimeC()+"你安排"+ship.cap.staff[staffIdx].name+"操作"+ship.weapon[jobIdx].posName);
         }
     }
 
+    //调回工作
     ship.deAssign = (staffIdx)=>
     {
         if(staffIdx==-1) return;
@@ -447,18 +424,4 @@ function playerShipFightWith(enmy)
         t += 200;//每次步进200毫秒
     }
     addFightMsg("");
-}
-
-function createCapWithShip(shipdata,capdata)
-{
-    var cap = {};
-    initCaptain(cap,capdata);
-    cap.ship = createShip(shipdata,cap);
-    initStaff(cap,capdata.stuffNum);
-    for(const wpId of shipdata.wp)
-    {
-        cap.ship.loadWp(wpId);
-    }
-    cap.money = capdata.money;
-    return cap;
 }

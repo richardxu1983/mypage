@@ -15,8 +15,8 @@ function addFightMsg(str)
 
 function checkArray(array)
 {
-    if(array.length>=300)
+    if(array.length>=500)
     {
-        array.splice(0,100);
+        array.splice(0,250);
     }
 }

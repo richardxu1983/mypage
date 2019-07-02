@@ -38,7 +38,7 @@ var app = new Vue({
         },
         wpAim()
         {
-            return itemData[this.getTipWpId()].aim;
+            return this.playerShip.weapon[this.wpTipIdx-1].aim();
         }
     },
     methods: {

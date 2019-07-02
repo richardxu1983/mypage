@@ -1,5 +1,6 @@
 
 const MAX_STAFF = 32;
+
 const SPECIES = [];
 SPECIES[0] = "人类";
 SPECIES[1] = "智械";
@@ -67,6 +68,33 @@ function randomName()
     return name;
 }
 
+//创造一个人物
+function createPerson()
+{
+    let p = {};
+    let name="";
+    let an = allName[Math.floor((Math.random()*allName.length))];
+    console.log(an);
+    for(let i=0;i<an;i++)
+    {
+        name += randomName();
+        if(an>(i+1))
+        {
+            name += " ";
+        }
+    }
+
+    let species = Math.floor((Math.random()*SPECIES.length));
+    let career = Math.floor((Math.random()*CAREER.length));
+    p.gender = Math.floor((Math.random()*GENDER.length));
+    p.age = ageArray[Math.floor((Math.random()*ageArray.length))]*10 + Math.floor(Math.random()*10);
+    p.name = name;
+    p.species = species;
+    p.career = career;
+    p.id = 1;
+    p.type = 1;
+    return p;
+}
 
 //初始化船员数据
 function initStaff(cap,num)
@@ -94,42 +122,6 @@ function initStaff(cap,num)
         cap.staff[i].age = -1;
         cap.staff[i].owner = cap;
     }
-}
-
-//初始化舰长数据
-function initCaptain(cap,data)
-{
-    cap.name = data.name;
-    cap.type = data.type;
-    cap.side = 0;
-}
-
-//创造一个人物
-function createPerson()
-{
-    let p = {};
-    let name="";
-    let an = allName[Math.floor((Math.random()*allName.length))];
-    console.log(an);
-    for(let i=0;i<an;i++)
-    {
-        name += randomName();
-        if(an>(i+1))
-        {
-            name += " ";
-        }
-    }
-
-    let species = Math.floor((Math.random()*SPECIES.length));
-    let career = Math.floor((Math.random()*CAREER.length));
-    p.gender = Math.floor((Math.random()*GENDER.length));
-    p.age = ageArray[Math.floor((Math.random()*ageArray.length))]*10 + Math.floor(Math.random()*10);
-    p.name = name;
-    p.species = species;
-    p.career = career;
-    p.id = 1;
-    p.type = 1;
-    return p;
 }
 
 //添加船员
