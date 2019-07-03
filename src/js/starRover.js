@@ -259,7 +259,7 @@ function createShip(data,cap)
             }
             ship.structure -= (dmg - s);
             addFightMsg(ship.brcName()+"的结构减少了<font color=#FF6600>"+(dmg - s)+"</font>("+ship.structure+")");
-            if(ship.structure<0)
+            if(ship.structure<=0)
             {
                 ship.structure = 0;
                 if(ship.side==0)
@@ -355,6 +355,7 @@ function createShip(data,cap)
             ship.cap.staff[staffIdx].jobIdx = -1;
             ship.weapon[jobIdx].staff = -1;
             ship.cap.validStaff++;
+            ship.weapon[jobIdx].check();
             printMsg(printTimeC()+"你取消了"+ship.cap.staff[staffIdx].name+"的指派");
         }
     }

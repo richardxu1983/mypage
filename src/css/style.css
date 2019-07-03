@@ -97,6 +97,22 @@ ul{
     width: 70%;
 }
 
+.green
+{
+    color:#00CD00;
+}
+
+.reverse-color
+{
+    background-color: black;
+    color: white;
+}
+
+.black
+{
+    color:black;
+}
+
 .fl-left
 {
     float: left;

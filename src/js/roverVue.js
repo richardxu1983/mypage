@@ -97,6 +97,14 @@ var app = new Vue({
             }
             this.closeAssign();
         },
+        wpBetter(attr,idx)
+        {
+            let id = this.playerShip.weapon[idx-1].id;
+            if(attr=='aim')
+            {
+                return (this.playerShip.weapon[idx-1].aim()>itemData[id].aim)?true:false;
+            }
+        },
         timeS()
         {
             return timeStr();

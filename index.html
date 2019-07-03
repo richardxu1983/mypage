@@ -154,14 +154,14 @@
 				<div >目前没有装载武器</div>
 				<div v-if="playerShip.weapon[wpTipIdx-1].staff==-1">操作员：无<br></div>
 			</div>
-			<div class="leftVoid" v-if="wpTipIdx>=0&&playerShip.weapon[wpTipIdx-1].id>=0">
+			<div class="leftVoid" v-if="wpTipIdx>=1&&playerShip.weapon[wpTipIdx-1].id>=0">
 				伤害：{{wpTipDmg}}
 				<br>
 				速度：{{parseFloat((wpTipSpeed/1000).toFixed(2))}}秒
 				<br>
 				初次装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒
 				<br>
-				命中率：{{wpAim}}%
+				命中率：<span :class="wpBetter('aim',wpTipIdx)?'green':'black'">{{wpAim}} </span>%
 			</div>
 		</div>
 	</div>
