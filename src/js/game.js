@@ -3,8 +3,8 @@ function testFight()
 {
     let test = createShip({
         name:"海盗号",
-        maxStructure:20,
-        maxShield:20,
+        bMaxStrc:20,
+        bMaxShld:20,
         weaponNum:1,
         moduleNum:0,
         roomSize:0,
@@ -24,10 +24,10 @@ function gameInit()
     playerData = createCapWithShip(
         {
             name:"佛尔斯特号",
-            maxStructure:100,
-            maxShield:20,
+            bMaxStrc:100,
+            bMaxShld:20,
             weaponNum:2,
-            moduleNum:2,
+            moduleNum:5,
             roomSize:50,
             maxStaff:10,
             shieldRec:20,
@@ -42,6 +42,8 @@ function gameInit()
         });
 
     playerData.ship.addItem(1,100);
+    playerData.ship.addItem(100,1);
+    playerData.ship.addItem(101,1);
 }
 
 gameInit();

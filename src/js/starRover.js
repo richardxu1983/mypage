@@ -10,18 +10,54 @@ function createShip(data,cap)
     ship.name = data.name;
     ship.cap = cap;
     ship.side = cap!=-1?cap.side:999;
-    ship.structure = data.maxStructure;
-    ship.maxStructure = data.maxStructure;
-    ship.shield = data.maxShield;
+    ship.structure = data.bMaxStrc;
+    ship.bMaxStrc = data.bMaxStrc
+    ship.maxStrc = 0;
+    ship.shield = data.bMaxShld;
     ship.shieldRec = data.shieldRec||0;
-    ship.maxShield = data.maxShield;
+    ship.bMaxShld = data.bMaxShld;
+    ship.maxShld = 0;
     ship.weaponNum = data.weaponNum;
     ship.moduleNum = data.moduleNum;
     ship.roomSize = data.roomSize;
+    ship.add = {
+        shldAdd:0,
+        shldMulti:0,
+        strcAdd:0,
+        strcMulti:0,
+    };
+    ship.maxElc = data.maxElc;  //最大电量
     ship.roomOccupy = 0;
-    ship.module = new Array(ship.moduleNum);
-    ship.weapon = new Array(ship.weaponNum);
+    ship.md = new Array(ship.moduleNum);
+    ship.wp = new Array(ship.weaponNum);
     ship.room = new Array(ship.roomSize);
+
+    ship.check = ()=>
+    {
+        let v;
+        let mdId;
+        for(k in ship.add)
+        {
+            ship.add[k] = 0;
+        }
+        for(md of ship.md)
+        {
+            mdId = md.id;
+            if(mdId!=-1)
+            {
+                if(itemData[mdId].subType==5001)
+                {
+                    for(k in itemData[mdId].shipAdd)
+                    {
+                        v = itemData[mdId].shipAdd[k];
+                        ship.add[k] += v;
+                    }
+                }
+            }
+        }
+        ship.maxShld = Math.floor((ship.bMaxShld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
+        ship.maxStrc = Math.floor((ship.bMaxStrc + ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
+    }
 
     ship.addItem = (id,num)=>{
         //满了
@@ -83,15 +119,15 @@ function createShip(data,cap)
 
     ship.recShield = ()=>
     {
-        if(ship.shield>ship.maxShield) return;
+        if(ship.shield>ship.maxShld) return;
         ship.shield += ship.shieldRec;
-        if(ship.shield>ship.maxShield) ship.shield = ship.maxShield;
+        if(ship.shield>ship.maxShld) ship.shield = ship.maxShld;
     }
 
     ship.tryToFix = ()=>
     {
 
-        let stToFix = ship.maxStructure - ship.structure;
+        let stToFix = ship.maxStrc - ship.structure;
         if(stToFix==0) return;
         let fixMatIdx = getItemIdx(ship,1);
         if(fixMatIdx==-1)
@@ -133,21 +169,55 @@ function createShip(data,cap)
         }
     }
 
+    ship.tryToLdMdByItemIdx = (idx)=>
+    {
+        if(ship.room[idx]==undefined) return;
+        if(ship.room[idx].id<0) return;
+        let mdId = ship.room[idx].id;
+        if(itemData[mdId].type!=2) return;
+
+        if(ship.loadMd(mdId)==1)
+        {
+            ship.delItemAtIdx(idx,1);
+        }
+    }
+
     ship.loadWp = (WpId)=>
     {
         let WpIdx = -1;
-        for(let i=0; i<ship.weapon.length;i++)
+        for(let i=0; i<ship.wp.length;i++)
         {
-            if(ship.weapon[i].id==-1)
+            if(ship.wp[i].id==-1)
             {
                 WpIdx = i;
                 break;
             }
         }
         if(WpIdx==-1) return 0;
-        ship.weapon[WpIdx].id = WpId;
-        ship.weapon[WpIdx].name = itemData[WpId].name;
-        ship.weapon[WpIdx].check();
+        ship.wp[WpIdx].id = WpId;
+        ship.wp[WpIdx].name = itemData[WpId].name;
+        ship.wp[WpIdx].check();
+        return 1;
+    }
+
+    ship.loadMd = (MdId)=>
+    {
+        let Idx = -1;
+        for(let i=0; i<ship.md.length;i++)
+        {
+            if(ship.md[i].id==-1)
+            {
+                Idx = i;
+                break;
+            }
+        }
+        if(Idx==-1) return 0;
+        ship.md[Idx].id = MdId;
+        ship.md[Idx].name = itemData[MdId].name;
+        if(itemData[MdId].subType==5001)
+        {
+            ship.check();
+        }
         return 1;
     }
 
@@ -187,57 +257,15 @@ function createShip(data,cap)
         }
     }
 
-    //初始化武器
-    for(let i=0; i<ship.weapon.length;i++)
-    {
-        ship.weapon[i] = {
-            posName:"武器"+(i+1),
-            idx:i+1,
-            id:-1,
-            name:"空",
-            staff:-1,
-            aimAdd:0,
-        };
-        ship.weapon[i].aim=()=>
-        {
-            let self = ship.weapon[i];
-            let id = self.id;
-            if(id==-1) return 0;
-            return self.aimAdd + itemData[id].aim;
-        }
-        ship.weapon[i].check=()=>
-        {
-            let self = ship.weapon[i];
-            let staffId = self.staff;
-            if(staffId==-1)
-            {
-                self.aimAdd=0;
-            }
-            else
-            {
-                self.aimAdd = STAFF_ADD_TO_AIM;
-            }
-        }
-    }
-
-    for(let i=0; i<ship.module.length;i++)
-    {
-        ship.module[i] = {
-            idx:i+1,
-            id:-1,
-            name:"空",
-        };
-    }
-
     ship.fightInit = ()=>
     {
         let wpId = 0;
-        for(let i=0; i<ship.weapon.length;i++)
+        for(let i=0; i<ship.wp.length;i++)
         {
-            wpId = ship.weapon[i].id;
+            wpId = ship.wp[i].id;
             if(wpId>=0)
             {
-                ship.weapon[i].ft = itemData[wpId].start;
+                ship.wp[i].ft = itemData[wpId].start;
             }
         }
     }
@@ -278,10 +306,9 @@ function createShip(data,cap)
     ship.atkEnmy = (t,enmy)=>
     {
         let dmg = 0;
-        let aim = 0;
         let tip = false;
         let ran;
-        for(let wp of ship.weapon)
+        for(let wp of ship.wp)
         {
             if(wp.id>=0&&t>=wp.ft)
             {
@@ -317,12 +344,12 @@ function createShip(data,cap)
     ship.loadWpByIdIdx = (id,idx)=>
     {
         var pos = idx-1;
-        if(ship.weapon[pos].id!=-1)
+        if(ship.wp[pos].id!=-1)
         {
             return;
         }
-        ship.weapon[pos].id = id;
-        ship.weapon[pos].name = itemData[id].name;
+        ship.wp[pos].id = id;
+        ship.wp[pos].name = itemData[id].name;
     }
 
     //派遣工作
@@ -331,13 +358,13 @@ function createShip(data,cap)
         if(staffIdx==-1) return;
         if(job=="wp")
         {
-            if(ship.weapon[jobIdx].staff!=-1) return;
-            ship.weapon[jobIdx].staff = staffIdx;
+            if(ship.wp[jobIdx].staff!=-1) return;
+            ship.wp[jobIdx].staff = staffIdx;
             ship.cap.validStaff--;
             ship.cap.staff[staffIdx].jobType = 'wp';
             ship.cap.staff[staffIdx].jobIdx = jobIdx;
-            ship.weapon[jobIdx].check();
-            printMsg(printTimeC()+"你安排"+ship.cap.staff[staffIdx].name+"操作"+ship.weapon[jobIdx].posName);
+            ship.wp[jobIdx].check();
+            printMsg(printTimeC()+"你安排"+ship.cap.staff[staffIdx].name+"操作"+ship.wp[jobIdx].posName);
         }
     }
 
@@ -353,27 +380,84 @@ function createShip(data,cap)
         {
             ship.cap.staff[staffIdx].jobType = -1;
             ship.cap.staff[staffIdx].jobIdx = -1;
-            ship.weapon[jobIdx].staff = -1;
+            ship.wp[jobIdx].staff = -1;
             ship.cap.validStaff++;
-            ship.weapon[jobIdx].check();
+            ship.wp[jobIdx].check();
             printMsg(printTimeC()+"你取消了"+ship.cap.staff[staffIdx].name+"的指派");
         }
     }
 
-    ship.unLoadWpByIdx = (ship,idx)=>
+    ship.unload = (t,idx)=>
     {
         let pos = idx-1;
-        let id = ship.weapon[pos].id;
-        ship.weapon[pos].id = -1;
-        ship.weapon[pos].name = "空";
+        let id = ship[t][pos].id;
+        ship[t][pos].id = -1;
+        ship[t][pos].name = "空";
         ship.addItem(id,1);
+        if(t=='md')
+        {
+            if(itemData[id].subType==5001)
+            {
+                ship.check();
+            }
+        }
     }
 
     ship.changeName = (str)=>
     {
         this.name = str;
     }
+
+    initShipAry(ship);
+    ship.check();
+
     return ship;
+}
+
+function initShipAry(ship)
+{
+
+    //初始化武器
+    for(let i=0; i<ship.wp.length;i++)
+    {
+        ship.wp[i] = {
+            posName:"武器"+(i+1),
+            idx:i+1,
+            id:-1,
+            name:"空",
+            staff:-1,
+            aimAdd:0,
+        };
+        ship.wp[i].aim=()=>
+        {
+            let self = ship.wp[i];
+            let id = self.id;
+            if(id==-1) return 0;
+            return self.aimAdd + itemData[id].aim;
+        }
+        ship.wp[i].check=()=>
+        {
+            let self = ship.wp[i];
+            let staffId = self.staff;
+            if(staffId==-1)
+            {
+                self.aimAdd=0;
+            }
+            else
+            {
+                self.aimAdd = STAFF_ADD_TO_AIM;
+            }
+        }
+    }
+
+    for(let i=0; i<ship.md.length;i++)
+    {
+        ship.md[i] = {
+            idx:i+1,
+            id:-1,
+            name:"空",
+        };
+    }
 }
 
 function getItemIdx(ship,id)

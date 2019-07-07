@@ -27,31 +27,28 @@
 			<div><b class=item-cell>{{player.name}}</b></div>
 			<div class="ship-info">
 				<div class=item-cell>
-					<span @mouseenter="onmouseover('ship',$event,0)" @mouseleave="onmouseleave('ship',$event)"><b>{{playerShip.name}}</b>[ 结构:{{playerShip.structure}}/{{playerShip.maxStructure}} , 护盾:{{playerShip.shield}}/{{playerShip.maxShield}} ]</span>
+					<span @mouseenter="onmouseover('ship',$event,0)" @mouseleave="onmouseleave('ship',$event)">
+						<b>{{playerShip.name}}</b>[ 结构:{{playerShip.structure}}/{{playerShip.maxStrc}} , 护盾:{{playerShip.shield}}/{{playerShip.maxShld}} ]
+					</span>
 					<a v-if="shipInfo==false" class="fl-right" @click="switchMainShipInfo">▽展开</a>
 					<a v-if="shipInfo==true" class="fl-right" @click="switchMainShipInfo">△收起</a>
 				</div>
 			</div>
-			<div><a v-if="playerShip.maxStructure>playerShip.structure" @click="tryToFix">[维修]</a></div>
 			<div class="ship-info" v-if="shipInfo==true">
 				武器组
-				<ul>
-					<li v-for="wp in playerShip.weapon">
-						<div class=item-cell>
-							<span @mouseenter="onmouseover('wp',$event,wp.idx)" @mouseleave="onmouseleave('wp',$event)">武器{{wp.idx}}：{{wp.name}}
-								<span v-if="playerShip.weapon[wp.idx-1].staff!=-1">({{player.staff[playerShip.weapon[wp.idx-1].staff].name}})</span>
-							</span>
-							<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a>
-							<a v-if="playerShip.weapon[wp.idx-1].staff==-1&&player.validStaff>0" class="fl-right" @click="assign('wp',wp.idx-1)" title="安排一位宇航员来操作这个武器">[指派]</a>
-						</div>
-					</li>
-				</ul>
+				<div v-for="wp in playerShip.wp" class="item-cell">
+					<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('wp',$event,wp.idx)" @mouseleave="onmouseleave('wp',$event)">武器{{wp.idx}}：{{wp.name}}
+						<span v-if="playerShip.wp[wp.idx-1].staff!=-1">({{player.staff[playerShip.wp[wp.idx-1].staff].name}})</span>
+					</span>
+					<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a>
+					<a v-if="playerShip.wp[wp.idx-1].staff==-1&&player.validStaff>0" class="fl-right" @click="assign('wp',wp.idx-1)" title="安排一位宇航员来操作这个武器">[指派]</a>
+				</div>
 				模块
-				<ul>
-					<li v-for="md in playerShip.module">
-						<div class=item-cell>模块{{md.idx}}：{{md.name}}</div>
-					</li>
-				</ul>
+				<div v-for="md in playerShip.md" class=item-cell>
+					<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('md',$event,md.idx)" @mouseleave="onmouseleave('md',$event)">模块{{md.idx}}：{{md.name}}
+					</span>
+					<a v-if="md.id!=-1" class="fl-right" @click="unloadMd(md.idx)" title="卸载这个模块">[卸载]</a>
+				</div>
 			</div>
 			<br>
 			<br>
@@ -77,20 +74,26 @@
 			</div>
 			<div class="ship-info">
 				<div v-for="item in playerShip.room" v-if="item!=undefined&&item.id>=0">
-					<div class=item-cell>{{item.name}}({{item.num}})
-						<a v-if="itemData[item.id].type==1" class="fl-right" @click="tryToLoadWp(item.idx)">[装载]</a>
+					<div class=item-cell>
+						<span class="halfWidth fl-left" @mouseenter="onmouseover('item',$event,item.idx)" @mouseleave="onmouseleave('item',$event)">
+							{{item.name}}({{item.num}})
+						</span>
+						<a v-if="itemData[item.id].type==1" class="fl-right" @click="tryToLoadWp(item.idx)" title="安装这个武器">[装载]</a>
+						<a v-if="itemData[item.id].type==2" class="fl-right" @click="tryToLoadMd(item.idx)" title="安装这个模块">[装载]</a>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="mid cl">
 			<div>
-				冒险
+				<a v-for="(v,index) in midModule" :class="minNavClass(index)" @click="minNavClick(index)">{{v.name}}</a>
 			</div>
 			<div class="box">
-				<button @click="fight">战斗</button>
-				<button @click="testAddStaff">添加船员</button>
-				<button @click="testAddHour">增加时间</button>
+				<div v-if="midModuleCur=='test'">
+					<button @click="fight">战斗</button>
+					<button @click="testAddStaff">添加船员</button>
+					<button @click="testAddHour">增加时间</button>
+				</div>
 			</div>
 		</div>
 		<div class="right cl">
@@ -145,16 +148,16 @@
 			</div>
 		</div>
 		<div class="shipTip" id="wpTip" v-show="wpTip">
-			<div class="leftVoid bottomLine bottomad topPad" v-if="wpTipIdx>=0&&playerShip.weapon[wpTipIdx-1].id>=0">
-				<div ><b>{{playerShip.weapon[wpTipIdx-1].name}}</b></div>
-				<div v-if="playerShip.weapon[wpTipIdx-1].staff==-1">操作员：无<br><i>（该武器处于自动状态）</i></div>
-				<span v-if="playerShip.weapon[wpTipIdx-1].staff!=-1">操作员：{{player.staff[playerShip.weapon[wpTipIdx-1].staff].name}}</span>
+			<div class="leftVoid bottomLine bottomad topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx-1].id>=0">
+				<div ><b>{{playerShip.wp[wpTipIdx-1].name}}</b></div>
+				<div v-if="playerShip.wp[wpTipIdx-1].staff==-1">操作员：无<br><i>（该武器处于自动状态）</i></div>
+				<span v-if="playerShip.wp[wpTipIdx-1].staff!=-1">操作员：{{player.staff[playerShip.wp[wpTipIdx-1].staff].name}}</span>
 			</div>
-			<div class="leftVoid bottomLine topPad" v-if="wpTipIdx>=0&&playerShip.weapon[wpTipIdx-1].id==-1">
+			<div class="leftVoid bottomLine topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx-1].id==-1">
 				<div >目前没有装载武器</div>
-				<div v-if="playerShip.weapon[wpTipIdx-1].staff==-1">操作员：无<br></div>
+				<div v-if="playerShip.wp[wpTipIdx-1].staff==-1">操作员：无<br></div>
 			</div>
-			<div class="leftVoid" v-if="wpTipIdx>=1&&playerShip.weapon[wpTipIdx-1].id>=0">
+			<div class="leftVoid" v-if="wpTipIdx>=1&&playerShip.wp[wpTipIdx-1].id>=0">
 				伤害：{{wpTipDmg}}
 				<br>
 				速度：{{parseFloat((wpTipSpeed/1000).toFixed(2))}}秒
@@ -162,6 +165,27 @@
 				初次装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒
 				<br>
 				命中率：<span :class="wpBetter('aim',wpTipIdx)?'green':'black'">{{wpAim}} </span>%
+			</div>
+		</div>
+		<div class="shipTip" id="mdTip" v-show="mdTip">
+			<div class="leftVoid bottomLine bottomad topPad" v-if="mdTipIdx>=1&&playerShip.md[mdTipIdx-1].id>=0">
+				<div ><b>{{playerShip.md[mdTipIdx-1].name}}</b></div>
+				<i>{{itemDesc(playerShip.md[mdTipIdx-1].id)}}</i>
+			</div>
+			<div class="leftVoid bottomLine topPad" v-if="mdTipIdx>=0&&playerShip.md[mdTipIdx-1].id==-1">
+				<div >这个位置没有安装模块</div>
+			</div>
+			<div class="leftVoid" v-if="mdTipIdx>=1&&playerShip.md[mdTipIdx-1].id>=0">
+				其它描述
+			</div>
+		</div>
+		<div class="shipTip" id="itemTip" v-show="itemTip">
+			<div class="leftVoid bottomLine bottomad topPad" v-if="itemTipIdx>=0&&playerShip.room[itemTipIdx]!=undefined&&playerShip.room[itemTipIdx].id!=-1">
+				<div ><b>{{itemData[playerShip.room[itemTipIdx].id].name}}</b></div>
+				<i>{{itemDesc(playerShip.room[itemTipIdx].id)}}</i>
+			</div>
+			<div class="leftVoid" v-if="itemTipIdx>=0&&playerShip.room[itemTipIdx]!=undefined&&playerShip.room[itemTipIdx].id!=-1">
+				类型：{{itemType(playerShip.room[itemTipIdx].id)}}
 			</div>
 		</div>
 	</div>

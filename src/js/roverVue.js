@@ -7,10 +7,19 @@ var app = new Vue({
         staffInfo:true,
         shipTip:false,
         wpTip:false,
+        mdTip:false,
+        itemTip:false,
         modal:false,
         staffTip:false,
         assignDiv:false,
+        midModuleCur:'test',
+        midModule:{
+            adv:{name:"冒险",open:true},
+            test:{name:"测试",open:true},
+        },
         wpTipIdx:-1,
+        mdTipIdx:-1,
+        itemTipIdx:-1,
         staffTipIdx:-1,
         wpAssignIdx:-1,
         currentJobType:"",
@@ -38,19 +47,19 @@ var app = new Vue({
         },
         wpAim()
         {
-            return this.playerShip.weapon[this.wpTipIdx-1].aim();
+            return this.playerShip.wp[this.wpTipIdx-1].aim();
         }
     },
     methods: {
         getTipWpId(){
-            return this.playerShip.weapon[this.wpTipIdx-1].id;
+            return this.playerShip.wp[this.wpTipIdx-1].id;
         },
         switchMainShipInfo(){
             this.shipInfo = !this.shipInfo;
         },
         unloadWp(pos)
         {
-            this.playerShip.unLoadWpByIdx(playerData.ship,pos);
+            this.playerShip.unload('wp',pos);
         },
         clickRightMenu(sel)
         {
@@ -59,6 +68,14 @@ var app = new Vue({
         tryToLoadWp(idx)
         {
             this.playerShip.tryToLdWpByItemIdx(idx);
+        },
+        tryToLoadMd(idx)
+        {
+            this.playerShip.tryToLdMdByItemIdx(idx);
+        },
+        unloadMd(pos)
+        {
+            this.playerShip.unload('md',pos);
         },
         switchStaffInfo()
         {
@@ -99,10 +116,10 @@ var app = new Vue({
         },
         wpBetter(attr,idx)
         {
-            let id = this.playerShip.weapon[idx-1].id;
+            let id = this.playerShip.wp[idx-1].id;
             if(attr=='aim')
             {
-                return (this.playerShip.weapon[idx-1].aim()>itemData[id].aim)?true:false;
+                return (this.playerShip.wp[idx-1].aim()>itemData[id].aim)?true:false;
             }
         },
         timeS()
@@ -130,9 +147,23 @@ var app = new Vue({
             else if(str=="wp")
             {
                 this.wpTipIdx = idx;
-                left = rect.left+10;
+                left = rect.left+50;
                 this.wpTip=true;
                 $("#wpTip").css({'left':left+"px",'top':top+"px"});
+            }
+            else if(str=="md")
+            {
+                this.mdTipIdx = idx;
+                left = rect.left+50;
+                this.mdTip=true;
+                $("#mdTip").css({'left':left+"px",'top':top+"px"});
+            }
+            else if(str=="item")
+            {
+                this.itemTip=true;
+                this.itemTipIdx = idx;
+                left = rect.left+10;
+                $("#itemTip").css({'left':left+"px",'top':top+"px"});
             }
             else if(str=="staff")
             {
@@ -151,6 +182,17 @@ var app = new Vue({
         {
             addHour();
         },
+        minNavClass(key)
+        {
+            if(key==this.midModuleCur)
+            {
+                return "underline";
+            }
+        },
+        minNavClick(index)
+        {
+            this.midModuleCur = index;
+        },
         jobDesc(idx)
         {
             let jobType = this.player.staff[idx].jobType;
@@ -158,24 +200,12 @@ var app = new Vue({
 
             if(jobType=='wp')
             {
-                return "操作"+playerData.ship.weapon[jobIdx].posName;
+                return "操作"+playerData.ship.wp[jobIdx].posName;
             }
         },
         onmouseleave(str,$event)
         {
-            //printMsg("mouseLeave");
-            if(str=="ship")
-            {
-                this.shipTip=false;
-            }
-            else if(str=="wp")
-            {
-                this.wpTip=false;
-            }
-            else if(str=="staff")
-            {
-                this.staffTip=false;
-            }
+            this[str+"Tip"] = false;
         },
         fight(){
             //printMsg("aabb");
