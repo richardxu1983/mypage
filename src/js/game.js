@@ -5,8 +5,8 @@ function testFight()
         name:"海盗号",
         bMaxStrc:20,
         bMaxShld:20,
-        weaponNum:1,
-        moduleNum:0,
+        wpNum:1,
+        mdNum:0,
         roomSize:0,
         maxStaff:1,
     },-1);
@@ -26,8 +26,10 @@ function gameInit()
             name:"佛尔斯特号",
             bMaxStrc:100,
             bMaxShld:20,
-            weaponNum:2,
-            moduleNum:5,
+            wpNum:5,
+            wpOpen:2,
+            mdOpen:3,
+            mdNum:7,
             roomSize:50,
             maxStaff:10,
             shieldRec:20,
@@ -36,7 +38,7 @@ function gameInit()
         {
             type:1,
             name:"Jacky Chen",
-            money:100,
+            gold:100,
             side:1,
             stuffNum:MAX_STAFF,
         });
@@ -44,6 +46,7 @@ function gameInit()
     playerData.ship.addItem(1,100);
     playerData.ship.addItem(100,1);
     playerData.ship.addItem(101,1);
+    playerData.ship.addItem(0,3);
 }
 
 gameInit();

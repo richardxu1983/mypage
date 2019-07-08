@@ -182,6 +182,14 @@ var app = new Vue({
         {
             addHour();
         },
+        testAddwpOpen()
+        {
+            this.playerShip.OpenAdd('wp',1);
+        },
+        testAddmdOpen()
+        {
+            this.playerShip.OpenAdd('md',1);
+        },
         minNavClass(key)
         {
             if(key==this.midModuleCur)

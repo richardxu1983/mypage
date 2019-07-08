@@ -24,7 +24,9 @@
 	</div>
 	<div id="app" class="content">
 		<div class="left cl">
-			<div><b class=item-cell>{{player.name}}</b></div>
+			<div><b class=item-cell>舰长：{{player.name}}</b></div>
+			<div>星际币：{{player.gold}}</div>
+			<br>
 			<div class="ship-info">
 				<div class=item-cell>
 					<span @mouseenter="onmouseover('ship',$event,0)" @mouseleave="onmouseleave('ship',$event)">
@@ -35,16 +37,16 @@
 				</div>
 			</div>
 			<div class="ship-info" v-if="shipInfo==true">
-				武器组
-				<div v-for="wp in playerShip.wp" class="item-cell">
+				<span>武器</span>
+				<div v-for="wp in playerShip.wp" class="item-cell" v-if="wp.open==true">
 					<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('wp',$event,wp.idx)" @mouseleave="onmouseleave('wp',$event)">武器{{wp.idx}}：{{wp.name}}
 						<span v-if="playerShip.wp[wp.idx-1].staff!=-1">({{player.staff[playerShip.wp[wp.idx-1].staff].name}})</span>
 					</span>
-					<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)">[卸载]</a>
+					<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)" title="卸载这个武器">[卸载]</a>
 					<a v-if="playerShip.wp[wp.idx-1].staff==-1&&player.validStaff>0" class="fl-right" @click="assign('wp',wp.idx-1)" title="安排一位宇航员来操作这个武器">[指派]</a>
 				</div>
-				模块
-				<div v-for="md in playerShip.md" class=item-cell>
+				<span>模块</span>
+				<div v-for="md in playerShip.md" class=item-cell v-if="md.open==true">
 					<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('md',$event,md.idx)" @mouseleave="onmouseleave('md',$event)">模块{{md.idx}}：{{md.name}}
 					</span>
 					<a v-if="md.id!=-1" class="fl-right" @click="unloadMd(md.idx)" title="卸载这个模块">[卸载]</a>
@@ -93,6 +95,8 @@
 					<button @click="fight">战斗</button>
 					<button @click="testAddStaff">添加船员</button>
 					<button @click="testAddHour">增加时间</button>
+					<button @click="testAddwpOpen">增加武器位置</button>
+					<button @click="testAddmdOpen">增加模块位置</button>
 				</div>
 			</div>
 		</div>
@@ -142,8 +146,8 @@
 		<div class="shipTip" id="shipTip" v-show="shipTip">
 			<div class="line bottomLine leftVoid"><b>{{playerShip.name}}</b></div>
 			<div class="leftVoid">
-				<div>武器位：2</div>
-				<div>模块位：10个</div>
+				<div>武器位：{{playerShip.wpNum}}个（已开启：{{playerShip.wpOpen}}个）</div>
+				<div>模块：{{playerShip.mdNum}}个（已开启：{{playerShip.mdOpen}}个）</div>
 				<div>护盾回冲：20/天</div>
 			</div>
 		</div>
@@ -162,7 +166,7 @@
 				<br>
 				速度：{{parseFloat((wpTipSpeed/1000).toFixed(2))}}秒
 				<br>
-				初次装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒
+				装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒
 				<br>
 				命中率：<span :class="wpBetter('aim',wpTipIdx)?'green':'black'">{{wpAim}} </span>%
 			</div>

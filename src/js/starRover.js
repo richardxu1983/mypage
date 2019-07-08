@@ -17,8 +17,10 @@ function createShip(data,cap)
     ship.shieldRec = data.shieldRec||0;
     ship.bMaxShld = data.bMaxShld;
     ship.maxShld = 0;
-    ship.weaponNum = data.weaponNum;
-    ship.moduleNum = data.moduleNum;
+    ship.wpNum = data.wpNum;
+    ship.wpOpen = data.wpOpen||2;
+    ship.mdOpen = data.mdOpen||2;
+    ship.mdNum = data.mdNum;
     ship.roomSize = data.roomSize;
     ship.add = {
         shldAdd:0,
@@ -28,8 +30,8 @@ function createShip(data,cap)
     };
     ship.maxElc = data.maxElc;  //最大电量
     ship.roomOccupy = 0;
-    ship.md = new Array(ship.moduleNum);
-    ship.wp = new Array(ship.weaponNum);
+    ship.md = new Array(ship.mdNum);
+    ship.wp = new Array(ship.wpNum);
     ship.room = new Array(ship.roomSize);
 
     ship.check = ()=>
@@ -57,6 +59,23 @@ function createShip(data,cap)
         }
         ship.maxShld = Math.floor((ship.bMaxShld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
         ship.maxStrc = Math.floor((ship.bMaxStrc + ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
+    }
+
+    ship.OpenAdd = (str,n)=>
+    {
+        if(ship[str+"Open"]+n>ship[str+"Num"])
+        {
+            printMsg("您的飞船已经无法再增加这个位置了");
+            return;
+        }
+        ship[str+"Open"]+=n;
+        for(let i=0; i<ship[str].length;i++)
+        {
+            if(i<ship[str+"Open"])
+            {
+                ship[str][i].open = true;
+            }
+        }
     }
 
     ship.addItem = (id,num)=>{
@@ -187,7 +206,7 @@ function createShip(data,cap)
         let WpIdx = -1;
         for(let i=0; i<ship.wp.length;i++)
         {
-            if(ship.wp[i].id==-1)
+            if(ship.wp[i].open==true&&ship.wp[i].id==-1)
             {
                 WpIdx = i;
                 break;
@@ -205,7 +224,7 @@ function createShip(data,cap)
         let Idx = -1;
         for(let i=0; i<ship.md.length;i++)
         {
-            if(ship.md[i].id==-1)
+            if(ship.md[i].open==true&&ship.md[i].id==-1)
             {
                 Idx = i;
                 break;
@@ -427,7 +446,12 @@ function initShipAry(ship)
             name:"空",
             staff:-1,
             aimAdd:0,
+            open:false,
         };
+        if(i<ship.wpOpen)
+        {
+            ship.wp[i].open = true;
+        }
         ship.wp[i].aim=()=>
         {
             let self = ship.wp[i];
@@ -456,7 +480,12 @@ function initShipAry(ship)
             idx:i+1,
             id:-1,
             name:"空",
+            open:false,
         };
+        if(i<ship.mdOpen)
+        {
+            ship.md[i].open=true;
+        }
     }
 }
 
