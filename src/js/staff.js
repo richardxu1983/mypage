@@ -120,6 +120,7 @@ function initStaff(cap,num)
         cap.staff[i].jobIdx = -1;
         cap.staff[i].gender = -1;
         cap.staff[i].age = -1;
+        cap.staff[i].salary = 20;
         cap.staff[i].owner = cap;
     }
 }
@@ -132,7 +133,7 @@ function addStaff(cap,data)
     let idx = -1;
     for(let i=0;i<cap.maxStaff;i++)
     {
-        if(cap.staff[i].type==-1)
+        if(cap.staff[i].species==-1)
         {
             idx = i;
             break;
@@ -149,4 +150,30 @@ function addStaff(cap,data)
     cap.staff[idx].species = data.species;
     cap.staff[idx].age = data.age;
     printMsg(printTimeC()+data.name+"加入了你的舰队");
+}
+
+//计算工资
+function checkSalary(cap)
+{
+    let gold;
+    let salary;
+
+    for(let i=0;i<cap.maxStaff;i++)
+    {
+        if(cap.staff[i].species!=-1)
+        {
+            salary = cap.staff[i].salary;
+            gold = cap.gold;
+            if(gold>=salary)
+            {
+                cap.addGold(-1*salary);
+                printMsg(printTimeC()+"你支付了"+cap.staff[i].name+"薪水"+salary+"星际币");
+            }
+            else
+            {
+                printMsg(printTimeC()+"你无法支付"+cap.staff[i].name+"的薪水");
+                printMsg(printTimeC()+cap.staff[i].name+"离开了你的舰队");
+            }
+        }
+    }    
 }

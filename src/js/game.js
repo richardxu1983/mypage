@@ -15,7 +15,7 @@ function testFight()
 
     playerShipFightWith(test);
 
-    addHour();
+    addHour(2);
 }
 
 function gameInit()

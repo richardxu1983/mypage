@@ -26,8 +26,7 @@ var app = new Vue({
         rightSel:1,
         msg:infoMsg,
         ftMsg:fightMsg,
-        dayTime:day,
-        hr:hour,
+        t:time,
     },
     updated:function(){
         this.scrollToBottom();
@@ -48,7 +47,11 @@ var app = new Vue({
         wpAim()
         {
             return this.playerShip.wp[this.wpTipIdx-1].aim();
-        }
+        },
+        timeS()
+        {
+            return timeStr();
+        },
     },
     methods: {
         getTipWpId(){
@@ -122,10 +125,6 @@ var app = new Vue({
                 return (this.playerShip.wp[idx-1].aim()>itemData[id].aim)?true:false;
             }
         },
-        timeS()
-        {
-            return timeStr();
-        },
         scrollToBottom(){
             this.$nextTick(() => {
                var container = document.getElementById("info");
@@ -180,7 +179,7 @@ var app = new Vue({
         },
         testAddHour()
         {
-            addHour();
+            addHour(5);
         },
         testAddwpOpen()
         {

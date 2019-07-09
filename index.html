@@ -101,7 +101,7 @@
 			</div>
 		</div>
 		<div class="right cl">
-			<div>{{timeS()}}</div>
+			<div>{{timeS}}</div>
 			<a :class="{underline:rightSel==1}" @click="clickRightMenu(1)">船长日志</a>|<a :class="{underline:rightSel==2}" @click="clickRightMenu(2)">查看战斗记录</a>
 			<br><br>
 			<hr>
@@ -141,6 +141,7 @@
 						{{player.staff[staffTipIdx].age}}岁
 					</span>
 				</div>
+				<div>周薪：{{player.staff[staffTipIdx].salary}}星际币</div>
 			</div>
 		</div>
 		<div class="shipTip" id="shipTip" v-show="shipTip">
