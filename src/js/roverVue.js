@@ -208,7 +208,7 @@ var app = new Vue({
 
             if(jobType=='wp')
             {
-                return "操作"+playerData.ship.wp[jobIdx].posName;
+                return "操作"+playerData.ship.wp[jobIdx].posName+"："+playerData.ship.wp[jobIdx].name;
             }
         },
         onmouseleave(str,$event)

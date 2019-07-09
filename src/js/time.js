@@ -1,12 +1,15 @@
 
 var day = 1;
 var hour = 0;
+var week = 1;
+const MAX_DAY = 5;
 var hourStr = ["早晨","上午","下午","晚上","半夜"];
+var MAX_HOUR = hourStr.length;
 var lastTime = "";
 
 function timeStr()
 {
-    return "第"+day+"天"+hourStr[hour];
+    return "第"+week+"周，第"+day+"天"+hourStr[hour];
 }
 
 function printTime()
@@ -42,10 +45,15 @@ function addHour()
 {
     var step=2;
     hour+=step;
-    if(hour>=5)
+    if(hour>=MAX_HOUR)
     {
-        hour-=5;
+        hour-=MAX_HOUR;
         day++;
         playerData.ship.recShield();
+        if(day>MAX_DAY)
+        {
+            week++;
+            day = 1;
+        }
     }
 }
