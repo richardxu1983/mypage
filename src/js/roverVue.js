@@ -100,7 +100,10 @@ var app = new Vue({
         },
         deAssign(staffIdx)
         {
-            this.playerShip.deAssign(staffIdx);
+            if(deAssign(this.player,staffIdx)==0)
+            {
+                printMsg(printTimeC()+"你取消了"+ship.cap.staff[staffIdx].name+"的指派");
+            }
         },
         closeAssign()
         {
@@ -113,7 +116,10 @@ var app = new Vue({
             {
                 let wpIdx = this.wpAssignIdx;
                 if(wpIdx==-1) return;
-                this.playerShip.assign(this.currentJobType,wpIdx,staffIdx);
+                if(AssignJob(this.player,'wp',wpIdx,staffIdx)==0)
+                {
+                    printMsg(printTimeC()+"你安排"+this.player.staff[staffIdx].name+"操作"+this.playerShip.wp[wpIdx].name);
+                }
             }
             this.closeAssign();
         },
@@ -179,7 +185,7 @@ var app = new Vue({
         },
         testAddHour()
         {
-            addHour(5);
+            addHour(MAX_HOUR);
         },
         testAddwpOpen()
         {

@@ -6,40 +6,30 @@ var time = {
     week:1,
 }
 const MAX_DAY = 5;
-var hourStr = ["早晨","上午","下午","晚上","半夜"];
-var MAX_HOUR = hourStr.length;
+var MAX_HOUR = 10;
 var lastTime = "";
 
 function timeStr()
 {
-    return "第"+time.week+"周，第"+time.day+"天"+hourStr[time.hour];
+    return "第"+time.week+"周，第"+time.day+"天"+time.hour+"时";
 }
 
-function printTime()
+function timeStrDay()
 {
-    let timeStr = "第"+time.week+"周，第"+time.day+"天"+hourStr[time.hour];
-    if(timeStr!=lastTime)
-    {
-        lastTime = timeStr;
-        return timeStr;
-    }
-    else
-    {
-        return "";
-    }
+    return "第"+time.week+"周，第"+time.day+"天";
 }
 
 function printTimeC()
 {
-    let timeStr = "第"+time.week+"周，第"+time.day+"天"+hourStr[time.hour];
-    if(timeStr!=lastTime)
+    let ts = timeStrDay();
+    if(ts!=lastTime)
     {
         if(lastTime!="")
         {
             printMsg("");
         }
-        lastTime = timeStr;
-        printMsg(timeStr);
+        lastTime = ts;
+        printMsg(ts);
     }
     return "";
 }

@@ -371,41 +371,6 @@ function createShip(data,cap)
         ship.wp[pos].name = itemData[id].name;
     }
 
-    //派遣工作
-    ship.assign = (job,jobIdx,staffIdx)=>
-    {
-        if(staffIdx==-1) return;
-        if(job=="wp")
-        {
-            if(ship.wp[jobIdx].staff!=-1) return;
-            ship.wp[jobIdx].staff = staffIdx;
-            ship.cap.validStaff--;
-            ship.cap.staff[staffIdx].jobType = 'wp';
-            ship.cap.staff[staffIdx].jobIdx = jobIdx;
-            ship.wp[jobIdx].check();
-            printMsg(printTimeC()+"你安排"+ship.cap.staff[staffIdx].name+"操作"+ship.wp[jobIdx].posName);
-        }
-    }
-
-    //调回工作
-    ship.deAssign = (staffIdx)=>
-    {
-        if(staffIdx==-1) return;
-        let job = ship.cap.staff[staffIdx].jobType;
-        if(job==-1) return;
-        let jobIdx = ship.cap.staff[staffIdx].jobIdx;
-    
-        if(job=='wp')
-        {
-            ship.cap.staff[staffIdx].jobType = -1;
-            ship.cap.staff[staffIdx].jobIdx = -1;
-            ship.wp[jobIdx].staff = -1;
-            ship.cap.validStaff++;
-            ship.wp[jobIdx].check();
-            printMsg(printTimeC()+"你取消了"+ship.cap.staff[staffIdx].name+"的指派");
-        }
-    }
-
     ship.unload = (t,idx)=>
     {
         let pos = idx-1;

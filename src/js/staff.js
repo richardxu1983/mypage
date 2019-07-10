@@ -110,19 +110,24 @@ function initStaff(cap,num)
     {
         cap.staff[i] = {};
         cap.staff[i].idx = i;
-        cap.staff[i].id = -1;
-        cap.staff[i].name = "";
-        cap.staff[i].career = -1;
-        cap.staff[i].type = -1;
-        cap.staff[i].species = -1;
-        cap.staff[i].potential = -1;
-        cap.staff[i].jobType = -1;
-        cap.staff[i].jobIdx = -1;
-        cap.staff[i].gender = -1;
-        cap.staff[i].age = -1;
-        cap.staff[i].salary = 20;
+        StaffInit(cap,i);
         cap.staff[i].owner = cap;
     }
+}
+
+function StaffInit(cap,idx)
+{
+    cap.staff[idx].id = -1;
+    cap.staff[idx].name = "";
+    cap.staff[idx].career = -1;
+    cap.staff[idx].type = -1;
+    cap.staff[idx].species = -1;
+    cap.staff[idx].potential = -1;
+    cap.staff[idx].jobType = -1;
+    cap.staff[idx].jobIdx = -1;
+    cap.staff[idx].gender = -1;
+    cap.staff[idx].age = -1;
+    cap.staff[idx].salary = 100;
 }
 
 //添加船员
@@ -152,6 +157,51 @@ function addStaff(cap,data)
     printMsg(printTimeC()+data.name+"加入了你的舰队");
 }
 
+function AssignJob(cap,job,jobIdx,staffIdx)
+{
+    let ship = cap.ship;
+    if(staffIdx==-1) return -1;
+    if(job=="wp")
+    {
+        if(ship.wp[jobIdx].staff!=-1) return -1;
+        ship.wp[jobIdx].staff = staffIdx;
+        ship.wp[jobIdx].check();
+    }
+    cap.validStaff--;
+    cap.staff[staffIdx].jobType = job;
+    cap.staff[staffIdx].jobIdx = jobIdx;
+    return 0;
+}
+
+function deAssign(cap,staffIdx)
+{
+    let ship = cap.ship;
+    if(staffIdx==-1) return -1;
+    let job = cap.staff[staffIdx].jobType;
+    if(job==-1) return -1;
+    let jobIdx = cap.staff[staffIdx].jobIdx;
+    if(job=='wp')
+    {
+        ship.wp[jobIdx].staff = -1;
+        ship.wp[jobIdx].check();
+    }
+    cap.staff[staffIdx].jobType = -1;
+    cap.staff[staffIdx].jobIdx = -1;
+    cap.validStaff++;
+    return 0;
+}
+
+function staffLeave(cap,idx)
+{
+    if(cap.staff[idx].species==-1) return;
+    let n = cap.staff[idx].name;
+    deAssign(cap,idx);
+    StaffInit(cap,idx);
+    cap.staffNum--;
+    cap.validStaff--;
+    printMsg(printTimeC()+n+"离开了你的舰队");
+}
+
 //计算工资
 function checkSalary(cap)
 {
@@ -172,7 +222,7 @@ function checkSalary(cap)
             else
             {
                 printMsg(printTimeC()+"你无法支付"+cap.staff[i].name+"的薪水");
-                printMsg(printTimeC()+cap.staff[i].name+"离开了你的舰队");
+                staffLeave(cap,i)
             }
         }
     }    
