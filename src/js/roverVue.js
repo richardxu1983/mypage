@@ -57,6 +57,10 @@ var app = new Vue({
         getTipWpId(){
             return this.playerShip.wp[this.wpTipIdx-1].id;
         },
+        testAddLv()
+        {
+            this.playerShip.lvlUp();
+        },
         switchMainShipInfo(){
             this.shipInfo = !this.shipInfo;
         },
@@ -180,7 +184,7 @@ var app = new Vue({
         },
         testAddStaff()
         {
-            let p = createPerson();
+            let p = RanPerson();
             addStaff(this.player,p);
         },
         testAddHour()

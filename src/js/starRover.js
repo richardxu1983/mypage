@@ -9,7 +9,7 @@ function createShip(data,cap)
     var ship = new Object;
     ship.name = data.name;
     ship.cap = cap;
-    ship.side = cap!=-1?cap.side:999;
+    ship.side = cap.side;
     ship.structure = data.bMaxStrc;
     ship.bMaxStrc = data.bMaxStrc
     ship.maxStrc = 0;
@@ -21,6 +21,15 @@ function createShip(data,cap)
     ship.wpOpen = data.wpOpen||2;
     ship.mdOpen = data.mdOpen||2;
     ship.mdNum = data.mdNum;
+    ship.cost = -1;
+    ship.lvl = data.lvl;
+    ship.initCost = data.initCost;
+    ship.maxLvl = data.maxLvl;
+    ship.lvlup = {
+        cost:5,
+        shld:10,
+        strc:10,
+    };
     ship.roomSize = data.roomSize;
     ship.add = {
         shldAdd:0,
@@ -33,6 +42,33 @@ function createShip(data,cap)
     ship.md = new Array(ship.mdNum);
     ship.wp = new Array(ship.wpNum);
     ship.room = new Array(ship.roomSize);
+
+    ship.lvlUp = ()=>
+    {
+        if(ship.lvl>=ship.maxLvl) return;
+        ship.lvl++;
+        ship.check();
+    }
+
+    ship.curCost = ()=>
+    {
+        let c = 0;
+        for(wp of ship.wp)
+        {
+            if(wp.open==true&&wp.id!=-1)
+            {
+                c+=itemData[wp.id].cost;
+            }
+        }
+        for(md of ship.md)
+        {
+            if(md.open==true&&md.id!=-1)
+            {
+                c+=itemData[md.id].cost;
+            }
+        }
+        return c;
+    }
 
     ship.check = ()=>
     {
@@ -57,8 +93,9 @@ function createShip(data,cap)
                 }
             }
         }
-        ship.maxShld = Math.floor((ship.bMaxShld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
-        ship.maxStrc = Math.floor((ship.bMaxStrc + ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
+        ship.cost = ship.initCost + (ship.lvl-1)*ship.lvlup.cost;
+        ship.maxShld = Math.floor((ship.bMaxShld + (ship.lvl-1)*ship.lvlup.shld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
+        ship.maxStrc = Math.floor((ship.bMaxStrc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
     }
 
     ship.OpenAdd = (str,n)=>
@@ -213,6 +250,11 @@ function createShip(data,cap)
             }
         }
         if(WpIdx==-1) return 0;
+        if(checkCost(ship,WpId)==-1)
+        {
+            printMsg("电力不足：无法装配"+itemData[WpId].name);
+            return;
+        }
         ship.wp[WpIdx].id = WpId;
         ship.wp[WpIdx].name = itemData[WpId].name;
         ship.wp[WpIdx].check();
@@ -231,6 +273,11 @@ function createShip(data,cap)
             }
         }
         if(Idx==-1) return 0;
+        if(checkCost(ship,MdId)==-1)
+        {
+            printMsg("电力不足：无法装配"+itemData[MdId].name);
+            return;
+        }
         ship.md[Idx].id = MdId;
         ship.md[Idx].name = itemData[MdId].name;
         if(itemData[MdId].subType==5001)
@@ -334,7 +381,6 @@ function createShip(data,cap)
                 wp.ft = t + itemData[wp.id].speed;
                 if(!tip)
                 {
-                    addFightMsg("--------------------------");
                     addFightMsg(ship.brcName()+"发动攻击");
                     tip = true;
                 }
@@ -475,11 +521,7 @@ function playerShipFightWith(enmy)
         return;
     }
 
-    printMsg(printTimeC()+"你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
-    addFightMsg("");
-    addFightMsg(timeStr()+"，你的"+playerData.ship.brcName()+"与"+enmy.brcName()+"发生了战斗");
-    addFightMsg(playerData.ship.brcName()+"结构："+playerData.ship.structure+",护盾："+playerData.ship.shield);
-    addFightMsg(enmy.brcName()+"结构："+enmy.structure+",护盾："+enmy.shield);
+    printFtMsg01(playerData.ship,enmy);
 
     var t = 0; 
     let dmg = 0;
@@ -503,4 +545,64 @@ function playerShipFightWith(enmy)
         t += 200;//每次步进200毫秒
     }
     addFightMsg("");
+}
+
+function printFtMsg01(plyShip,enmy)
+{
+    printMsg(printTimeC()+"你的"+plyShip.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    addFightMsg("");
+    addFightMsg(timeStr()+"，你的"+plyShip.brcName()+"与"+enmy.brcName()+"发生了战斗");
+    addFightMsg("-------------------------------");
+    printShip(plyShip);
+    printShip(enmy);
+    addFightMsg("-------------------------------");
+    //打印武器信息
+}
+
+function printShip(ship)
+{
+    let cap = ship.cap;
+    let staffName = "";
+    addFightMsg("<b>"+ship.colorName()+"</b>：[结构："+ship.structure+",护盾："+ship.shield+"]");
+    if(cap!=-1)
+    {
+        addFightMsg("&emsp;&emsp;舰长:"+cap.name);
+    }
+    else
+    {
+        addFightMsg("&emsp;&emsp;这艘飞船没有舰长，处于自动状态");
+    }
+
+    for(let i=0; i<ship.wp.length;i++)
+    {
+        staffName = "";
+        if(ship.wp[i].open==true&&ship.wp[i].id!=-1)
+        {
+            let staffIdx = ship.wp[i].staff;
+            if(staffIdx!=-1)
+            {
+                staffName = "（"+cap.staff[staffIdx].name+"）";
+            }
+            addFightMsg("&emsp;&emsp;"+ship.wp[i].posName+":"+ship.wp[i].name+staffName);
+        }
+    }
+
+    for(let i=0; i<ship.md.length;i++)
+    {
+        if(ship.md[i].open==true&&ship.md[i].id!=-1)
+        {
+            addFightMsg("&emsp;&emsp;模块"+ship.md[i].idx+":"+ship.md[i].name);
+        }
+    }
+}
+
+function checkCost(ship,itemId)
+{
+    let cLeft = ship.cost - ship.curCost();
+    console.log("itemId="+itemId);
+    if(cLeft<itemData[itemId].cost)
+    {
+        return -1;
+    }
+    return 0;
 }

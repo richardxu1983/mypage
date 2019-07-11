@@ -40,6 +40,7 @@ itemData[0] = {
     speed:1500, //武器速度1.5秒
     start:1250, //装填速度1秒
     aim:45,     //命中率65
+    cost:5,     //电力消耗5
 };
 
 itemData[1] = {
@@ -62,6 +63,7 @@ itemData[2] = {
     speed:2500, //武器速度1.5秒
     start:1000, //装填速度1秒
     aim:45,     //命中率65
+    cost:5,
 };
 
 itemData[100] = {
@@ -72,6 +74,7 @@ itemData[100] = {
     subType:1,  //子类型为1
     stack:25,
     data1:2,   //每2矿石维修1点结构
+    cost:5,
 };
 
 itemData[101] = {
@@ -84,6 +87,7 @@ itemData[101] = {
     shipAdd:{
         shldMulti:10,
     },
+    cost:5,
 };
 
 itemDesc = (id)=>

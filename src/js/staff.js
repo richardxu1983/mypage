@@ -68,22 +68,11 @@ function randomName()
     return name;
 }
 
-//创造一个人物
-function createPerson()
+//随机一个人物
+function RanPerson(data)
 {
     let p = {};
-    let name="";
-    let an = allName[Math.floor((Math.random()*allName.length))];
-    console.log(an);
-    for(let i=0;i<an;i++)
-    {
-        name += randomName();
-        if(an>(i+1))
-        {
-            name += " ";
-        }
-    }
-
+    let name=ranFullName();
     let species = Math.floor((Math.random()*SPECIES.length));
     let career = Math.floor((Math.random()*CAREER.length));
     p.gender = Math.floor((Math.random()*GENDER.length));
@@ -93,16 +82,29 @@ function createPerson()
     p.career = career;
     p.id = 1;
     p.type = 1;
+    p.side = data==undefined?999:data.side;
     return p;
 }
 
-//初始化船员数据
-function initStaff(cap,num)
+function ranFullName()
 {
-    cap.maxStaff = num;
-    cap.staffNum = 0;
-    cap.validStaff = 0;
+    let name="";
+    let an = allName[Math.floor((Math.random()*allName.length))];
+    for(let i=0;i<an;i++)
+    {
+        name += randomName();
+        if(an>(i+1))
+        {
+            name += " ";
+        }
+    }
+    return name;
+}
 
+//初始化船员数据
+function initStaff(cap)
+{
+    let num = cap.maxStaff;
     if(num<=0) return;
     cap.staff = new Array(num);   //可拥有的最大船员数
 
@@ -154,8 +156,26 @@ function addStaff(cap,data)
     cap.staff[idx].gender = data.gender;
     cap.staff[idx].species = data.species;
     cap.staff[idx].age = data.age;
-    printMsg(printTimeC()+data.name+"加入了你的舰队");
+    if(cap.side==0)
+    {
+        printMsg(printTimeC()+data.name+"加入了你的舰队");
+    }
 }
+
+function findValidStaff(cap)
+{
+    if(cap.validStaff<=0) return -1;
+    for(let i=0;i<cap.maxStaff;i++)
+    {
+        if(cap.staff[i].species!=-1&&cap.staff[i].jobIdx==-1)
+        {
+            return cap.staff[i].idx;
+        }
+    }
+    return -1;
+}
+    
+
 
 function AssignJob(cap,job,jobIdx,staffIdx)
 {
