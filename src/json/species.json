@@ -1,0 +1,22 @@
+{
+  "1": {
+    "id": "1",
+    "name": "人类",
+    "wp_pao": 10,
+    "wp_ms": null,
+    "wp_ls": null,
+    "shdBtRecPerAdd": null,
+    "strcPerAdd": 10,
+    "shdRecPerAdd": null
+  },
+  "2": {
+    "id": "2",
+    "name": "智械",
+    "wp_pao": null,
+    "wp_ms": 15,
+    "wp_ls": null,
+    "shdBtRecPerAdd": 20,
+    "strcPerAdd": null,
+    "shdRecPerAdd": null
+  }
+}

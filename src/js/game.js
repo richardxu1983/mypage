@@ -5,40 +5,7 @@ const TEST_MD = [100,101];
 function testFight()
 {
     let cap = ranCaptain({side:999});
-    let shipData = {
-        name:randomName()+"号",
-        bMaxStrc:10+Math.floor(Math.random()*50),
-        bMaxShld:10+Math.floor(Math.random()*50),
-        wpNum:5,
-        wpOpen:2,
-        mdOpen:3,
-        mdNum:7,
-        roomSize:50,
-        shieldRec:20,
-        initCost:50,
-        maxLvl:1,
-        lvl:1,
-    };
-
-    let wpOpen = 1 + Math.floor(Math.random()*3);
-    shipData.wp = new Array(wpOpen);
-    shipData.wpOpen = wpOpen;
-    for(let i=0;i<wpOpen;i++)
-    {
-        shipData.wp[i] = TEST_WP[Math.floor((Math.random()*TEST_WP.length))];
-    }
-
-    let mdOpen = 1 + Math.floor(Math.random()*3);
-
-    shipData.md = new Array(wpOpen);
-    shipData.mdOpen = mdOpen;
-    for(let i=0;i<mdOpen;i++)
-    {
-        shipData.md[i] = TEST_MD[Math.floor((Math.random()*TEST_MD.length))];
-    }
-
-    createShipForCap(cap,shipData);
-
+    createShipForCap(cap,2,[0,2],[]);
     let staff = Math.floor(Math.random()*3);
     if(staff>0)
     {
@@ -68,28 +35,13 @@ function createPlayer()
 {
     playerData = createCap({
         type:1,
-        name:"Jacky Chen",
+        name:ranFullName(),
         gold:100,
         side:0,
         maxStaff:MAX_STAFF,
     });
 
-    createShipForCap(playerData,{
-        name:"佛尔斯特号",
-        bMaxStrc:100,
-        bMaxShld:20,
-        wpNum:5,
-        wpOpen:2,
-        mdOpen:3,
-        mdNum:7,
-        roomSize:50,
-        shieldRec:20,
-        initCost:20,
-        maxLvl:10,
-        lvl:1,
-        wp:[0,2],
-    });
-
+    createShipForCap(playerData,1,[0,2],[]);
     playerData.ship.addItem(1,100);
     playerData.ship.addItem(100,1);
     playerData.ship.addItem(101,1);

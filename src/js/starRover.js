@@ -2,46 +2,48 @@
 var playerData = {};
 
 const STAFF_ADD_TO_AIM = 15;
+const BT_SHLD_RECT = 5000;   //战斗时护盾恢复的频率
 
 //side:0:玩家,999:野怪
-function createShip(data,cap)
+function createShip(cap,id)
 {
     var ship = new Object;
-    ship.name = data.name;
+    ship.id = id;
+    ship.name = SHIP_DATA[id].name;
     ship.cap = cap;
     ship.side = cap.side;
-    ship.structure = data.bMaxStrc;
-    ship.bMaxStrc = data.bMaxStrc
+    ship.strc = SHIP_DATA[id].strc;
     ship.maxStrc = 0;
-    ship.shield = data.bMaxShld;
-    ship.shieldRec = data.shieldRec||0;
-    ship.bMaxShld = data.bMaxShld;
-    ship.maxShld = 0;
-    ship.wpNum = data.wpNum;
-    ship.wpOpen = data.wpOpen||2;
-    ship.mdOpen = data.mdOpen||2;
-    ship.mdNum = data.mdNum;
-    ship.cost = -1;
-    ship.lvl = data.lvl;
-    ship.initCost = data.initCost;
-    ship.maxLvl = data.maxLvl;
-    ship.lvlup = {
-        cost:5,
-        shld:10,
-        strc:10,
+    ship.shd = SHIP_DATA[id].shd;
+    ship.shdRec = SHIP_DATA[id].shdRec;
+    ship.shdBtRec = SHIP_DATA[id].shdBtRec;
+    ship.bt = {
+        shdRecT : 0,
     };
-    ship.roomSize = data.roomSize;
+    ship.maxShld = 0;
+    ship.wpNum = SHIP_DATA[id].maxWpNum;
+    ship.wpOpen = SHIP_DATA[id].wpOpen;
+    ship.mdOpen = SHIP_DATA[id].mdOpen;
+    ship.mdNum = SHIP_DATA[id].maxMdNum;
+    ship.cost = -1;
+    ship.lvl = 1;
+    ship.maxLvl = SHIP_DATA[id].maxLv;
+    ship.lvlup = {
+        cost:SHIP_DATA[id].costLv,
+        shld:SHIP_DATA[id].shdLv,
+        strc:SHIP_DATA[id].strcLv,
+    };
+    ship.store = SHIP_DATA[id].store;
     ship.add = {
         shldAdd:0,
         shldMulti:0,
         strcAdd:0,
         strcMulti:0,
     };
-    ship.maxElc = data.maxElc;  //最大电量
     ship.roomOccupy = 0;
     ship.md = new Array(ship.mdNum);
     ship.wp = new Array(ship.wpNum);
-    ship.room = new Array(ship.roomSize);
+    ship.room = new Array(ship.store);
 
     ship.lvlUp = ()=>
     {
@@ -93,9 +95,9 @@ function createShip(data,cap)
                 }
             }
         }
-        ship.cost = ship.initCost + (ship.lvl-1)*ship.lvlup.cost;
-        ship.maxShld = Math.floor((ship.bMaxShld + (ship.lvl-1)*ship.lvlup.shld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
-        ship.maxStrc = Math.floor((ship.bMaxStrc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
+        ship.cost = SHIP_DATA[ship.id].cost + (ship.lvl-1)*ship.lvlup.cost;
+        ship.maxShld = Math.floor((SHIP_DATA[ship.id].shd + (ship.lvl-1)*ship.lvlup.shld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
+        ship.maxStrc = Math.floor((SHIP_DATA[ship.id].strc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
     }
 
     ship.OpenAdd = (str,n)=>
@@ -117,7 +119,7 @@ function createShip(data,cap)
 
     ship.addItem = (id,num)=>{
         //满了
-        if(ship.roomOccupy>=ship.roomSize) return;
+        if(ship.roomOccupy>=ship.store) return;
 
         let NumToAdd = num;
 
@@ -167,23 +169,40 @@ function createShip(data,cap)
                     NumToAdd = 0;
                 }
                 ship.roomOccupy++;
-                if(ship.roomOccupy>=ship.roomSize) return;
+                if(ship.roomOccupy>=ship.store) return;
             }
             if(NumToAdd==0) return;
         }
     }
+    ship.shdAdd = (n)=>
+    {
+        if(ship.shd>ship.maxShld) return;
+        ship.shd += n;
+        if(ship.shd>ship.maxShld) ship.shd = ship.maxShld;
+    }
+
 
     ship.recShield = ()=>
     {
-        if(ship.shield>ship.maxShld) return;
-        ship.shield += ship.shieldRec;
-        if(ship.shield>ship.maxShld) ship.shield = ship.maxShld;
+        ship.shdAdd(ship.shdRec);
+    }
+
+    ship.doBtShRec = (t)=>
+    {
+        if(ship.shd>=ship.maxShld) return;
+        if(t>=ship.bt.shdRecT)
+        {
+            let n = ship.shd;
+            ship.shdAdd(ship.shdBtRec);
+            ship.bt.shdRecT = t+BT_SHLD_RECT;
+            addFightMsg(ship.brcName()+"[<font color=green>回复</font>]了"+(ship.shd-n)+"点护盾")
+        }
     }
 
     ship.tryToFix = ()=>
     {
 
-        let stToFix = ship.maxStrc - ship.structure;
+        let stToFix = ship.maxStrc - ship.strc;
         if(stToFix==0) return;
         let fixMatIdx = getItemIdx(ship,1);
         if(fixMatIdx==-1)
@@ -207,7 +226,7 @@ function createShip(data,cap)
             ToUse = stToFix*2;
         }
         let fix = Math.floor(ToUse/2);
-        ship.structure += fix;
+        ship.strc += fix;
         ship.delItemAtIdx(fixMatIdx,ToUse);
         printMsg("你使用了"+ToUse+"的矿石修复了["+ship.colorName()+"]"+fix+"的结构");
     }
@@ -338,24 +357,24 @@ function createShip(data,cap)
 
     ship.takeDmg = (dmg)=>
     {
-        if(ship.shield>dmg)
+        if(ship.shd>dmg)
         {
-            ship.shield-=dmg;
-            addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+dmg +"</font>("+ship.shield+")");
+            ship.shd-=dmg;
+            addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+dmg +"</font>("+ship.shd+")");
         }
         else
         {
-            let s = ship.shield;
+            let s = ship.shd;
             if(s>0)
             {
-                ship.shield = 0;
-                addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+s +"</font>("+ship.shield+")");
+                ship.shd = 0;
+                addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+s +"</font>("+ship.shd+")");
             }
-            ship.structure -= (dmg - s);
-            addFightMsg(ship.brcName()+"的结构减少了<font color=#FF6600>"+(dmg - s)+"</font>("+ship.structure+")");
-            if(ship.structure<=0)
+            ship.strc -= (dmg - s);
+            addFightMsg(ship.brcName()+"的结构减少了<font color=#FF6600>"+(dmg - s)+"</font>("+ship.strc+")");
+            if(ship.strc<=0)
             {
-                ship.structure = 0;
+                ship.strc = 0;
                 if(ship.side==0)
                 {
                     printMsg("你的"+ship.brcName()+"被击毁了");
@@ -384,19 +403,19 @@ function createShip(data,cap)
                     addFightMsg(ship.brcName()+"发动攻击");
                     tip = true;
                 }
-                addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
+                addFightMsg(ship.brcName() + "的"+wp.posName+"["+wp.name  +"]对"+enmy.brcName()+"发动攻击");
 
                 ran = Math.random() * 100;
                 //addFightMsg("ran="+ran+",aim="+wp.aim());
                 if(ran > wp.aim())
                 {
-                    addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
+                    addFightMsg(ship.brcName() + "的" +wp.posName+"["+wp.name  +"]攻击<font color=#FF6600>未命中</color>");
                 }
                 else
                 {
                     dmg = itemData[wp.id].atk;
                     enmy.takeDmg(dmg);
-                    if(enmy.structure<=0)
+                    if(enmy.strc<=0)
                     {
                         return 1;
                     }
@@ -516,7 +535,7 @@ function getItemIdx(ship,id)
 
 function playerShipFightWith(enmy)
 {
-    if(playerData.ship.structure<=0)
+    if(playerData.ship.strc<=0)
     {
         return;
     }
@@ -524,12 +543,11 @@ function playerShipFightWith(enmy)
     printFtMsg01(playerData.ship,enmy);
 
     var t = 0; 
-    let dmg = 0;
 
     playerData.ship.fightInit();
     enmy.fightInit();
 
-    while((playerData.ship.structure>0)&&(enmy.structure>0))
+    while((playerData.ship.strc>0)&&(enmy.strc>0))
     {
         if(t>=60000)
         {
@@ -537,6 +555,9 @@ function playerShipFightWith(enmy)
             printMsg("胜负未分，双方离开战场");
             return;
         }
+
+        playerData.ship.doBtShRec(t);
+        enmy.doBtShRec(t);
 
         if(playerData.ship.atkEnmy(t,enmy)==1 || enmy.atkEnmy(t,playerData.ship)==1)
         {
@@ -563,7 +584,7 @@ function printShip(ship)
 {
     let cap = ship.cap;
     let staffName = "";
-    addFightMsg("<b>"+ship.colorName()+"</b>：[结构："+ship.structure+",护盾："+ship.shield+"]");
+    addFightMsg("<b>"+ship.colorName()+"</b>：[结构："+ship.strc+",护盾："+ship.shd+"]");
     if(cap!=-1)
     {
         addFightMsg("&emsp;&emsp;舰长:"+cap.name);

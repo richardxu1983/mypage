@@ -14,6 +14,9 @@ function initCaptain(cap,data)
     cap.maxStaff = data.maxStaff||0;
     cap.staffNum = 0;
     cap.validStaff = 0;
+    cap.species = data.species;
+    cap.career = data.career;
+    cap.gender = data.gender;
     initStaff(cap);
 }
 
@@ -26,29 +29,27 @@ function createCap(data)
 
 function ranCaptain(data)
 {
-    let d = {
-        name:ranFullName(),
-        side:data.side,
-        maxStaff:5 + Math.floor(Math.random()*(MAX_STAFF - 10)),
-    };
+    let d = RanPerson({side:data.side});
+    d.maxStaff = 5 + Math.floor(Math.random()*(MAX_STAFF - 10));
+    d.gold = data.gold||0;
     let cap = createCap(d);
     return cap;
 }
 
-function createShipForCap(cap,shipdata)
+function createShipForCap(cap,id,wp,md)
 {
-    cap.ship = createShip(shipdata,cap);
-    if(shipdata.wp)
+    cap.ship = createShip(cap,id);
+    if(wp)
     {
-        for(const wpId of shipdata.wp)
+        for(const wpId of wp)
         {
             cap.ship.loadWp(wpId);
         }
     }
     
-    if(shipdata.md)
+    if(md)
     {
-        for(const mdId of shipdata.md)
+        for(const mdId of md)
         {
             cap.ship.loadMd(mdId);
         }

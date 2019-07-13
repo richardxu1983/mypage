@@ -97,7 +97,12 @@ ul{
 
 .halfWidth
 {
-    width: 65%;
+    width: 68%;
+}
+
+.moreWidth
+{
+    width: 85%;
 }
 
 .green
@@ -166,7 +171,7 @@ ul{
 }
 
 .content .item-cell:hover{
-    color: #aaa;
+    color: #7EC0EE;
 }
 
 a:hover
