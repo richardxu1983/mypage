@@ -1,7 +1,7 @@
 
 var playerData = {};
 
-const STAFF_ADD_TO_AIM = 15;
+const STAFF_ADD_TO_AIM = 20;
 const BT_SHLD_RECT = 5000;   //战斗时护盾恢复的频率
 
 //side:0:玩家,999:野怪
@@ -20,7 +20,7 @@ function createShip(cap,id)
     ship.bt = {
         shdRecT : 0,
     };
-    ship.maxShld = 0;
+    ship.maxShd = 0;
     ship.wpNum = SHIP_DATA[id].maxWpNum;
     ship.wpOpen = SHIP_DATA[id].wpOpen;
     ship.mdOpen = SHIP_DATA[id].mdOpen;
@@ -35,10 +35,16 @@ function createShip(cap,id)
     };
     ship.store = SHIP_DATA[id].store;
     ship.add = {
-        shldAdd:0,
-        shldMulti:0,
+        shdAdd:0,
+        shdPer:0,
         strcAdd:0,
-        strcMulti:0,
+        strcPer:0,
+        paoAtkAdd:0,
+        paoAtkPer:0,
+        shdBtRecAdd:0,
+        shdBtRecPer:0,
+        shdRecAdd:0,
+        shdRecPer:0,
     };
     ship.roomOccupy = 0;
     ship.md = new Array(ship.mdNum);
@@ -59,14 +65,14 @@ function createShip(cap,id)
         {
             if(wp.open==true&&wp.id!=-1)
             {
-                c+=itemData[wp.id].cost;
+                c+=itemCost(wp.id);
             }
         }
         for(md of ship.md)
         {
             if(md.open==true&&md.id!=-1)
             {
-                c+=itemData[md.id].cost;
+                c+=itemCost(md.id);
             }
         }
         return c;
@@ -74,7 +80,6 @@ function createShip(cap,id)
 
     ship.check = ()=>
     {
-        let v;
         let mdId;
         for(k in ship.add)
         {
@@ -82,22 +87,26 @@ function createShip(cap,id)
         }
         for(md of ship.md)
         {
-            mdId = md.id;
-            if(mdId!=-1)
+            if(md.id!=-1)
             {
-                if(itemData[mdId].subType==5001)
+                mdId = subIdByItem(md.id);
+                if(MD_DATA[mdId].type==1)
                 {
-                    for(k in itemData[mdId].shipAdd)
+                    for(k in ship.add)
                     {
-                        v = itemData[mdId].shipAdd[k];
-                        ship.add[k] += v;
+                        if(MD_DATA[mdId][k])
+                        {
+                            ship.add[k] += MD_DATA[mdId][k];
+                        }
                     }
                 }
             }
         }
         ship.cost = SHIP_DATA[ship.id].cost + (ship.lvl-1)*ship.lvlup.cost;
-        ship.maxShld = Math.floor((SHIP_DATA[ship.id].shd + (ship.lvl-1)*ship.lvlup.shld + ship.add.shldAdd)*((100+ship.add.shldMulti)/100));
-        ship.maxStrc = Math.floor((SHIP_DATA[ship.id].strc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcMulti)/100));
+        ship.maxShd = Math.floor((SHIP_DATA[ship.id].shd + (ship.lvl-1)*ship.lvlup.shld + ship.add.shdAdd)*((100+ship.add.shdPer)/100));
+        ship.maxStrc = Math.floor((SHIP_DATA[ship.id].strc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcPer)/100));
+        ship.shd = ship.shd>ship.maxShd?ship.maxShd:ship.shd;
+        ship.strc = ship.strc>ship.maxStrc?ship.maxStrc:ship.strc;
     }
 
     ship.OpenAdd = (str,n)=>
@@ -118,6 +127,9 @@ function createShip(cap,id)
     }
 
     ship.addItem = (id,num)=>{
+
+        if(!ITEM_DATA[id]) return;
+
         //满了
         if(ship.roomOccupy>=ship.store) return;
 
@@ -128,12 +140,12 @@ function createShip(cap,id)
         {
             if(ship.room[it]!=undefined)
             {
-                if(ship.room[it].id==id && ship.room[it].num<itemData[id].stack)
+                if(ship.room[it].id==id && ship.room[it].num<ITEM_DATA[id].stack)
                 {
-                    if((ship.room[it].num+NumToAdd)>itemData[id].stack)
+                    if((ship.room[it].num+NumToAdd)>ITEM_DATA[id].stack)
                     {
-                        NumToAdd = NumToAdd - (itemData[id].stack-ship.room[it].num);
-                        ship.room[it].num = itemData[id].stack;
+                        NumToAdd = NumToAdd - (ITEM_DATA[id].stack-ship.room[it].num);
+                        ship.room[it].num = ITEM_DATA[id].stack;
                     }
                     else
                     {
@@ -156,12 +168,12 @@ function createShip(cap,id)
                     idx:it,
                     'id':id,
                     num:0,
-                    name:itemData[id].name,
+                    name:ITEM_DATA[id].name,
                 }
-                if(NumToAdd>itemData[id].stack)
+                if(NumToAdd>ITEM_DATA[id].stack)
                 {
-                    ship.room[it].num = itemData[id].stack;
-                    NumToAdd -= itemData[id].stack;
+                    ship.room[it].num = ITEM_DATA[id].stack;
+                    NumToAdd -= ITEM_DATA[id].stack;
                 }
                 else
                 {
@@ -174,13 +186,20 @@ function createShip(cap,id)
             if(NumToAdd==0) return;
         }
     }
+
     ship.shdAdd = (n)=>
     {
-        if(ship.shd>ship.maxShld) return;
+        if(ship.shd>ship.maxShd) return;
         ship.shd += n;
-        if(ship.shd>ship.maxShld) ship.shd = ship.maxShld;
+        if(ship.shd>ship.maxShd) ship.shd = ship.maxShd;
     }
 
+    ship.strcAdd = (n)=>
+    {
+        if(ship.strc>ship.maxStrc) return;
+        ship.strc += n;
+        if(ship.strc>ship.maxStrc) ship.strc = ship.maxStrc;        
+    }
 
     ship.recShield = ()=>
     {
@@ -189,7 +208,7 @@ function createShip(cap,id)
 
     ship.doBtShRec = (t)=>
     {
-        if(ship.shd>=ship.maxShld) return;
+        if(ship.shd>=ship.maxShd) return;
         if(t>=ship.bt.shdRecT)
         {
             let n = ship.shd;
@@ -236,7 +255,7 @@ function createShip(cap,id)
         if(ship.room[idx]==undefined) return;
         if(ship.room[idx].id<0) return;
         let WpId = ship.room[idx].id;
-        if(itemData[WpId].type!=1) return;
+        if(ITEM_DATA[WpId].type!=100) return;
 
         if(ship.loadWp(WpId)==1)
         {
@@ -249,7 +268,8 @@ function createShip(cap,id)
         if(ship.room[idx]==undefined) return;
         if(ship.room[idx].id<0) return;
         let mdId = ship.room[idx].id;
-        if(itemData[mdId].type!=2) return;
+        console.log("mdId="+mdId);
+        if(ITEM_DATA[mdId].type!=101) return;
 
         if(ship.loadMd(mdId)==1)
         {
@@ -269,13 +289,18 @@ function createShip(cap,id)
             }
         }
         if(WpIdx==-1) return 0;
-        if(checkCost(ship,WpId)==-1)
+        let res = checkCost(ship,WpId);
+        if(res==-1)
         {
-            printMsg("电力不足：无法装配"+itemData[WpId].name);
+            printMsg("电力不足：无法装配"+ITEM_DATA[WpId].name);
+            return;
+        }
+        else if(res == -2)
+        {
             return;
         }
         ship.wp[WpIdx].id = WpId;
-        ship.wp[WpIdx].name = itemData[WpId].name;
+        ship.wp[WpIdx].name = ITEM_DATA[WpId].name;
         ship.wp[WpIdx].check();
         return 1;
     }
@@ -292,17 +317,29 @@ function createShip(cap,id)
             }
         }
         if(Idx==-1) return 0;
-        if(checkCost(ship,MdId)==-1)
+        let res = checkCost(ship,MdId);
+        if(res==-1)
         {
-            printMsg("电力不足：无法装配"+itemData[MdId].name);
+            printMsg("电力不足：无法装配"+ITEM_DATA[MdId].name);
+            return;
+        }
+        else if(res == -2)
+        {
             return;
         }
         ship.md[Idx].id = MdId;
-        ship.md[Idx].name = itemData[MdId].name;
-        if(itemData[MdId].subType==5001)
+        ship.md[Idx].name = ITEM_DATA[MdId].name;
+        let subId = subIdByItem(MdId);
+        let oldShld = ship.maxShd;
+        let oldStrc = ship.maxStrc;
+        if(MD_DATA[subId].type==1)
         {
             ship.check();
         }
+        let newShld = ship.maxShd;
+        let newStrc = ship.maxStrc;
+        ship.shdAdd(newShld-oldShld);
+        ship.strcAdd(newStrc-oldStrc);
         return 1;
     }
 
@@ -347,10 +384,10 @@ function createShip(cap,id)
         let wpId = 0;
         for(let i=0; i<ship.wp.length;i++)
         {
-            wpId = ship.wp[i].id;
-            if(wpId>=0)
+            if(ship.wp[i].id>=0)
             {
-                ship.wp[i].ft = itemData[wpId].start;
+                wpId = wpIdbyItem(ship.wp[i].id);
+                ship.wp[i].ft = WP_DATA[wpId].start;
             }
         }
     }
@@ -393,27 +430,29 @@ function createShip(cap,id)
         let dmg = 0;
         let tip = false;
         let ran;
+        let wpId;
         for(let wp of ship.wp)
         {
             if(wp.id>=0&&t>=wp.ft)
             {
-                wp.ft = t + itemData[wp.id].speed;
+                wpId = wpIdbyItem(wp.id);
+                wp.ft = t + WP_DATA[wpId].spd;
                 if(!tip)
                 {
                     addFightMsg(ship.brcName()+"发动攻击");
                     tip = true;
                 }
-                addFightMsg(ship.brcName() + "的"+wp.posName+"["+wp.name  +"]对"+enmy.brcName()+"发动攻击");
+                addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#8B3A3A>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
 
                 ran = Math.random() * 100;
                 //addFightMsg("ran="+ran+",aim="+wp.aim());
                 if(ran > wp.aim())
                 {
-                    addFightMsg(ship.brcName() + "的" +wp.posName+"["+wp.name  +"]攻击<font color=#FF6600>未命中</color>");
+                    addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#8B3A3A>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
                 }
                 else
                 {
-                    dmg = itemData[wp.id].atk;
+                    dmg = WP_DATA[wpId].atk;
                     enmy.takeDmg(dmg);
                     if(enmy.strc<=0)
                     {
@@ -427,25 +466,24 @@ function createShip(cap,id)
 
     ship.loadWpByIdIdx = (id,idx)=>
     {
-        var pos = idx-1;
-        if(ship.wp[pos].id!=-1)
+        if(ship.wp[idx].id!=-1)
         {
             return;
         }
-        ship.wp[pos].id = id;
-        ship.wp[pos].name = itemData[id].name;
+        ship.wp[idx].id = id;
+        ship.wp[idx].name = WP_DATA[id].name;
     }
 
     ship.unload = (t,idx)=>
     {
-        let pos = idx-1;
-        let id = ship[t][pos].id;
-        ship[t][pos].id = -1;
-        ship[t][pos].name = "空";
+        let id = ship[t][idx].id;
+        ship[t][idx].id = -1;
+        ship[t][idx].name = "空";
         ship.addItem(id,1);
         if(t=='md')
         {
-            if(itemData[id].subType==5001)
+            let subId = subIdByItem(id);
+            if(MD_DATA[subId].type==1)
             {
                 ship.check();
             }
@@ -471,7 +509,7 @@ function initShipAry(ship)
     {
         ship.wp[i] = {
             posName:"武器"+(i+1),
-            idx:i+1,
+            idx:i,
             id:-1,
             name:"空",
             staff:-1,
@@ -487,7 +525,7 @@ function initShipAry(ship)
             let self = ship.wp[i];
             let id = self.id;
             if(id==-1) return 0;
-            return self.aimAdd + itemData[id].aim;
+            return self.aimAdd + WP_DATA[wpIdbyItem(id)].aim;
         }
         ship.wp[i].check=()=>
         {
@@ -507,7 +545,7 @@ function initShipAry(ship)
     for(let i=0; i<ship.md.length;i++)
     {
         ship.md[i] = {
-            idx:i+1,
+            idx:i,
             id:-1,
             name:"空",
             open:false,
@@ -620,10 +658,8 @@ function printShip(ship)
 function checkCost(ship,itemId)
 {
     let cLeft = ship.cost - ship.curCost();
-    console.log("itemId="+itemId);
-    if(cLeft<itemData[itemId].cost)
-    {
-        return -1;
-    }
+    let c = itemCost(itemId);
+    if(c==-2) return -2;
+    if(cLeft<itemCost(itemId)) return -1;
     return 0;
 }

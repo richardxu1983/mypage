@@ -5,7 +5,7 @@ const TEST_MD = [100,101];
 function testFight()
 {
     let cap = ranCaptain({side:999});
-    createShipForCap(cap,2,[0,2],[]);
+    createShipForCap(cap,2,[10001,10001],[]);
     let staff = Math.floor(Math.random()*3);
     if(staff>0)
     {
@@ -23,7 +23,7 @@ function testFight()
             let staffIdx=findValidStaff(cap);
             if(staffIdx!=-1)
             {
-                AssignJob(cap,'wp',cap.ship.wp[i].idx-1,staffIdx);
+                AssignJob(cap,'wp',cap.ship.wp[i].idx,staffIdx);
             }
         }
     }
@@ -41,11 +41,10 @@ function createPlayer()
         maxStaff:MAX_STAFF,
     });
 
-    createShipForCap(playerData,1,[0,2],[]);
+    createShipForCap(playerData,1,[10000,10000],[]);
     playerData.ship.addItem(1,100);
-    playerData.ship.addItem(100,1);
-    playerData.ship.addItem(101,1);
-    playerData.ship.addItem(0,3);
+    playerData.ship.addItem(20000,1);
+    playerData.ship.addItem(20001,1);
 }
 
 function gameInit()

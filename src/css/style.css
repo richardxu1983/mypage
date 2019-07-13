@@ -198,19 +198,25 @@ a:hover
 }
 
 .left,.right{
-    width: 24%;
     padding-left: 1em;
     padding-right: 1em;
 }
 
+.left{
+    width: 24%;
+}
+
+.right{
+    width: 26%;
+}
+
 .info{
-    height: 28em;
+    height: 38em;
     overflow:auto;
 }
 
-.info-cell{
-    line-height: 1.75em;
-    height: 1.75em;
+.info .info-cell{
+    padding: .2em 0 .2em 0;
 }
 
 .info div{

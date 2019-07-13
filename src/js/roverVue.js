@@ -34,19 +34,19 @@ var app = new Vue({
     computed:
     {
         wpTipDmg(){
-            return itemData[this.getTipWpId()].atk;
+            return WP_DATA[wpIdbyItem(this.getTipWpId())].atk;
         },
         wpTipSpeed()
         {
-            return itemData[this.getTipWpId()].speed;
+            return WP_DATA[wpIdbyItem(this.getTipWpId())].spd;
         },
         wpTipIT()
         {
-            return itemData[this.getTipWpId()].start;
+            return WP_DATA[wpIdbyItem(this.getTipWpId())].start;
         },
         wpAim()
         {
-            return this.playerShip.wp[this.wpTipIdx-1].aim();
+            return this.playerShip.wp[this.wpTipIdx].aim();
         },
         timeS()
         {
@@ -55,7 +55,7 @@ var app = new Vue({
     },
     methods: {
         getTipWpId(){
-            return this.playerShip.wp[this.wpTipIdx-1].id;
+            return this.playerShip.wp[this.wpTipIdx].id;
         },
         testAddLv()
         {
@@ -129,10 +129,10 @@ var app = new Vue({
         },
         wpBetter(attr,idx)
         {
-            let id = this.playerShip.wp[idx-1].id;
+            let id = this.playerShip.wp[idx].id;
             if(attr=='aim')
             {
-                return (this.playerShip.wp[idx-1].aim()>itemData[id].aim)?true:false;
+                return (this.playerShip.wp[idx].aim()>WP_DATA[wpIdbyItem(id)].aim)?true:false;
             }
         },
         scrollToBottom(){

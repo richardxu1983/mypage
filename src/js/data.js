@@ -41,23 +41,127 @@ var SHIP_DATA =
 var SPECITES_DATA = 
 {
     "1": {
-        "id": "1",
-        "name": "人类",
-        "wp_pao": 10,
-        "wp_ms": null,
-        "wp_ls": null,
-        "shdBtRecPerAdd": null,
-        "strcPerAdd": 10,
-        "shdRecPerAdd": null
+      "id": "1",
+      "name": "人类",
+      "wp_paoPer": 10,
+      "wp_msPer": null,
+      "wp_lsPer": null,
+      "shdBtRecPerAdd": null,
+      "strcPerAdd": 10,
+      "shdRecPerAdd": null
     },
     "2": {
-        "id": "2",
-        "name": "智械",
-        "wp_pao": null,
-        "wp_ms": 15,
-        "wp_ls": null,
-        "shdBtRecPerAdd": 20,
-        "strcPerAdd": null,
-        "shdRecPerAdd": null
+      "id": "2",
+      "name": "智械",
+      "wp_paoPer": null,
+      "wp_msPer": 15,
+      "wp_lsPer": null,
+      "shdBtRecPerAdd": 20,
+      "strcPerAdd": null,
+      "shdRecPerAdd": null
+    }
+}
+
+var ITEM_DATA = 
+{
+    "1": {
+      "id": "1",
+      "name": "普晶体",
+      "desc": "这篇宇宙中最常见的合成晶体，可以用来制造和修补",
+      "type": 1,
+      "subId": null,
+      "stack": 100
+    },
+    "10000": {
+      "id": "10000",
+      "name": "民用弹射炮",
+      "desc": "这是一种常见的民用炮",
+      "type": 100,
+      "subId": 1,
+      "stack": 8
+    },
+    "10001": {
+      "id": "10001",
+      "name": "轻型海盗自动机炮",
+      "desc": "一般无人海盗船上的常见炮类",
+      "type": 100,
+      "subId": 2,
+      "stack": 8
+    },
+    "20000": {
+      "id": "20000",
+      "name": "民用护盾扩充系统",
+      "desc": "一种常见的护盾扩充系统",
+      "type": 101,
+      "subId": 1,
+      "stack": 8
+    },
+    "20001": {
+      "id": "20001",
+      "name": "民用结构强化系统",
+      "desc": "一种常见的结构扩充系统",
+      "type": 101,
+      "subId": 2,
+      "stack": 8
+    }
+};
+
+var WP_DATA = 
+{
+    "1": {
+      "id": "1",
+      "name": "民用弹射炮",
+      "type": 1,
+      "cost": 5,
+      "atk": 25,
+      "spd": 2000,
+      "start": 2500,
+      "aim": 40
+    },
+    "2": {
+      "id": "2",
+      "name": "轻型海盗自动机炮",
+      "type": 1,
+      "cost": 5,
+      "atk": 10,
+      "spd": 1000,
+      "start": 1000,
+      "aim": 35
+    }
+}
+
+var MD_DATA = 
+{
+    "1": {
+      "id": "1",
+      "name": "民用护盾扩充系统",
+      "type": 1,
+      "cost": 5,
+      "shdAdd": 10,
+      "shdPer": null,
+      "strcAdd": null,
+      "strcPer": null,
+      "paoAtkAdd": null,
+      "paoAtkPer": null,
+      "shdBtRecAdd": null,
+      "shdBtRecPer": null,
+      "shdRecAdd": null,
+      "shdRecPer": null
+    },
+    "2": {
+      "id": "2",
+      "name": "民用结构强化系统",
+      "type": 1,
+      "cost": 5,
+      "shdAdd": null,
+      "shdPer": null,
+      "strcAdd": 10,
+      "strcPer": null,
+      "paoAtkAdd": null,
+      "paoAtkPer": null,
+      "shdBtRecAdd": null,
+      "shdBtRecPer": null,
+      "shdRecAdd": null,
+      "shdRecPer": null
     }
 };

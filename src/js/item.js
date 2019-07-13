@@ -28,71 +28,9 @@ sbWpTpStr[1] = "炮类";
 sbWpTpStr[2] = "导弹类";
 sbWpTpStr[3] = "激光类";
 
-var itemData = [];
-itemData[0] = {
-    id:0,
-    name:"弹射炮",
-    desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
-    type:1,     //类型为1
-    subType:1,  //子类型为1
-    stack:100,  //最大堆叠数100
-    atk:35,     //基本伤害
-    speed:1500, //武器速度1.5秒
-    start:1250, //装填速度1秒
-    aim:45,     //命中率65
-    cost:5,     //电力消耗5
-};
-
-itemData[1] = {
-    id:0,
-    name:"矿石",
-    desc:"宇宙中常见的矿物，可以用来制造、修补",
-    type:0,     //类型为1
-    subType:0,  //子类型为1
-    stack:10000,
-};
-
-itemData[2] = {
-    id:0,
-    name:"慢速弹射炮",
-    desc:"一种基本的炮类武器，宇宙中大多数的军火设施都可以造这种炮。",
-    type:1,     //类型为1
-    subType:1,  //子类型为1
-    stack:100,  //最大堆叠数100
-    atk:45,     //基本伤害
-    speed:2500, //武器速度1.5秒
-    start:1000, //装填速度1秒
-    aim:45,     //命中率65
-    cost:5,
-};
-
-itemData[100] = {
-    id:100,
-    name:"基础维修系统",
-    desc:"消耗矿石修复飞船（每{data1}矿石维修1结构）",
-    type:2,     //类型为1
-    subType:1,  //子类型为1
-    stack:25,
-    data1:2,   //每2矿石维修1点结构
-    cost:5,
-};
-
-itemData[101] = {
-    id:101,
-    name:"护盾扩容系统",
-    desc:"护盾容量增加10%",
-    type:2,         //类型为1
-    subType:5001,  //子类型为5001
-    stack:25,
-    shipAdd:{
-        shldMulti:10,
-    },
-    cost:5,
-};
-
 itemDesc = (id)=>
 {
-    let str = itemData[id].desc;
+    let str = ITEM_DATA[id].desc;
     let regex1 = "\\{(.+?)\\}";   //
     let sub = str.match(regex1);
     if(sub==null)
@@ -102,7 +40,7 @@ itemDesc = (id)=>
     else
     {
         let pat = /\{.*?}/;
-        let rep = itemData[id][sub[1]];
+        let rep = ITEM_DATA[id][sub[1]];
         let res = str.replace(pat,rep);
         return res;
     }
@@ -110,11 +48,58 @@ itemDesc = (id)=>
 
 itemType = (id)=>
 {
-    let t = itemData[id].type;
+    let t = ITEM_DATA[id].type;
     let str = typeStr[t];
     if(t==1)
     {
-        str+="（"+sbWpTpStr[itemData[id].subType]+"）";
+        str+="（"+sbWpTpStr[ITEM_DATA[id].subType]+"）";
     }
     return str;
+}
+
+wpIdbyItem = (itemId)=>
+{
+    let type = ITEM_DATA[itemId].type;
+    if(type!=100) return;
+    return ITEM_DATA[itemId].subId;
+}
+
+wpTypeStrByItm = (itemId)=>
+{
+    return sbWpTpStr[WP_DATA[wpIdbyItem(itemId)].type];
+}
+
+mdTypeBtItem = (itemId)=>
+{
+    if(!ITEM_DATA[itemId]) return -2;
+    let type = ITEM_DATA[itemId].type;
+    if(type!=-1) return -1;
+    let subId = ITEM_DATA[itemId].subId;
+    return MD_DATA[subId].type;
+}
+
+subIdByItem = (itemId)=>
+{
+    if(!ITEM_DATA[itemId]) return -2;
+    let subId = ITEM_DATA[itemId].subId;
+    return subId;
+}
+
+itemCost = (itemId)=>
+{
+    if(!ITEM_DATA[itemId]) return -2;
+    let type = ITEM_DATA[itemId].type;
+    let subId = ITEM_DATA[itemId].subId;
+    if(type==100)
+    {
+        return WP_DATA[subId].cost;
+    }
+    else if(type==101)
+    {
+        return MD_DATA[subId].cost;
+    }
+    else
+    {
+        return -1;
+    }
 }
