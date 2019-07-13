@@ -332,14 +332,16 @@ function createShip(cap,id)
         let subId = subIdByItem(MdId);
         let oldShld = ship.maxShd;
         let oldStrc = ship.maxStrc;
+        let shdFull = (ship.shd==oldShld);
+        let strcFull = (ship.strc==oldStrc);
         if(MD_DATA[subId].type==1)
         {
             ship.check();
         }
         let newShld = ship.maxShd;
         let newStrc = ship.maxStrc;
-        ship.shdAdd(newShld-oldShld);
-        ship.strcAdd(newStrc-oldStrc);
+        if(shdFull) ship.shdAdd(newShld-oldShld);
+        if(strcFull) ship.strcAdd(newStrc-oldStrc);
         return 1;
     }
 
