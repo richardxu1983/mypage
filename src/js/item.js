@@ -19,9 +19,9 @@
  */
 
 const typeStr = [];
-typeStr[0] = "一般物品";
-typeStr[1] = "武器";
-typeStr[2] = "升级模块";
+typeStr[1] = "一般物品";
+typeStr[100] = "武器";
+typeStr[101] = "升级模块";
 
 const sbWpTpStr = [];
 sbWpTpStr[1] = "炮类";
@@ -50,9 +50,9 @@ itemType = (id)=>
 {
     let t = ITEM_DATA[id].type;
     let str = typeStr[t];
-    if(t==1)
+    if(t==100)
     {
-        str+="（"+sbWpTpStr[ITEM_DATA[id].subType]+"）";
+        str+="（"+wpTypeStrByItm(id)+"）";
     }
     return str;
 }

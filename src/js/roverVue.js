@@ -34,7 +34,7 @@ var app = new Vue({
     computed:
     {
         wpTipDmg(){
-            return WP_DATA[wpIdbyItem(this.getTipWpId())].atk;
+            return this.playerShip.wp[this.wpTipIdx].atk();
         },
         wpTipSpeed()
         {
@@ -130,10 +130,24 @@ var app = new Vue({
         wpBetter(attr,idx)
         {
             let id = this.playerShip.wp[idx].id;
+            let wpId = wpIdbyItem(id);
             if(attr=='aim')
             {
-                return (this.playerShip.wp[idx].aim()>WP_DATA[wpIdbyItem(id)].aim)?true:false;
+                return (this.playerShip.wp[idx].aim()>WP_DATA[wpId].aim)?true:false;
             }
+            else if(attr=='atk')
+            {
+                return (this.playerShip.wp[idx].atk()>WP_DATA[wpId].atk)?true:false;
+            }
+            return false;
+        },
+        shipBetter(attr,w)
+        {
+            let id = this.playerShip.id;
+            if(w==1)
+                return (this.playerShip[attr]>SHIP_DATA[id][attr])?true:false;
+            else
+                return (this.playerShip[attr]<SHIP_DATA[id][attr])?true:false;
         },
         scrollToBottom(){
             this.$nextTick(() => {

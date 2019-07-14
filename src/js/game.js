@@ -43,8 +43,11 @@ function createPlayer()
 
     createShipForCap(playerData,1,[10000,10000],[]);
     playerData.ship.addItem(1,100);
+    playerData.ship.addItem(10000,1);
     playerData.ship.addItem(20000,1);
     playerData.ship.addItem(20001,1);
+    playerData.ship.addItem(20002,1);
+    playerData.ship.addItem(20003,1);
 }
 
 function gameInit()

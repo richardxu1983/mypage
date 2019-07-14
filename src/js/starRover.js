@@ -106,6 +106,8 @@ function createShip(cap,id)
         ship.maxShd = Math.floor((SHIP_DATA[ship.id].shd + (ship.lvl-1)*ship.lvlup.shld + ship.add.shdAdd)*((100+ship.add.shdPer)/100));
         ship.maxStrc = Math.floor((SHIP_DATA[ship.id].strc + (ship.lvl-1)*ship.lvlup.strc+ ship.add.strcAdd)*((100+ship.add.strcPer)/100));
         ship.shd = ship.shd>ship.maxShd?ship.maxShd:ship.shd;
+        ship.shdBtRec = Math.floor((SHIP_DATA[ship.id].shdBtRec+ship.add.shdBtRecAdd)*((100+ship.add.shdBtRecPer)/100));
+        ship.shdRec = Math.floor((SHIP_DATA[ship.id].shdRec+ship.add.shdRecAdd)*((100+ship.add.shdRecPer)/100));
         ship.strc = ship.strc>ship.maxStrc?ship.maxStrc:ship.strc;
     }
 
@@ -454,7 +456,7 @@ function createShip(cap,id)
                 }
                 else
                 {
-                    dmg = WP_DATA[wpId].atk;
+                    dmg = wp.atk();
                     enmy.takeDmg(dmg);
                     if(enmy.strc<=0)
                     {
@@ -528,6 +530,19 @@ function initShipAry(ship)
             let id = self.id;
             if(id==-1) return 0;
             return self.aimAdd + WP_DATA[wpIdbyItem(id)].aim;
+        }
+        ship.wp[i].atk=()=>
+        {
+            let self = ship.wp[i];
+            let id = self.id;
+            if(id==-1) return -1;
+            let wpId = wpIdbyItem(id);
+            let type = WP_DATA[wpId].type;
+            if(type==1)
+            {
+                return Math.floor((WP_DATA[wpId].atk+ship.add.paoAtkAdd)*((ship.add.paoAtkPer+100)/100));
+            }
+            return WP_DATA[wpId].atk;
         }
         ship.wp[i].check=()=>
         {

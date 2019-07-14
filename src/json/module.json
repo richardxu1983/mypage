@@ -1,7 +1,7 @@
 {
   "1": {
     "id": "1",
-    "name": "民用护盾扩充系统",
+    "name": "民用护盾扩充",
     "type": 1,
     "cost": 5,
     "shdAdd": 10,
@@ -17,7 +17,7 @@
   },
   "2": {
     "id": "2",
-    "name": "民用结构强化系统",
+    "name": "民用结构强化",
     "type": 1,
     "cost": 5,
     "shdAdd": null,
@@ -27,6 +27,38 @@
     "paoAtkAdd": null,
     "paoAtkPer": null,
     "shdBtRecAdd": null,
+    "shdBtRecPer": null,
+    "shdRecAdd": null,
+    "shdRecPer": null
+  },
+  "3": {
+    "id": "3",
+    "name": "民用炮弹增幅",
+    "type": 1,
+    "cost": 5,
+    "shdAdd": null,
+    "shdPer": null,
+    "strcAdd": null,
+    "strcPer": null,
+    "paoAtkAdd": 15,
+    "paoAtkPer": null,
+    "shdBtRecAdd": null,
+    "shdBtRecPer": null,
+    "shdRecAdd": null,
+    "shdRecPer": null
+  },
+  "4": {
+    "id": "4",
+    "name": "民用护盾战斗回冲",
+    "type": 1,
+    "cost": 5,
+    "shdAdd": null,
+    "shdPer": null,
+    "strcAdd": null,
+    "strcPer": null,
+    "paoAtkAdd": null,
+    "paoAtkPer": null,
+    "shdBtRecAdd": 15,
     "shdBtRecPer": null,
     "shdRecAdd": null,
     "shdRecPer": null

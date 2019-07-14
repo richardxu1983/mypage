@@ -158,8 +158,8 @@
 			<div class="leftVoid">
 				<div>最大电量：{{playerShip.cost}}（+{{playerShip.lvlup.cost}}每级）</div>
 				<div>最大等级：{{playerShip.maxLvl}}</div>
-				<div>战斗护盾回冲：{{playerShip.shdBtRec}}点（每{{Math.floor(BT_SHLD_RECT/1000)}}秒）</div>
-				<div>一般护盾回冲：{{playerShip.shdRec}}点（每天）</div>
+				<div>战斗护盾回冲：<span :class="shipBetter('shdBtRec',1)?'green':'black'">{{playerShip.shdBtRec}}</span>点（每{{Math.floor(BT_SHLD_RECT/1000)}}秒）</div>
+				<div>一般护盾回冲：<span :class="shipBetter('shdRec',1)?'green':'black'">{{playerShip.shdRec}}</span>点（每天）</div>
 				<div>武器位：{{playerShip.wpNum}}个（已开启：{{playerShip.wpOpen}}个）</div>
 				<div>模块：{{playerShip.mdNum}}个（已开启：{{playerShip.mdOpen}}个）</div>
 			</div>
@@ -179,11 +179,11 @@
 				<br>
 				用电：{{itemCost(playerShip.wp[wpTipIdx].id)}}
 				<br>
-				伤害：{{wpTipDmg}}
+				伤害：<span :class="wpBetter('atk',wpTipIdx)?'green':'black'">{{wpTipDmg}}</span>
 				<br>
-				速度：{{parseFloat((wpTipSpeed/1000).toFixed(2))}}秒
+				速度：{{parseFloat((wpTipSpeed/1000).toFixed(2))}}秒（每次）
 				<br>
-				装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒
+				装填时间：{{parseFloat((wpTipIT/1000).toFixed(2))}}秒（首次）
 				<br>
 				命中率：<span :class="wpBetter('aim',wpTipIdx)?'green':'black'">{{wpAim}} </span>%
 			</div>
