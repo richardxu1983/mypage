@@ -92,12 +92,9 @@ function createShip(cap,id)
                 mdId = subIdByItem(md.id);
                 if(MD_DATA[mdId].type==1)
                 {
-                    for(k in ship.add)
+                    for(k in MD_DATA[mdId].add)
                     {
-                        if(MD_DATA[mdId][k])
-                        {
-                            ship.add[k] += MD_DATA[mdId][k];
-                        }
+                        ship.add[k] += MD_DATA[mdId].add[k];
                     }
                 }
             }
@@ -401,7 +398,7 @@ function createShip(cap,id)
         if(ship.shd>dmg)
         {
             ship.shd-=dmg;
-            addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+dmg +"</font>("+ship.shd+")");
+            addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName()+"的护盾减少了<font color=#FF6600>"+dmg +"</font>("+ship.shd+")");
         }
         else
         {
@@ -409,10 +406,10 @@ function createShip(cap,id)
             if(s>0)
             {
                 ship.shd = 0;
-                addFightMsg(ship.brcName()+"的护盾减少了<font color=#FF6600>"+s +"</font>("+ship.shd+")");
+                addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName()+"的护盾减少了<font color=#FF6600>"+s +"</font>("+ship.shd+")");
             }
             ship.strc -= (dmg - s);
-            addFightMsg(ship.brcName()+"的结构减少了<font color=#FF6600>"+(dmg - s)+"</font>("+ship.strc+")");
+            addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName()+"的结构减少了<font color=#FF6600>"+(dmg - s)+"</font>("+ship.strc+")");
             if(ship.strc<=0)
             {
                 ship.strc = 0;
@@ -446,13 +443,13 @@ function createShip(cap,id)
                     addFightMsg(ship.brcName()+"发动攻击");
                     tip = true;
                 }
-                addFightMsg(ship.brcName() + "的"+wp.posName+"[<font color=#8B3A3A>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
+                addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName() + "的"+wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]对"+enmy.brcName()+"发动攻击");
 
                 ran = Math.random() * 100;
                 //addFightMsg("ran="+ran+",aim="+wp.aim());
                 if(ran > wp.aim())
                 {
-                    addFightMsg(ship.brcName() + "的" +wp.posName+"[<font color=#8B3A3A>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
+                    addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName() + "的" +wp.posName+"[<font color=#6B8E23>"+wp.name  +"</font>]攻击<font color=#FF6600>未命中</color>");
                 }
                 else
                 {
@@ -463,9 +460,46 @@ function createShip(cap,id)
                         return 1;
                     }
                 }
+                ship.mdTgBySrc(3,WP_DATA[wpId].type,enmy);
+                if(enmy.strc<=0)
+                {
+                    return 1;
+                }
             }
         }
         return 0;
+    }
+
+    ship.mdTgBySrc = (t,p,enmy)=>
+    {
+        let mdId = -1;
+        let effType = -1;
+        let eNum = -1;
+        for(let i=0;i<ship.md.length;i++)
+        {
+            if(ship.md[i].open&&ship.md[i].id>=0)
+            {
+                mdId = subIdByItem(ship.md[i].id);
+                if(MD_DATA[mdId].tgSrc==t&&MD_DATA[mdId].tgSrcP==p)
+                {
+                    if(Math.random()*100<MD_DATA[mdId].tgProb)
+                    {
+                        addFightMsg("&emsp;&emsp;&emsp;"+ship.brcName() +"[<font color=#FF6600>发动</font>][<font color=#6B8E23>" + MD_DATA[mdId].name+"</font>]挂件！");
+                        effType = MD_DATA[mdId].tgEff;
+                        if(effType==1)
+                        {
+                            eNum = effNum(ship,mdId);
+                            console.log("eNum="+eNum);
+                            enmy.takeDmg(eNum);
+                            if(enmy.strc<=0)
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     ship.loadWpByIdIdx = (id,idx)=>
@@ -621,6 +655,16 @@ function playerShipFightWith(enmy)
         t += 200;//每次步进200毫秒
     }
     addFightMsg("");
+}
+
+function effNum(ship,mdId)
+{
+    let efNumType = MD_DATA[mdId].tgNumSrc;
+    let tgNumPer = MD_DATA[mdId].tgNumPer;
+    if(efNumType==1)
+    {
+        return Math.floor(ship.shd*(tgNumPer/100));
+    }
 }
 
 function printFtMsg01(plyShip,enmy)

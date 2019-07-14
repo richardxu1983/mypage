@@ -48,6 +48,8 @@ function createPlayer()
     playerData.ship.addItem(20001,1);
     playerData.ship.addItem(20002,1);
     playerData.ship.addItem(20003,1);
+    playerData.ship.addItem(20004,1);
+    playerData.ship.addItem(20005,1);
 }
 
 function gameInit()

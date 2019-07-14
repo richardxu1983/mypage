@@ -21,7 +21,7 @@
 const typeStr = [];
 typeStr[1] = "一般物品";
 typeStr[100] = "武器";
-typeStr[101] = "升级模块";
+typeStr[101] = "挂件";
 
 const sbWpTpStr = [];
 sbWpTpStr[1] = "炮类";

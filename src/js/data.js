@@ -4,7 +4,7 @@ var SHIP_DATA =
     "id": "1",
     "name": "民用侦查舰",
     "strc": 50,
-    "shd": 20,
+    "shd": 100,
     "store": 50,
     "cost": 20,
     "costLv": 5,
@@ -119,6 +119,22 @@ var ITEM_DATA =
     "type": 101,
     "subId": 4,
     "stack": 8
+  },
+  "20004": {
+    "id": "20004",
+    "name": "轻型火炮激发",
+    "desc": "炮类武器攻击之后，35%概率发动，造成一次额外攻击，伤害值为当前护盾的15%，每次战斗最多发动3次",
+    "type": 101,
+    "subId": 5,
+    "stack": 8
+  },
+  "20005": {
+    "id": "20005",
+    "name": "轻型充能器",
+    "desc": "战斗开始时，随机使一个武器的填充时间降低50%",
+    "type": 101,
+    "subId": 6,
+    "stack": 8
   }
 };
 var WP_DATA = 
@@ -152,63 +168,109 @@ var MD_DATA =
     "name": "民用护盾扩充",
     "type": 1,
     "cost": 5,
-    "shdAdd": 10,
-    "shdPer": null,
-    "strcAdd": null,
-    "strcPer": null,
-    "paoAtkAdd": null,
-    "paoAtkPer": null,
-    "shdBtRecAdd": null,
-    "shdBtRecPer": null,
-    "shdRecAdd": null,
-    "shdRecPer": null
+    "add": {
+      "shdAdd": 10
+    },
+    "tgSrc": null,
+    "tgSrcP": null,
+    "tgMax": null,
+    "tgProb": null,
+    "tgEff": null,
+    "tgTgt": null,
+    "tgNumSrc": null,
+    "tgNum": null,
+    "tgNumPer": null,
+    "tgNumMax": null
   },
   "2": {
     "id": "2",
     "name": "民用结构强化",
     "type": 1,
     "cost": 5,
-    "shdAdd": null,
-    "shdPer": null,
-    "strcAdd": 10,
-    "strcPer": null,
-    "paoAtkAdd": null,
-    "paoAtkPer": null,
-    "shdBtRecAdd": null,
-    "shdBtRecPer": null,
-    "shdRecAdd": null,
-    "shdRecPer": null
+    "add": {
+      "strcAdd": 10
+    },
+    "tgSrc": null,
+    "tgSrcP": null,
+    "tgMax": null,
+    "tgProb": null,
+    "tgEff": null,
+    "tgTgt": null,
+    "tgNumSrc": null,
+    "tgNum": null,
+    "tgNumPer": null,
+    "tgNumMax": null
   },
   "3": {
     "id": "3",
     "name": "民用炮弹增幅",
     "type": 1,
     "cost": 5,
-    "shdAdd": null,
-    "shdPer": null,
-    "strcAdd": null,
-    "strcPer": null,
-    "paoAtkAdd": 15,
-    "paoAtkPer": null,
-    "shdBtRecAdd": null,
-    "shdBtRecPer": null,
-    "shdRecAdd": null,
-    "shdRecPer": null
+    "add": {
+      "paoAtkAdd": 15
+    },
+    "tgSrc": null,
+    "tgSrcP": null,
+    "tgMax": null,
+    "tgProb": null,
+    "tgEff": null,
+    "tgTgt": null,
+    "tgNumSrc": null,
+    "tgNum": null,
+    "tgNumPer": null,
+    "tgNumMax": null
   },
   "4": {
     "id": "4",
     "name": "民用护盾战斗回冲",
     "type": 1,
     "cost": 5,
-    "shdAdd": null,
-    "shdPer": null,
-    "strcAdd": null,
-    "strcPer": null,
-    "paoAtkAdd": null,
-    "paoAtkPer": null,
-    "shdBtRecAdd": 15,
-    "shdBtRecPer": null,
-    "shdRecAdd": null,
-    "shdRecPer": null
+    "add": {
+      "shdBtRecAdd": 15
+    },
+    "tgSrc": null,
+    "tgSrcP": null,
+    "tgMax": null,
+    "tgProb": null,
+    "tgEff": null,
+    "tgTgt": null,
+    "tgNumSrc": null,
+    "tgNum": null,
+    "tgNumPer": null,
+    "tgNumMax": null
+  },
+  "5": {
+    "id": "5",
+    "name": "轻型火炮激发",
+    "type": 2,
+    "cost": 5,
+    "add": null,
+    "tgSrc": 3,
+    "tgSrcP": 1,
+    "tgMax": 3,
+    "tgProb": 100,
+    "tgEff": 1,
+    "tgTgt": null,
+    "tgNumSrc": 1,
+    "tgNum": null,
+    "tgNumPer": 35,
+    "tgNumMax": -1
+  },
+  "6": {
+    "id": "6",
+    "name": "轻型充能器",
+    "type": 2,
+    "cost": 5,
+    "add": null,
+    "tgSrc": 1,
+    "tgSrcP": null,
+    "tgMax": 1,
+    "tgProb": 45,
+    "tgEff": 3,
+    "tgTgt": 1,
+    "tgNumSrc": 0,
+    "tgNum": 45,
+    "tgNumPer": null,
+    "tgNumMax": null
   }
 };

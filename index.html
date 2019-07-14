@@ -49,9 +49,9 @@
 						</div>
 					</div>
 					<div v-if="playerShip.mdNum>0">
-						<span>模块</span>
+						<span>挂件</span>
 						<div v-for="md in playerShip.md" class=item-cell v-if="md.open==true">
-							<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('md',$event,md.idx)" @mouseleave="onmouseleave('md',$event)">模块{{md.idx}}：{{md.name}}
+							<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('md',$event,md.idx)" @mouseleave="onmouseleave('md',$event)">挂件{{md.idx+1}}：{{md.name}}
 							</span>
 							<a v-if="md.id!=-1" class="fl-right" @click="unloadMd(md.idx)" title="卸载这个模块">[卸载]</a>
 						</div>

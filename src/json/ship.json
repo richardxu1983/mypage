@@ -3,7 +3,7 @@
     "id": "1",
     "name": "民用侦查舰",
     "strc": 50,
-    "shd": 20,
+    "shd": 100,
     "store": 50,
     "cost": 20,
     "costLv": 5,

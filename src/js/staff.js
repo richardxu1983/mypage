@@ -1,5 +1,5 @@
 
-const MAX_STAFF = 32;
+const MAX_STAFF = 10;
 
 const SPECIES = [];
 SPECIES[0] = "人类";
