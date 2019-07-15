@@ -68,7 +68,7 @@
 					<div v-if="staffInfo==true">
 						<div class="item-cell" v-for="staff in player.staff" v-if="staff.id!=-1">
 							<span class="moreWidth fl-left" @mouseenter="onmouseover('staff',$event,staff.idx)" @mouseleave="onmouseleave('staff',$event)">
-								{{staff.name}}<span v-if="staff.jobType!=-1">（{{jobDesc(staff.idx)}}）</span>
+								&emsp;[{{CAREER[staff.career]}}]&emsp;{{staff.name}}<span v-if="staff.jobType!=-1">（{{jobDesc(staff.idx)}}）</span>
 							</span>
 							<a v-if="staff.jobType!=-1" class="fl-right" @click="deAssign(staff.idx)" title="取消指派">[调回]</a>
 						</div>
@@ -84,7 +84,7 @@
 						<div v-for="item in playerShip.room" v-if="item!=undefined&&item.id>=0">
 							<div class=item-cell>
 								<span class="moreWidth fl-left" @mouseenter="onmouseover('item',$event,item.idx)" @mouseleave="onmouseleave('item',$event)">
-									{{item.name}}({{item.num}})
+									&emsp;[{{typeStr[ITEM_DATA[item.id].type]}}]&emsp;{{item.name}}({{item.num}})
 								</span>
 								<a v-if="ITEM_DATA[item.id].type==100" class="fl-right" @click="tryToLoadWp(item.idx)" title="安装这个武器">[装载]</a>
 								<a v-if="ITEM_DATA[item.id].type==101" class="fl-right" @click="tryToLoadMd(item.idx)" title="安装这个模块">[装载]</a>

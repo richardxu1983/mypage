@@ -19,7 +19,7 @@
  */
 
 const typeStr = [];
-typeStr[1] = "一般物品";
+typeStr[1] = "物品";
 typeStr[100] = "武器";
 typeStr[101] = "挂件";
 

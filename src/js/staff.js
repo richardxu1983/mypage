@@ -6,7 +6,7 @@ SPECIES[0] = "人类";
 SPECIES[1] = "智械";
 
 const CAREER = [];
-CAREER[0] = "军人";
+CAREER[0] = "士兵";
 CAREER[1] = "工程师";
 
 const GENDER = [];
