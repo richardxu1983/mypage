@@ -167,7 +167,7 @@
 		<div class="shipTip" id="wpTip" v-show="wpTip">
 			<div class="leftVoid bottomLine bottomad topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx].id>=0">
 				<div ><b>{{playerShip.wp[wpTipIdx].name}}</b></div>
-				<div v-if="playerShip.wp[wpTipIdx].staff==-1">操作员：无<br><i>（该武器处于自动状态）</i></div>
+				<div v-if="playerShip.wp[wpTipIdx].staff==-1">操作员：无（需要一位[{{CAREER[playerShip.wp[wpTipIdx].stfTp]}}]操作）<br><i>该武器当前处于自动状态</i></div>
 				<span v-if="playerShip.wp[wpTipIdx].staff!=-1">操作员：{{player.staff[playerShip.wp[wpTipIdx].staff].name}}</span>
 			</div>
 			<div class="leftVoid bottomLine topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx].id==-1">
