@@ -551,6 +551,7 @@ function initShipAry(ship)
             id:-1,
             name:"空",
             staff:-1,
+            stfTp:0,
             aimAdd:0,
             open:false,
         };
@@ -600,6 +601,7 @@ function initShipAry(ship)
             id:-1,
             name:"空",
             open:false,
+            stfTp:0,
         };
         if(i<ship.mdOpen)
         {

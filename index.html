@@ -45,7 +45,7 @@
 								<span v-if="playerShip.wp[wp.idx].staff!=-1">({{player.staff[playerShip.wp[wp.idx].staff].name}})</span>
 							</span>
 							<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)" title="卸载这个武器">[卸载]</a>
-							<a v-if="playerShip.wp[wp.idx].staff==-1&&player.validStaff>0" class="fl-right" @click="assign('wp',wp.idx)" title="安排一位宇航员来操作这个武器">[指派]</a>
+							<a v-if="playerShip.wp[wp.idx].staff==-1&&player.validStaff(wp.stfTp)>0" class="fl-right" @click="assign('wp',wp.idx,wp.stfTp)" :title="assignTip(wp.stfTp)">[指派]</a>
 						</div>
 					</div>
 					<div v-if="playerShip.mdNum>0">
@@ -124,10 +124,10 @@
 		</div>
 		<div class="modal" v-show="modal">
 			<div class="assign-div topPad leftVoid" id="assign-div" v-if="assignDiv">
-				<div class="bottomad bottomLine">可指派的宇航员({{player.validStaff}})</div>
-				<div class="topPad" v-if="player.validStaff==0">没有人可以指派</div>
+				<div class="bottomad bottomLine">可指派的宇航员({{player.validStaff(stfTp)>0}})</div>
+				<div class="topPad" v-if="player.validStaff(stfTp)==0">没有人可以指派</div>
 				<div class="topPad bottomad y-scroll assignPad">
-					<div v-for="staff in player.staff" v-if="staff.id!=-1&&staff.jobType==-1">
+					<div v-for="staff in player.staff" v-if="staff.id!=-1&&staff.jobType==-1&&staff.career==stfTp">
 						<div>
 							<span class="halfWidth line fl-left" @mouseenter="onmouseover('staff',$event,staff.idx)" @mouseleave="onmouseleave('staff',$event)">
 							{{staff.name}}

@@ -8,6 +8,8 @@ SPECIES[1] = "智械";
 const CAREER = [];
 CAREER[0] = "士兵";
 CAREER[1] = "工程师";
+CAREER[2] = "矿工";
+CAREER[3] = "医生";
 
 const GENDER = [];
 GENDER[0] = "男";
@@ -148,7 +150,6 @@ function addStaff(cap,data)
     }
     if(idx==-1) return;
     cap.staffNum++;
-    cap.validStaff++;
     cap.staff[idx].id = data.id;
     cap.staff[idx].career = data.career;
     cap.staff[idx].name = data.name;
@@ -162,9 +163,9 @@ function addStaff(cap,data)
     }
 }
 
-function findValidStaff(cap)
+function findValidStaff(cap,p)
 {
-    if(cap.validStaff<=0) return -1;
+    if(cap.validStaff(p)<0) return -1;
     for(let i=0;i<cap.maxStaff;i++)
     {
         if(cap.staff[i].species!=-1&&cap.staff[i].jobIdx==-1)
@@ -184,10 +185,10 @@ function AssignJob(cap,job,jobIdx,staffIdx)
     if(job=="wp")
     {
         if(ship.wp[jobIdx].staff!=-1) return -1;
+        if(ship.wp[jobIdx].stfTp!=cap.staff[staffIdx].career) return -2;
         ship.wp[jobIdx].staff = staffIdx;
         ship.wp[jobIdx].check();
     }
-    cap.validStaff--;
     cap.staff[staffIdx].jobType = job;
     cap.staff[staffIdx].jobIdx = jobIdx;
     return 0;
@@ -207,7 +208,6 @@ function deAssign(cap,staffIdx)
     }
     cap.staff[staffIdx].jobType = -1;
     cap.staff[staffIdx].jobIdx = -1;
-    cap.validStaff++;
     return 0;
 }
 
@@ -218,7 +218,6 @@ function staffLeave(cap,idx)
     deAssign(cap,idx);
     StaffInit(cap,idx);
     cap.staffNum--;
-    cap.validStaff--;
     printMsg(printTimeC()+n+"离开了你的舰队");
 }
 

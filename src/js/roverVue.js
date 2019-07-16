@@ -23,6 +23,7 @@ var app = new Vue({
         staffTipIdx:-1,
         wpAssignIdx:-1,
         currentJobType:"",
+        stfTp:-1,
         rightSel:1,
         msg:infoMsg,
         ftMsg:fightMsg,
@@ -92,7 +93,7 @@ var app = new Vue({
         {
             this.playerShip.tryToFix();
         },
-        assign(job,idx)
+        assign(job,idx,p)
         {
             this.modal = true;
             this.assignDiv=true;
@@ -100,6 +101,7 @@ var app = new Vue({
             if(job=='wp')
             {
                 this.wpAssignIdx = idx;
+                this.stfTp = p;
             }
         },
         deAssign(staffIdx)
@@ -219,6 +221,10 @@ var app = new Vue({
             {
                 return "underline";
             }
+        },
+        assignTip(p)
+        {
+            return "指派一位["+CAREER[p]+"]来操作";
         },
         minNavClick(index)
         {

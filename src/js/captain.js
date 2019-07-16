@@ -13,11 +13,22 @@ function initCaptain(cap,data)
     cap.ship=-1;
     cap.maxStaff = data.maxStaff||0;
     cap.staffNum = 0;
-    cap.validStaff = 0;
     cap.species = data.species;
     cap.career = data.career;
     cap.gender = data.gender;
     initStaff(cap);
+    cap.validStaff = (p)=>
+    {
+        let idx = -1;
+        for(let i=0;i<cap.maxStaff;i++)
+        {
+            if(cap.staff[i].species!=-1&&cap.staff[i].jobIdx==-1&&cap.staff[i].career==p)
+            {
+                return cap.staff[i].idx;
+            }
+        }
+        return idx;
+    };
 }
 
 function createCap(data)

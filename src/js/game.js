@@ -18,9 +18,9 @@ function testFight()
 
     for(let i=0;i<cap.ship.wp.length;i++)
     {
-        if(cap.ship.wp[i].open==true&&cap.ship.wp[i].staff==-1&&cap.validStaff>0)
+        if(cap.ship.wp[i].open==true&&cap.ship.wp[i].staff==-1)
         {
-            let staffIdx=findValidStaff(cap);
+            let staffIdx=findValidStaff(cap,cap.ship.wp[i].stfTp);
             if(staffIdx!=-1)
             {
                 AssignJob(cap,'wp',cap.ship.wp[i].idx,staffIdx);
