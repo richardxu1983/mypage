@@ -42,18 +42,20 @@
 						<span>武器</span>
 						<div v-for="wp in playerShip.wp" class="item-cell" v-if="wp.open==true">
 							<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('wp',$event,wp.idx)" @mouseleave="onmouseleave('wp',$event)">{{wp.posName}}：{{wp.name}}
-								<span v-if="playerShip.wp[wp.idx].staff!=-1">({{player.staff[playerShip.wp[wp.idx].staff].name}})</span>
+								<span v-if="wp.staff!=-1">({{player.staff[wp.staff].name}})</span>
 							</span>
 							<a v-if="wp.id!=-1" class="fl-right" @click="unloadWp(wp.idx)" title="卸载这个武器">[卸载]</a>
-							<a v-if="playerShip.wp[wp.idx].staff==-1&&player.validStaff(wp.stfTp)>0" class="fl-right" @click="assign('wp',wp.idx,wp.stfTp)" :title="assignTip(wp.stfTp)">[指派]</a>
+							<a v-if="wp.staff==-1&&player.validStaff(wp.stfTp)>=0" class="fl-right" @click="assign('wp',wp.idx,wp.stfTp)" :title="assignTip(wp.stfTp)">[指派]</a>
 						</div>
 					</div>
 					<div v-if="playerShip.mdNum>0">
 						<span>挂件</span>
 						<div v-for="md in playerShip.md" class=item-cell v-if="md.open==true">
 							<span class="halfWidth pad-left fl-left" @mouseenter="onmouseover('md',$event,md.idx)" @mouseleave="onmouseleave('md',$event)">挂件{{md.idx+1}}：{{md.name}}
+								<span v-if="md.staff!=-1">({{player.staff[md.staff].name}})</span>
 							</span>
 							<a v-if="md.id!=-1" class="fl-right" @click="unloadMd(md.idx)" title="卸载这个模块">[卸载]</a>
+							<a v-if="md.staff==-1&&player.validStaff(md.stfTp)>=0" class="fl-right" @click="assign('md',md.idx,md.stfTp)" :title="assignTip(md.stfTp)">[指派]</a>
 						</div>
 					</div>
 				</div>
@@ -124,8 +126,8 @@
 		</div>
 		<div class="modal" v-show="modal">
 			<div class="assign-div topPad leftVoid" id="assign-div" v-if="assignDiv">
-				<div class="bottomad bottomLine">可指派的宇航员({{player.validStaff(stfTp)>0}})</div>
-				<div class="topPad" v-if="player.validStaff(stfTp)==0">没有人可以指派</div>
+				<div class="bottomad bottomLine">可指派的宇航员({{player.ctVldStf(stfTp)}})</div>
+				<div class="topPad" v-if="player.ctVldStf(stfTp)<=0">没有人可以指派</div>
 				<div class="topPad bottomad y-scroll assignPad">
 					<div v-for="staff in player.staff" v-if="staff.id!=-1&&staff.jobType==-1&&staff.career==stfTp">
 						<div>
@@ -168,11 +170,12 @@
 			<div class="leftVoid bottomLine bottomad topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx].id>=0">
 				<div ><b>{{playerShip.wp[wpTipIdx].name}}</b></div>
 				<div v-if="playerShip.wp[wpTipIdx].staff==-1">操作员：无（需要一位[{{CAREER[playerShip.wp[wpTipIdx].stfTp]}}]操作）<br><i>该武器当前处于自动状态</i></div>
-				<span v-if="playerShip.wp[wpTipIdx].staff!=-1">操作员：{{player.staff[playerShip.wp[wpTipIdx].staff].name}}</span>
+				<div v-if="playerShip.wp[wpTipIdx].staff!=-1">操作员：{{player.staff[playerShip.wp[wpTipIdx].staff].name}}</div>
 			</div>
 			<div class="leftVoid bottomLine topPad" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx].id==-1">
 				<div >目前没有装载武器</div>
-				<div v-if="playerShip.wp[wpTipIdx].staff==-1">操作员：无<br></div>
+				<div v-if="playerShip.wp[wpTipIdx].staff==-1">操作员：无（需要一位[{{CAREER[playerShip.wp[wpTipIdx].stfTp]}}]操作）<br></div>
+				<div v-if="playerShip.wp[wpTipIdx].staff!=-1">操作员：{{player.staff[playerShip.wp[wpTipIdx].staff].name}}</div>
 			</div>
 			<div class="leftVoid" v-if="wpTipIdx>=0&&playerShip.wp[wpTipIdx].id>=0">
 				类型：{{wpTypeStrByItm([playerShip.wp[wpTipIdx].id])}}
@@ -191,10 +194,14 @@
 		<div class="shipTip" id="mdTip" v-show="mdTip">
 			<div class="leftVoid bottomLine bottomad topPad" v-if="mdTipIdx>=0&&playerShip.md[mdTipIdx].id>=0">
 				<div ><b>{{playerShip.md[mdTipIdx].name}}</b></div>
+				<div v-if="playerShip.md[mdTipIdx].staff==-1">操作员：无<br>（需要一位[{{CAREER[playerShip.md[mdTipIdx].stfTp]}}]操作）<br></div>
+				<div v-if="playerShip.md[mdTipIdx].staff!=-1">操作员：{{player.staff[playerShip.md[mdTipIdx].staff].name}}</div>
 				<i>{{itemDesc(playerShip.md[mdTipIdx].id)}}</i>
 			</div>
 			<div class="leftVoid bottomLine topPad" v-if="mdTipIdx>=0&&playerShip.md[mdTipIdx].id==-1">
 				<div >这个位置没有安装模块</div>
+				<div v-if="playerShip.md[mdTipIdx].staff==-1">操作员：无<br>（需要一位[{{CAREER[playerShip.md[mdTipIdx].stfTp]}}]操作）<br></div>
+				<div v-if="playerShip.md[mdTipIdx].staff!=-1">操作员：{{player.staff[playerShip.md[mdTipIdx].staff].name}}</div>
 			</div>
 			<div class="leftVoid" v-if="mdTipIdx>=0&&playerShip.md[mdTipIdx].id>=0">
 				用电：{{itemCost(playerShip.wp[mdTipIdx].id)}}

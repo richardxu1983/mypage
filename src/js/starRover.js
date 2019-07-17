@@ -600,12 +600,18 @@ function initShipAry(ship)
             idx:i,
             id:-1,
             name:"空",
+            posName:"挂件"+(i+1),
             open:false,
-            stfTp:0,
+            stfTp:1,
+            staff:-1,
         };
         if(i<ship.mdOpen)
         {
             ship.md[i].open=true;
+        }
+        ship.md[i].check = ()=>
+        {
+
         }
     }
 }

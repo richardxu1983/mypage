@@ -98,11 +98,8 @@ var app = new Vue({
             this.modal = true;
             this.assignDiv=true;
             this.currentJobType = job;
-            if(job=='wp')
-            {
-                this.wpAssignIdx = idx;
-                this.stfTp = p;
-            }
+            this.wpAssignIdx = idx;
+            this.stfTp = p;
         },
         deAssign(staffIdx)
         {
@@ -115,16 +112,21 @@ var app = new Vue({
         {
             this.modal = false;
             this.assignDiv=false;
+            this.wpAssignIdx = -1;
         },
         assignStaff(staffIdx)
         {
-            if(this.currentJobType=='wp')
+            let idx = this.wpAssignIdx;
+            if(idx==-1) return;
+            if(AssignJob(this.player,this.currentJobType,idx,staffIdx)==0)
             {
-                let wpIdx = this.wpAssignIdx;
-                if(wpIdx==-1) return;
-                if(AssignJob(this.player,'wp',wpIdx,staffIdx)==0)
+                if(this.playerShip[this.currentJobType][idx].id>=0)
                 {
-                    printMsg(printTimeC()+"你安排"+this.player.staff[staffIdx].name+"操作"+this.playerShip.wp[wpIdx].name);
+                    printMsg(printTimeC()+"你安排"+this.player.staff[staffIdx].name+"操作"+this.playerShip[this.currentJobType][idx].name);
+                }
+                else
+                {
+                    printMsg(printTimeC()+"你安排"+this.player.staff[staffIdx].name+"操作"+this.playerShip[this.currentJobType][idx].posName);
                 }
             }
             this.closeAssign();
@@ -234,11 +236,7 @@ var app = new Vue({
         {
             let jobType = this.player.staff[idx].jobType;
             let jobIdx = this.player.staff[idx].jobIdx;
-
-            if(jobType=='wp')
-            {
-                return "操作"+playerData.ship.wp[jobIdx].posName+"："+playerData.ship.wp[jobIdx].name;
-            }
+            return "操作"+playerData.ship[jobType][jobIdx].posName+"："+playerData.ship[jobType][jobIdx].name;
         },
         onmouseleave(str,$event)
         {

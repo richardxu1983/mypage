@@ -182,13 +182,10 @@ function AssignJob(cap,job,jobIdx,staffIdx)
 {
     let ship = cap.ship;
     if(staffIdx==-1) return -1;
-    if(job=="wp")
-    {
-        if(ship.wp[jobIdx].staff!=-1) return -1;
-        if(ship.wp[jobIdx].stfTp!=cap.staff[staffIdx].career) return -2;
-        ship.wp[jobIdx].staff = staffIdx;
-        ship.wp[jobIdx].check();
-    }
+    if(ship[job][jobIdx].staff!=-1) return -1;
+    if(ship[job][jobIdx].stfTp!=cap.staff[staffIdx].career) return -2;
+    ship[job][jobIdx].staff = staffIdx;
+    ship[job][jobIdx].check();
     cap.staff[staffIdx].jobType = job;
     cap.staff[staffIdx].jobIdx = jobIdx;
     return 0;
@@ -201,11 +198,8 @@ function deAssign(cap,staffIdx)
     let job = cap.staff[staffIdx].jobType;
     if(job==-1) return -1;
     let jobIdx = cap.staff[staffIdx].jobIdx;
-    if(job=='wp')
-    {
-        ship.wp[jobIdx].staff = -1;
-        ship.wp[jobIdx].check();
-    }
+    ship[job][jobIdx].staff = -1;
+    ship[job][jobIdx].check();
     cap.staff[staffIdx].jobType = -1;
     cap.staff[staffIdx].jobIdx = -1;
     return 0;

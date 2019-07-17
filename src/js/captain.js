@@ -29,6 +29,19 @@ function initCaptain(cap,data)
         }
         return idx;
     };
+
+    cap.ctVldStf = (p)=>
+    {
+        let n = 0;
+        for(let i=0;i<cap.maxStaff;i++)
+        {
+            if(cap.staff[i].species!=-1&&cap.staff[i].jobIdx==-1&&cap.staff[i].career==p)
+            {
+                n++;
+            }
+        }
+        return n;
+    }
 }
 
 function createCap(data)
