@@ -39,8 +39,12 @@ function createShip(cap,id)
         shdPer:0,
         strcAdd:0,
         strcPer:0,
-        paoAtkAdd:0,
-        paoAtkPer:0,
+        atkAdd_1:0,
+        atkAdd_2:0,
+        atkAdd_3:0,
+        atkPer_1:0,
+        atkPer_2:0,
+        atkPer_3:0,
         shdBtRecAdd:0,
         shdBtRecPer:0,
         shdRecAdd:0,
@@ -552,8 +556,19 @@ function initShipAry(ship)
             name:"空",
             staff:-1,
             stfTp:0,
-            aimAdd:0,
             open:false,
+            add:{
+                atkAdd_1:0,
+                atkAdd_2:0,
+                atkAdd_3:0,
+                atkPer_1:0,
+                atkPer_2:0,
+                atkPer_3:0,
+                atmAdd:0,
+                spdPer:0,
+                startAdd:0,
+                startPer:0,
+            },
         };
         if(i<ship.wpOpen)
         {
@@ -564,7 +579,7 @@ function initShipAry(ship)
             let self = ship.wp[i];
             let id = self.id;
             if(id==-1) return 0;
-            return self.aimAdd + WP_DATA[wpIdbyItem(id)].aim;
+            return WP_DATA[wpIdbyItem(id)].aim + self.add.atmAdd;
         }
         ship.wp[i].atk=()=>
         {
@@ -573,24 +588,28 @@ function initShipAry(ship)
             if(id==-1) return -1;
             let wpId = wpIdbyItem(id);
             let type = WP_DATA[wpId].type;
-            if(type==1)
-            {
-                return Math.floor((WP_DATA[wpId].atk+ship.add.paoAtkAdd)*((ship.add.paoAtkPer+100)/100));
-            }
-            return WP_DATA[wpId].atk;
+            return Math.floor((WP_DATA[wpId].atk+ship.add["atkAdd_"+type]+self.add["atkAdd_"+type])*((ship.add["atkPer_"+type]+self.add["atkPer_"+type]+100)/100));
+        }
+        ship.wp[i].start=()=>
+        {
+            let self = ship.wp[i];
+            let id = self.id;
+            if(id==-1) return -1;
+            let wpId = wpIdbyItem(id);
+            return Math.floor((WP_DATA[wpId].start+self.add.startAdd)*(100+self.add.startPer)/100);
+        }
+        ship.wp[i].spd=()=>
+        {
+            let self = ship.wp[i];
+            let id = self.id;
+            if(id==-1) return -1;
+            let wpId = wpIdbyItem(id);
+            return Math.floor((WP_DATA[wpId].speed)*(100+self.add.spdPer)/100);
         }
         ship.wp[i].check=()=>
         {
             let self = ship.wp[i];
             let staffId = self.staff;
-            if(staffId==-1)
-            {
-                self.aimAdd=0;
-            }
-            else
-            {
-                self.aimAdd = STAFF_ADD_TO_AIM;
-            }
         }
     }
 
@@ -611,7 +630,7 @@ function initShipAry(ship)
         }
         ship.md[i].check = ()=>
         {
-
+            ship.check();
         }
     }
 }

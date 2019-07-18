@@ -132,6 +132,33 @@ function StaffInit(cap,idx)
     cap.staff[idx].gender = -1;
     cap.staff[idx].age = -1;
     cap.staff[idx].salary = 100;
+    cap.staff[idx].skill = new Array(3);
+    for(let i=0;i<3;i++)
+    {
+        cap.staff[idx].skill[i] = -1;
+    }
+}
+
+function staffAddSkill(staff,id)
+{
+    let idx = -1;
+    let has = 0;
+    for(let i=0;i<3;i++)
+    {
+        if(staff.skill[i]==-1&&idx==-1)
+        {
+            idx = i;
+        }
+        if(staff.skill[i]==id)
+        {
+            has=1;
+            break;
+        }
+    }
+    if(has==0&&idx>=0)
+    {
+        staff.skill[idx] = id;
+    }
 }
 
 //添加船员
