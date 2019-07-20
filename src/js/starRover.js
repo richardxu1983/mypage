@@ -649,11 +649,16 @@ function getItemIdx(ship,id)
     return idx;
 }
 
+function plyFtWith(cap)
+{
+    return playerShipFightWith(cap.ship);
+}
+
 function playerShipFightWith(enmy)
 {
     if(playerData.ship.strc<=0)
     {
-        return;
+        return -1;
     }
 
     printFtMsg01(playerData.ship,enmy);
@@ -669,19 +674,24 @@ function playerShipFightWith(enmy)
         {
             addFightMsg("战斗时间过长，胜负未分，双方已离开战场");
             printMsg("胜负未分，双方离开战场");
-            return;
+            return 0;
         }
 
         playerData.ship.doBtShRec(t);
         enmy.doBtShRec(t);
 
-        if(playerData.ship.atkEnmy(t,enmy)==1 || enmy.atkEnmy(t,playerData.ship)==1)
+        if(playerData.ship.atkEnmy(t,enmy)==1 )
         {
-            return;
+            return 1;
+        }
+        if(enmy.atkEnmy(t,playerData.ship)==1)
+        {
+            return 2;
         }
         t += 200;//每次步进200毫秒
     }
     addFightMsg("");
+    return -1;
 }
 
 function effNum(ship,mdId)

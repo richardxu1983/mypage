@@ -12,6 +12,7 @@ var app = new Vue({
         modal:false,
         staffTip:false,
         assignDiv:false,
+        stg:stage,
         midModuleCur:'test',
         midModule:{
             adv:{name:"冒险",open:true},
@@ -231,6 +232,10 @@ var app = new Vue({
         minNavClick(index)
         {
             this.midModuleCur = index;
+        },
+        doStg(idx)
+        {
+            onStgCard(idx);
         },
         jobDesc(idx)
         {

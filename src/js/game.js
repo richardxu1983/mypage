@@ -54,7 +54,8 @@ function createPlayer()
 
 function gameInit()
 {
-    createPlayer()
+    createPlayer();
+    stgGenAll();
 }
 
 gameInit();

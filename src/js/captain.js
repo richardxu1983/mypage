@@ -60,6 +60,16 @@ function ranCaptain(data)
     return cap;
 }
 
+function ranCptWithShip(data,id)
+{
+    let d = RanPerson({side:data.side});
+    d.maxStaff = 5 + Math.floor(Math.random()*(MAX_STAFF - 10));
+    d.gold = data.gold||0;
+    let cap = createCap(d);
+    cap.ship = createShip(cap,id);
+    return cap;
+}
+
 function createShipForCap(cap,id,wp,md)
 {
     cap.ship = createShip(cap,id);
