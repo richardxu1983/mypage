@@ -216,7 +216,8 @@ var app = new Vue({
         },
         testAddmdOpen()
         {
-            this.playerShip.OpenAdd('md',1);
+            //this.playerShip.OpenAdd('md',1);
+            playerData.ship.addItem(1,10);
         },
         minNavClass(key)
         {

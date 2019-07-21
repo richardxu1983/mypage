@@ -41,10 +41,12 @@ function stgGen(idx)
 
     if(ran>=0&&ran<50)
     {
+        let cap = ranCptWithShip({side:999},2);
         stage.card[idx] = 
         {
             type:1,
-            cap:ranCptWithShip({side:999},2),
+            cap:cap,
+            name:cap.ship.name,
         }
     }
     else if(ran>=50&&ran<80)
@@ -52,6 +54,7 @@ function stgGen(idx)
         stage.card[idx] = 
         {
             type:2,
+            name:"矿物",
             mine:30,
         }
     }
@@ -60,6 +63,7 @@ function stgGen(idx)
         stage.card[idx] = 
         {
             type:99,
+            name:"虚空",
         }
     }
 }
@@ -81,12 +85,15 @@ function onStgCard(idx)
         {
             stage.on--;
             stgClear(idx);
+            stgGen(idx);
             return res;
         }
     }
     else if(stage.card[idx].type==2)
     {
-        
+        playerData.ship.addItem(1,10);
+        stgClear(idx);
+        stgGen(idx);
     }
     return res;
 }

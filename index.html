@@ -112,10 +112,10 @@
 				<div v-if="midModuleCur=='adv'">
 					<div v-for="(v,index) in stg.card">
 						<div v-if="v.type==1" @click="doStg(index)">
-							{{v.cap.name}}
+							{{v.name}}
 						</div>
-						<div v-else>
-							{{v.type}}
+						<div v-else-if="v.type==2" @click="doStg(index)">
+							{{v.name}}
 						</div>
 					</div>
 				</div>

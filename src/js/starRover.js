@@ -152,7 +152,17 @@ function createShip(cap,id)
                     }
                     else
                     {
-                        ship.room[it].num+=NumToAdd;
+                        let n = ship.room[it].num;
+                        //ship.room[it].num+=NumToAdd;
+                        let arr = {
+                            idx:it,
+                            'id':id,
+                            num:n+NumToAdd,
+                            name:ITEM_DATA[id].name,
+                        };
+                        //ship.room[it] = 
+                        app.$set(app.playerShip.room,it,arr);
+                        //console.log(app.playerShip.room);
                         NumToAdd = 0;
                     }
                 }
