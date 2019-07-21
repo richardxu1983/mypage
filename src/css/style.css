@@ -42,9 +42,6 @@ div{
     font-size: 14px;
 }
 
-.content div{
-    margin-bottom: .3em;
-}
 .content ul{
     margin: 0;
 }
@@ -157,6 +154,85 @@ ul{
     padding-right: .5em;
 }
 
+.stgCard
+{
+    width: 15em;
+    height: 10em;
+    border:1px solid black;
+    margin:1em 2em 1em 0;
+}
+
+.stgCardTop
+{
+    height: 70%;
+    margin: 0;
+}
+
+.stgCardBt
+{
+    margin: 0;
+    text-align: center;
+}
+
+.cardBtn
+{
+    margin-top: .5em;
+    margin-right: 1em;
+    height: 2em;
+    line-height: 2em;
+    border-style:none;
+    border:1px solid black;
+}
+
+.stgC
+{
+    margin: 0;
+    padding-left: 2em;
+    height: 25em;
+}
+
+.stgB
+{
+    width: 100%;
+    margin-top: 1em;
+    padding-left: 2em;
+    padding-top: .5em;
+}
+
+.stgBtn
+{
+    height: 3em;
+    line-height: 3em;
+    border: 1px solid black;
+    margin-right: 1.5em;
+}
+
+.btn01
+{
+    text-align: center;
+    width:fit-content;
+    padding: 0 1em 0 1em;
+    width:-webkit-fit-content;
+    width:-moz-fit-content;
+    background-color: white;
+}
+
+.btn01:hover{
+    background-color: #FFEBCD;
+    cursor: pointer;
+}
+
+.btn01:active
+{
+    background-color:#FFA07A;
+    cursor: pointer;
+}
+
+.btn01:disabled
+{
+    background-color:#dddddd;
+}
+
 .shipTip{
     width: 18em;
     height: auto;
@@ -206,6 +282,14 @@ a:hover
     width: 24%;
 }
 
+.left div{
+    margin-bottom: .3em;
+}
+
+.right div{
+    margin-bottom: .3em;
+}
+
 .right{
     width: 26%;
 }
@@ -237,7 +321,7 @@ a:hover
     margin-top: .5em;
     padding: .5em;
     width: 98%;
-    height: 30em;
+    height: 35em;
     border: 1px solid black;
     background-color: white;
 }

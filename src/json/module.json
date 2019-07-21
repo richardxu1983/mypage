@@ -43,7 +43,7 @@
     "type": 1,
     "cost": 5,
     "add": {
-      "paoAtkAdd": 15
+      "atkAdd_1": 15
     },
     "tgSrc": null,
     "tgSrcP": null,

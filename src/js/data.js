@@ -7,6 +7,11 @@ var SHIP_DATA =
     "shd": 100,
     "store": 50,
     "cost": 20,
+    "wp": [
+      10000,
+      10000
+    ],
+    "md": null,
     "costLv": 5,
     "shdLv": 5,
     "strcLv": 5,
@@ -25,6 +30,11 @@ var SHIP_DATA =
     "shd": 10,
     "store": 50,
     "cost": 20,
+    "wp": [
+      10001,
+      10001
+    ],
+    "md": null,
     "costLv": 5,
     "shdLv": 5,
     "strcLv": 5,

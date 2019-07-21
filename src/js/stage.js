@@ -19,6 +19,7 @@ function stageInit(lv)
             cap:-1,
             mine:-1,
             unit:-1,
+            choice:[],
         }
     }
 }
@@ -47,6 +48,7 @@ function stgGen(idx)
             type:1,
             cap:cap,
             name:cap.ship.name,
+            choice:["战斗","逃跑"],
         }
     }
     else if(ran>=50&&ran<80)
@@ -54,8 +56,9 @@ function stgGen(idx)
         stage.card[idx] = 
         {
             type:2,
-            name:"矿物",
+            name:"矿石带",
             mine:30,
+            choice:["采矿"],
         }
     }
     else
@@ -64,6 +67,7 @@ function stgGen(idx)
         {
             type:99,
             name:"虚空",
+            choice:["探索"],
         }
     }
 }

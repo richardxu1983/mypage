@@ -1,6 +1,9 @@
 
-const TEST_WP = [0,2];
-const TEST_MD = [100,101];
+function postData(obj,key,value)
+{
+    //onsole.log(app);
+    app.$set(obj,key,value);
+}
 
 function testFight()
 {
@@ -56,6 +59,8 @@ function gameInit()
 {
     createPlayer();
     stgGenAll();
+    app.playerShip = playerData.ship;
+    app.player = playerData;
+    //console.log(app);
 }
 
-gameInit();

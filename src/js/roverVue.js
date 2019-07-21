@@ -1,8 +1,62 @@
+// 这种复杂的补间动画逻辑可以被复用
+// 任何整数都可以执行动画
+// 组件化使我们的界面十分清晰
+// 可以支持更多更复杂的动态过渡
+// 策略。
+Vue.component('animated-integer', {
+    template: '<span>{{ tweeningValue }}</span>',
+    props: {
+      value: {
+        type: Number,
+        required: true
+      }
+    },
+    data: function () {
+      return {
+        tweeningValue: 0
+      }
+    },
+    watch: {
+      value: function (newValue, oldValue) {
+        this.tween(oldValue, newValue)
+      }
+    },
+    mounted: function () {
+      this.tween(0, this.value)
+    },
+    methods: {
+      tween: function (startValue, endValue) {
+        var vm = this
+        function animate () {
+          if (TWEEN.update()) {
+            requestAnimationFrame(animate)
+          }
+        }
+  
+        new TWEEN.Tween({ tweeningValue: startValue })
+          .to({ tweeningValue: endValue }, 500)
+          .onUpdate(function () {
+            vm.tweeningValue = this.tweeningValue.toFixed(0)
+          })
+          .start()
+  
+        animate()
+      }
+    }
+  })
+  
+
+
+
+
+
+
 var app = new Vue({
     el: '#app',
     data: {
-        playerShip: playerData.ship,
-        player:playerData,
+        playerShip: {},
+        player:-1,
+        plyStore:[],
         shipInfo:true,
         staffInfo:true,
         shipTip:false,
@@ -13,7 +67,7 @@ var app = new Vue({
         staffTip:false,
         assignDiv:false,
         stg:stage,
-        midModuleCur:'test',
+        midModuleCur:'adv',
         midModule:{
             adv:{name:"冒险",open:true},
             test:{name:"测试",open:true},
@@ -32,6 +86,20 @@ var app = new Vue({
     },
     updated:function(){
         this.scrollToBottom();
+    },
+    mounted:function()
+    {
+        this.$nextTick(function () {
+            // Code that will run only after the
+            // entire view has been re-rendered
+            gameInit();
+          })
+        /**
+        setTimeout(() => {
+            gameInit();
+        }, 500);
+         */
+
     },
     computed:
     {
@@ -61,7 +129,7 @@ var app = new Vue({
         },
         testAddLv()
         {
-            this.playerShip.lvlUp();
+            this.player.addGold(100);
         },
         switchMainShipInfo(){
             this.shipInfo = !this.shipInfo;

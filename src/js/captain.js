@@ -70,23 +70,7 @@ function ranCptWithShip(data,id)
     return cap;
 }
 
-function createShipForCap(cap,id,wp,md)
+function createShipForCap(cap,id)
 {
     cap.ship = createShip(cap,id);
-    if(wp)
-    {
-        for(const wpId of wp)
-        {
-            cap.ship.loadWp(wpId);
-        }
-    }
-    
-    if(md)
-    {
-        for(const mdId of md)
-        {
-            cap.ship.loadMd(mdId);
-        }
-    }
-    
 }

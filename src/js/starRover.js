@@ -1,5 +1,5 @@
 
-var playerData = {};
+var playerData = -1;
 
 const STAFF_ADD_TO_AIM = 20;
 const BT_SHLD_RECT = 5000;   //战斗时护盾恢复的频率
@@ -152,19 +152,12 @@ function createShip(cap,id)
                     }
                     else
                     {
-                        let n = ship.room[it].num;
-                        //ship.room[it].num+=NumToAdd;
-                        let arr = {
-                            idx:it,
-                            'id':id,
-                            num:n+NumToAdd,
-                            name:ITEM_DATA[id].name,
-                        };
-                        //ship.room[it] = 
-                        app.$set(app.playerShip.room,it,arr);
+                        ship.room[it].num+=NumToAdd;
+                        //app.$set(app.playerShip.room,it,arr);
                         //console.log(app.playerShip.room);
                         NumToAdd = 0;
                     }
+                    if(ship.side==0) postData(app.plyStore,it,ship.room[it]);
                 }
             }
         }
@@ -193,6 +186,8 @@ function createShip(cap,id)
                     ship.room[it].num = NumToAdd;
                     NumToAdd = 0;
                 }
+//              console.log(app);
+                if(ship.side==0) postData(app.plyStore,it,ship.room[it]);
                 ship.roomOccupy++;
                 if(ship.roomOccupy>=ship.store) return;
             }
@@ -293,6 +288,7 @@ function createShip(cap,id)
     ship.loadWp = (WpId)=>
     {
         let WpIdx = -1;
+        if(ITEM_DATA[WpId].type!=100) return;
         for(let i=0; i<ship.wp.length;i++)
         {
             if(ship.wp[i].open==true&&ship.wp[i].id==-1)
@@ -321,6 +317,7 @@ function createShip(cap,id)
     ship.loadMd = (MdId)=>
     {
         let Idx = -1;
+        if(ITEM_DATA[MdId].type!=101) return;
         for(let i=0; i<ship.md.length;i++)
         {
             if(ship.md[i].open==true&&ship.md[i].id==-1)
@@ -549,7 +546,20 @@ function createShip(cap,id)
 
     initShipAry(ship);
     ship.check();
-
+    if(SHIP_DATA[id].wp)
+    {
+        for(let i=0;i<SHIP_DATA[id].wp.length;i++)
+        {
+            ship.loadWp(SHIP_DATA[id].wp[i]);
+        }
+    }
+    if(SHIP_DATA[id].md)
+    {
+        for(let i=0;i<SHIP_DATA[id].md.length;i++)
+        {
+            ship.loadMd(SHIP_DATA[id].md[i]);
+        }
+    }
     return ship;
 }
 
