@@ -49,6 +49,7 @@ function stgGen(idx)
             cap:cap,
             name:cap.ship.name,
             choice:["战斗","逃跑"],
+            src:"c002",
         }
     }
     else if(ran>=50&&ran<80)
@@ -59,6 +60,7 @@ function stgGen(idx)
             name:"矿石带",
             mine:30,
             choice:["采矿"],
+            src:"c001",
         }
     }
     else
@@ -68,6 +70,7 @@ function stgGen(idx)
             type:99,
             name:"虚空",
             choice:["探索"],
+            src:"c003",
         }
     }
 }

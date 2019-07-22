@@ -158,20 +158,38 @@ ul{
 {
     width: 15em;
     height: 10em;
-    border:1px solid black;
+    border:1px solid #666;
     margin:1em 2em 1em 0;
+    background-color: black;
 }
 
 .stgCardTop
 {
     height: 70%;
     margin: 0;
+    text-align: center;
+    background-size: 100% 100%;
 }
 
 .stgCardBt
 {
     margin: 0;
     text-align: center;
+}
+
+.cTitle
+{
+    position: relative;
+    top:4.5em;
+    margin: 0 auto;
+    height: 2em;
+    line-height: 2em;
+    color: white;
+    background-color: black;
+    width:-webkit-fit-content;
+    width:-moz-fit-content;
+    background-color: black;
+    padding: 0 1em 0 1em;
 }
 
 .cardBtn
@@ -182,6 +200,12 @@ ul{
     line-height: 2em;
     border-style:none;
     border:1px solid black;
+}
+
+.cdImg
+{
+    width: 10em;
+    height: 5em;
 }
 
 .stgC
@@ -205,6 +229,7 @@ ul{
     line-height: 3em;
     border: 1px solid black;
     margin-right: 1.5em;
+    
 }
 
 .btn01
@@ -324,6 +349,7 @@ a:hover
     height: 35em;
     border: 1px solid black;
     background-color: white;
+    background-color: #222;
 }
 
 .modal{
