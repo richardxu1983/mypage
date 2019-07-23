@@ -66,7 +66,7 @@ var app = new Vue({
         modal:false,
         staffTip:false,
         assignDiv:false,
-        stg:stage,
+        stg:[],
         midModuleCur:'adv',
         midModule:{
             adv:{name:"冒险",open:true},
@@ -93,13 +93,13 @@ var app = new Vue({
             // Code that will run only after the
             // entire view has been re-rendered
             gameInit();
+            getAllStg();
           })
         /**
         setTimeout(() => {
             gameInit();
         }, 500);
          */
-
     },
     computed:
     {
@@ -157,6 +157,12 @@ var app = new Vue({
         switchStaffInfo()
         {
             this.staffInfo = !this.staffInfo;
+        },
+        doStg(idx,index)
+        {
+            onStgCard(idx,index)
+            //stgClear(idx);
+            //stgGen(idx);
         },
         tryToFix()
         {
@@ -302,10 +308,6 @@ var app = new Vue({
         {
             this.midModuleCur = index;
         },
-        doStg(idx)
-        {
-            onStgCard(idx);
-        },
         jobDesc(idx)
         {
             let jobType = this.player.staff[idx].jobType;
@@ -322,3 +324,17 @@ var app = new Vue({
         }
     }
 })
+
+
+function getStgDt(idx)
+{
+    postData(app.stg,idx,stage.card[idx]);
+}
+
+function getAllStg()
+{
+    for(let i=0;i<stage.card.length;i++)
+    {
+        postData(app.stg,i,stage.card[i]);
+    }
+}

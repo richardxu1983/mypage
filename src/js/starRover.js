@@ -367,6 +367,7 @@ function createShip(cap,id)
             ship.room[idx].name = "";
             ship.roomOccupy--;
         }
+        if(ship.side==0) postData(app.plyStore,idx,ship.room[idx]);
     }
     ship.brcName = ()=>
     {

@@ -1,8 +1,28 @@
 
+//删除循环引用
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === "object" && value !== null)
+        {
+            if (seen.has(value)) 
+            {
+                return;
+            }
+            seen.add(value);
+        }
+        if (typeof value === "function")
+        {
+            return;
+        }
+        return value;
+    };
+};
+
 function postData(obj,key,value)
 {
-    //onsole.log(app);
-    app.$set(obj,key,value);
+    var obj_snapshot = JSON.parse(JSON.stringify(value,getCircularReplacer()));
+    app.$set(obj,key,obj_snapshot);
 }
 
 function testFight()

@@ -15,6 +15,7 @@ function stageInit(lv)
     {
         stage.card[i] = 
         {
+            idx:i,
             type:-1,
             cap:-1,
             mine:-1,
@@ -43,45 +44,40 @@ function stgGen(idx)
     if(ran>=0&&ran<50)
     {
         let cap = ranCptWithShip({side:999},2);
-        stage.card[idx] = 
-        {
-            type:1,
-            cap:cap,
-            name:cap.ship.name,
-            choice:["战斗","逃跑"],
-            src:"c002",
-        }
+        stage.card[idx].type=1;
+        stage.card[idx].cap=cap;
+        stage.card[idx].name=cap.ship.name;
+        stage.card[idx].choice=["战斗","逃跑"];
+        stage.card[idx].src="c002";
     }
     else if(ran>=50&&ran<80)
     {
-        stage.card[idx] = 
-        {
-            type:2,
-            name:"矿石带",
-            mine:30,
-            choice:["采矿"],
-            src:"c001",
-        }
+        stage.card[idx].type=2;
+        stage.card[idx].name="矿石带";
+        stage.card[idx].mine=30;
+        stage.card[idx].choice=["采矿"];
+        stage.card[idx].src="c001";
+
     }
     else
     {
-        stage.card[idx] = 
-        {
-            type:99,
-            name:"虚空",
-            choice:["探索"],
-            src:"c003",
-        }
+        stage.card[idx].type=99;
+        stage.card[idx].name="虚空";
+        stage.card[idx].choice=["探索"];
+        stage.card[idx].src="c003";
     }
+    //postData(app.stg,idx,stage.card[idx]);
 }
 
 function stgClear(idx)
 {
+    
     stage.card[idx].type = -1;
     stage.card[idx].cap = -1;
+    postData(app.stg,idx,stage.card[idx]);
 }
 
-function onStgCard(idx)
+function onStgCard(idx,choice)
 {
     let res;
     if(stage.card[idx]==-1) return -1;

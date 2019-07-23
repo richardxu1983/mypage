@@ -374,3 +374,20 @@ a:hover
     height: auto;
     margin-left: -10em;
 }
+
+
+.list-enter-active, .list-leave-active {
+transition: all 0.6s;
+}
+
+.list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+opacity: 0;
+transform: scale(0.2) rotate(90deg) translateY(-80px);
+}
+
+.list-enter
+/* .list-leave-active for below version 2.1.8 */ {
+opacity: 0;
+transform: scale(0.1);
+}

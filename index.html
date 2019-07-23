@@ -115,15 +115,17 @@
 				</div>
 				<div v-if="midModuleCur=='adv'">
 					<div class="stgC">
-						<div v-for="(v,index) in stg.card" v-if="v.type!=-1" class="stgCard fl-left">
-							<div class="stgCardTop" v-bind:style="{backgroundImage:'url(static/img/'+v.src+'.png)'}">
-								<div class="cTitle">{{v.name}}</div>
+						<transition-group @after-leave="getAllStg()" name="list">
+							<div v-for="(v,index) in stg" :key="index" v-if="v.type!=-1" class="stgCard fl-left">
+								<div class="stgCardTop" v-bind:style="{backgroundImage:'url(static/img/'+v.src+'.png)'}">
+									<div class="cTitle">{{v.name}}</div>
+								</div>
+								<hr>
+								<div class="stgCardBt">
+									<button class="btn01 cardBtn" v-for="(v1,index) in v.choice" @click="doStg(v.idx,index)">{{v1}}</button>
+								</div>
 							</div>
-							<hr>
-							<div class="stgCardBt">
-								<button class="btn01 cardBtn"  v-for="(v1,index) in v.choice">{{v1}}</button>
-							</div>
-						</div>
+						</transition-group>
 					</div>
 					<hr>
 					<div class="stgB">
