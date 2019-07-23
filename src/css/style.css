@@ -144,6 +144,14 @@ ul{
     padding-bottom: .5em;
 }
 
+.bottopad-small{
+    padding-bottom: .3em;
+}
+
+.toppad-small{
+    padding-top: .2em;
+}
+
 .bottomad-big{
     padding-bottom: 1em;
 }

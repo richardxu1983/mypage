@@ -118,7 +118,7 @@
 						<transition-group @after-leave="getAllStg()" name="list">
 							<div v-for="(v,index) in stg" :key="index" v-if="v.type!=-1" class="stgCard fl-left">
 								<div class="stgCardTop" v-bind:style="{backgroundImage:'url(static/img/'+v.src+'.png)'}">
-									<div class="cTitle">{{v.name}}</div>
+									<div class="cTitle">{{v.name}}<span v-if="v.type==2">({{v.mine}})</span></div>
 								</div>
 								<hr>
 								<div class="stgCardBt">
@@ -176,7 +176,10 @@
 						{{player.staff[staffTipIdx].age}}岁
 					</span>
 				</div>
-				<div>周薪：{{player.staff[staffTipIdx].salary}}星际币</div>
+				<div class="bottomad">
+					<div class="toppad-small">加入时间：第{{player.staff[staffTipIdx].week}}周，第{{player.staff[staffTipIdx].day}}天</div>
+					<div class="toppad-small">周薪：{{player.staff[staffTipIdx].salary}}星际币</div>
+				</div>
 			</div>
 		</div>
 		<div v-if="player!=-1" class="shipTip" id="shipTip" v-show="shipTip">

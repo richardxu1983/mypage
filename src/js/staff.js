@@ -130,6 +130,7 @@ function StaffInit(cap,idx)
     cap.staff[idx].jobType = -1;
     cap.staff[idx].jobIdx = -1;
     cap.staff[idx].gender = -1;
+    cap.staff[idx].JDay = -1;
     cap.staff[idx].age = -1;
     cap.staff[idx].salary = 100;
     cap.staff[idx].skill = new Array(3);
@@ -183,6 +184,10 @@ function addStaff(cap,data)
     cap.staff[idx].type = data.type;
     cap.staff[idx].gender = data.gender;
     cap.staff[idx].species = data.species;
+    cap.staff[idx].dCount = time.dCount;
+    cap.staff[idx].nextSD = time.dCount+MAX_DAY;
+    cap.staff[idx].day = time.day;
+    cap.staff[idx].week = time.week;
     cap.staff[idx].age = data.age;
     if(cap.side==0)
     {
@@ -252,18 +257,23 @@ function checkSalary(cap)
     {
         if(cap.staff[i].species!=-1)
         {
-            salary = cap.staff[i].salary;
-            gold = cap.gold;
-            if(gold>=salary)
+            if(time.dCount ==cap.staff[i].nextSD)
             {
-                cap.addGold(-1*salary);
-                printMsg(printTimeC()+"你支付了"+cap.staff[i].name+"薪水"+salary+"星际币");
+                salary = cap.staff[i].salary;
+                gold = cap.gold;
+                if(gold>=salary)
+                {
+                    cap.addGold(-1*salary);
+                    printMsg(printTimeC()+"你支付了"+cap.staff[i].name+"薪水"+salary+"星际币");
+                    cap.staff[i].nextSD+=MAX_DAY;
+                }
+                else
+                {
+                    printMsg(printTimeC()+"你无法支付"+cap.staff[i].name+"的薪水");
+                    staffLeave(cap,i)
+                }
             }
-            else
-            {
-                printMsg(printTimeC()+"你无法支付"+cap.staff[i].name+"的薪水");
-                staffLeave(cap,i)
-            }
+
         }
     }    
 }

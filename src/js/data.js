@@ -80,7 +80,7 @@ var ITEM_DATA =
     "desc": "这篇宇宙中最常见的合成晶体，可以用来制造和修补",
     "type": 1,
     "subId": null,
-    "stack": 100
+    "stack": 1000
   },
   "10000": {
     "id": "10000",

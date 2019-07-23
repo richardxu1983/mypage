@@ -1,12 +1,13 @@
 
 
 var time = {
+    dCount:1,
     day:1,
     hour:0,
     week:1,
 }
 const MAX_DAY = 5;
-var MAX_HOUR = 10;
+var MAX_HOUR = 24;
 var lastTime = "";
 
 function timeStr()
@@ -41,12 +42,13 @@ function addHour(step)
     {
         time.hour-=MAX_HOUR;
         time.day++;
+        time.dCount++;
         playerData.ship.recShield();
+        checkSalary(playerData);
         if(time.day>MAX_DAY)
         {
             time.week++;
             time.day = 1;
-            checkSalary(playerData);
         }
     }
 }

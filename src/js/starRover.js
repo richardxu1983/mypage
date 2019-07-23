@@ -3,6 +3,7 @@ var playerData = -1;
 
 const STAFF_ADD_TO_AIM = 20;
 const BT_SHLD_RECT = 5000;   //战斗时护盾恢复的频率
+const BASIC_MINE = 30;  //基础采矿一次30
 
 //side:0:玩家,999:野怪
 function createShip(cap,id)
@@ -82,6 +83,11 @@ function createShip(cap,id)
         return c;
     }
 
+    ship.mine = ()=>
+    {
+        return BASIC_MINE;
+    }
+
     ship.check = ()=>
     {
         let mdId;
@@ -135,6 +141,11 @@ function createShip(cap,id)
 
         //满了
         if(ship.roomOccupy>=ship.store) return;
+
+        if(ship.side==0)
+        {
+            printMsg("你获得了"+num+"个"+ITEM_DATA[id].name);
+        }
 
         let NumToAdd = num;
 
@@ -703,11 +714,11 @@ function playerShipFightWith(enmy)
 
         if(playerData.ship.atkEnmy(t,enmy)==1 )
         {
-            return 1;
+            return 1;//玩家胜利
         }
         if(enmy.atkEnmy(t,playerData.ship)==1)
         {
-            return 2;
+            return 2;//敌对胜利
         }
         t += 200;//每次步进200毫秒
     }

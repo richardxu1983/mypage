@@ -54,7 +54,7 @@ function stgGen(idx)
     {
         stage.card[idx].type=2;
         stage.card[idx].name="矿石带";
-        stage.card[idx].mine=30;
+        stage.card[idx].mine=100;
         stage.card[idx].choice=["采矿"];
         stage.card[idx].src="c001";
 
@@ -81,6 +81,7 @@ function onStgCard(idx,choice)
 {
     let res;
     if(stage.card[idx]==-1) return -1;
+    addHour(MAX_HOUR/2);
     if(stage.card[idx].type==1)
     {
         res = plyFtWith(stage.card[idx].cap);
@@ -94,7 +95,24 @@ function onStgCard(idx,choice)
     }
     else if(stage.card[idx].type==2)
     {
-        playerData.ship.addItem(1,10);
+        let m = playerData.ship.mine();
+        printMsg(printTimeC()+"你开始采矿");
+        if(m<stage.card[idx].mine)
+        {
+            stage.card[idx].mine-=m;
+            playerData.ship.addItem(1,m);
+            postData(app.stg,idx,stage.card[idx]);
+        }
+        else
+        {
+            playerData.ship.addItem(1,stage.card[idx].mine);
+            stgClear(idx);
+            stgGen(idx);
+        }
+    }
+    else if(stage.card[idx].type==99)
+    {
+        printMsg(printTimeC()+"你进行了探索");
         stgClear(idx);
         stgGen(idx);
     }
