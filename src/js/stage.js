@@ -81,9 +81,10 @@ function onStgCard(idx,choice)
 {
     let res;
     if(stage.card[idx]==-1) return -1;
-    addHour(MAX_HOUR/2);
+    
     if(stage.card[idx].type==1)
     {
+        addHour(MAX_HOUR/4);
         res = plyFtWith(stage.card[idx].cap);
         if(res==1)
         {
@@ -95,6 +96,7 @@ function onStgCard(idx,choice)
     }
     else if(stage.card[idx].type==2)
     {
+        addHour(MAX_HOUR/3);
         let m = playerData.ship.mine();
         printMsg(printTimeC()+"你开始采矿");
         if(m<stage.card[idx].mine)
@@ -112,6 +114,7 @@ function onStgCard(idx,choice)
     }
     else if(stage.card[idx].type==99)
     {
+        addHour(MAX_HOUR/2);
         printMsg(printTimeC()+"你进行了探索");
         stgClear(idx);
         stgGen(idx);

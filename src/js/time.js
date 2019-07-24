@@ -12,7 +12,7 @@ var lastTime = "";
 
 function timeStr()
 {
-    return "第"+time.week+"周，第"+time.day+"天"+time.hour+"时";
+    return "第"+time.week+"周，第"+time.day+"天";
 }
 
 function timeStrDay()

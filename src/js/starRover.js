@@ -384,22 +384,22 @@ function createShip(cap,id)
     {
         if(ship.side==0)
         {
-            return "[<font color=blue>"+ship.name+"</font>]";
+            return "[<font color=#7EC0EE>"+ship.name+"</font>]";
         }
         else
         {
-            return "[<font color=red>"+ship.name+"</font>]";
+            return "[<font color=#CD9B9B>"+ship.name+"</font>]";
         }
     }
     ship.colorName = ()=>
     {
         if(ship.side==0)
         {
-            return "<font color=blue>"+ship.name+"</font>";
+            return "<font color=#7EC0EE>"+ship.name+"</font>";
         }
         else
         {
-            return "<font color=red>"+ship.name+"</font>";
+            return "<font color=#CD9B9B>"+ship.name+"</font>";
         }
     }
 
