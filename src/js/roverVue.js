@@ -63,7 +63,8 @@ var app = new Vue({
         wpTip:false,
         mdTip:false,
         itemTip:false,
-        modal:false,
+        modal:true,
+        start:true,
         staffTip:false,
         assignDiv:false,
         stg:[],
@@ -92,8 +93,8 @@ var app = new Vue({
         this.$nextTick(function () {
             // Code that will run only after the
             // entire view has been re-rendered
-            gameInit();
-            getAllStg();
+            //gameInit();
+            //getAllStg();
           })
         /**
         setTimeout(() => {
@@ -124,6 +125,13 @@ var app = new Vue({
         },
     },
     methods: {
+        onStart()
+        {
+            gameInit();
+            getAllStg();
+            this.modal = false;
+            this.start = false;
+        },
         getTipWpId(){
             return this.playerShip.wp[this.wpTipIdx].id;
         },

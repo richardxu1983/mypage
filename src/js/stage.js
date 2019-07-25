@@ -1,5 +1,6 @@
 var stage = {
     idx:0,
+    lv:-1,
     left:-1,
     card:new Array(6),
 };
@@ -24,7 +25,7 @@ function stageInit(lv)
         }
     }
 }
-stageInit();
+stageInit(0);
 
 function stgGenAll()
 {

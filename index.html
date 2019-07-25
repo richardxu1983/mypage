@@ -117,7 +117,7 @@
 					<button @click="testAddLv">船升级</button>
 				</div>
 				<div v-if="midModuleCur=='adv'">
-					<div class="stgC">
+					<div class="stgC" v-if="stage.lv!=-1">
 						<transition-group @after-leave="getAllStg()" name="list">
 							<div v-for="(v,index) in stg" :key="index" v-if="v.type!=-1" class="stgCard fl-left">
 								<div class="stgCardTop" v-bind:style="{backgroundImage:'url(static/img/'+v.src+'.png)'}">
@@ -151,7 +151,7 @@
 				<div class="info-cell" v-for="item in ftMsg" v-html="item">&emsp;{{item}}</div>
 			</div>
 		</div>
-		<div v-if="player!=-1" class="modal" v-show="modal">
+		<div v-if="modal" class="modal">
 			<div class="assign-div topPad leftVoid" id="assign-div" v-if="assignDiv">
 				<div class="bottomad bottomLine">可指派的宇航员({{player.ctVldStf(stfTp)}})</div>
 				<div class="topPad" v-if="player.ctVldStf(stfTp)<=0">没有人可以指派</div>
@@ -166,6 +166,28 @@
 					</div>
 				</div>
 				<div class="topine topPad-big bottomad widthFull"><button class="center" @click="closeAssign">关闭</button></div>
+			</div>
+			<div v-if="start" class="start_div">
+				<div class="welcome">
+
+ **************************************************************************
+ **************************************************************************
+ **************************************************************************
+  _____ _______       _____           _____   ______      ________ _____  
+ / ____|__   __|/\   |  __ \         |  __ \ / __ \ \    / /  ____|  __ \ 
+| (___    | |  /  \  | |__) |        | |__) | |  | \ \  / /| |__  | |__) |
+ \___ \   | | / /\ \ |  _  /         |  _  /| |  | |\ \/ / |  __| |  _  / 
+ ____) |  | |/ ____ \| | \ \         | | \ \| |__| | \  /  | |____| | \ \ 
+|_____/   |_/_/    \_\_|  \_\        |_|  \_\\____/   \/   |______|_|  \_\
+
+**************************************************************************
+**************************************************************************
+**************************************************************************
+
+				</div>
+				<div class="welcome_div">
+					<a title="start the damn JOURNEY!!" @click="onStart()">start!</a>
+				</div>
 			</div>
 		</div>
 		<div v-if="player!=-1" class="shipTip topPad leftVoid" id="staffTip" v-show="staffTip">
