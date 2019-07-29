@@ -51,7 +51,6 @@ function testFight()
         }
     }
     playerShipFightWith(cap.ship);
-    addHour(2);
 }
 
 function createPlayer()
@@ -78,7 +77,7 @@ function createPlayer()
 function gameInit()
 {
     createPlayer();
-    stgGenAll();
+    stageInit(0,1);
     app.playerShip = playerData.ship;
     app.player = playerData;
     //console.log(app);

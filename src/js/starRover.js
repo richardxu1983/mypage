@@ -135,14 +135,14 @@ function createShip(cap,id)
         }
     }
 
-    ship.addItem = (id,num)=>{
+    ship.addItem = (id,num,notice)=>{
 
         if(!ITEM_DATA[id]) return;
 
         //满了
         if(ship.roomOccupy>=ship.store) return;
 
-        if(ship.side==0)
+        if(ship.side==0&&notice==1)
         {
             printMsg("你获得了"+num+"个"+ITEM_DATA[id].name);
         }

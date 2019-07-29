@@ -45,6 +45,7 @@ function addHour(step)
         time.dCount++;
         playerData.ship.recShield();
         checkSalary(playerData);
+        stgStep();
         if(time.day>MAX_DAY)
         {
             time.week++;

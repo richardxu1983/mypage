@@ -45,6 +45,31 @@ var SHIP_DATA =
     "wpOpen": 2,
     "maxMdNum": 2,
     "mdOpen": 2
+  },
+  "3": {
+    "id": "3",
+    "name": "蛇眼",
+    "strc": 200,
+    "shd": 200,
+    "store": 10,
+    "cost": 50,
+    "wp": [
+      10001,
+      10001,
+      1001,
+      1001
+    ],
+    "md": null,
+    "costLv": 0,
+    "shdLv": 0,
+    "strcLv": 0,
+    "maxLv": 1,
+    "shdRec": 0,
+    "shdBtRec": 5,
+    "maxWpNum": 5,
+    "wpOpen": 5,
+    "maxMdNum": 2,
+    "mdOpen": 2
   }
 };
 
@@ -284,3 +309,16 @@ var MD_DATA =
     "tgNumMax": null
   }
 };
+
+var TASK_DATA = 
+{
+  "1": {
+    "id": "1",
+    "name": "击杀“蛇眼”",
+    "type": 1,
+    "desc": null,
+    "tLimit": 25,
+    "tParam": 3,
+    "nParam": 1
+  }
+}

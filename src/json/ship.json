@@ -44,5 +44,30 @@
     "wpOpen": 2,
     "maxMdNum": 2,
     "mdOpen": 2
+  },
+  "3": {
+    "id": "3",
+    "name": "蛇眼",
+    "strc": 200,
+    "shd": 200,
+    "store": 10,
+    "cost": 50,
+    "wp": [
+      10001,
+      10001,
+      1001,
+      1001
+    ],
+    "md": null,
+    "costLv": 0,
+    "shdLv": 0,
+    "strcLv": 0,
+    "maxLv": 1,
+    "shdRec": 0,
+    "shdBtRec": 5,
+    "maxWpNum": 5,
+    "wpOpen": 5,
+    "maxMdNum": 2,
+    "mdOpen": 2
   }
 }
