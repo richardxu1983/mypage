@@ -173,8 +173,8 @@
 				</div>
 				<div class="topine topPad-big bottomad widthFull"><button class="center" @click="closeAssign">关闭</button></div>
 			</div>
-			<div v-if="start" class="start_div">
-				<div class="welcome">
+			<div v-if="modal_1" class="start_div">
+				<div v-if="start" class="welcome">
 
 +       *
                                                   +
@@ -190,8 +190,13 @@
            +           +                               *
 +
 				</div>
-				<div class="welcome_div">
+				<div v-if="start" class="welcome_div">
 					<a title="start the damn JOURNEY!!" @click="onStart()">start!</a>
+				</div>
+				<div v-if="gameFail" class="m1p1"></div>
+				<div v-if="gameFail" class="m1p2">asdasd</div>
+				<div v-if="gameFail" class="m1p3">
+					<a  @click="onStart()">To be continue...</a>
 				</div>
 			</div>
 		</div>

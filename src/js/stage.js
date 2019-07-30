@@ -84,6 +84,7 @@ function stgStep()
     {
         //任务失败
         stage.dayLeft=0;
+        app.onFail();
     }
 }
 
@@ -134,6 +135,14 @@ function onStgCard(idx,choice)
                 stgGen(idx);
             }
             return res;
+        }
+        else
+        {
+            if(playerData.ship.strc<=0)
+            {
+                app.onFail();
+                return res;
+            }
         }
     }
     else if(stage.card[idx].type==2)

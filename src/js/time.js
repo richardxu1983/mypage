@@ -10,6 +10,14 @@ const MAX_DAY = 5;
 var MAX_HOUR = 24;
 var lastTime = "";
 
+function timeInit()
+{
+    time.dCount = 1;
+    time.day = 1;
+    time.hour = 0;
+    time.week = 1;
+}
+
 function timeStr()
 {
     return "第"+time.week+"周，第"+time.day+"天";

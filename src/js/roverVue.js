@@ -64,6 +64,8 @@ var app = new Vue({
         mdTip:false,
         itemTip:false,
         modal:true,
+        modal_1:true,
+        gameFail:false,
         start:true,
         staffTip:false,
         assignDiv:false,
@@ -130,10 +132,17 @@ var app = new Vue({
             gameInit();
             getAllStg();
             this.modal = false;
+            this.modal_1 = false;
             this.start = false;
         },
         getTipWpId(){
             return this.playerShip.wp[this.wpTipIdx].id;
+        },
+        onFail()
+        {
+            this.modal = true;
+            this.modal_1 = true;
+            this.gameFail = true;
         },
         testAddLv()
         {

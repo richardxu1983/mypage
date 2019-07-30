@@ -78,6 +78,7 @@ function gameInit()
 {
     createPlayer();
     stageInit(0,1);
+    timeInit();
     app.playerShip = playerData.ship;
     app.player = playerData;
     //console.log(app);

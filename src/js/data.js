@@ -317,7 +317,7 @@ var TASK_DATA =
     "name": "击杀“蛇眼”",
     "type": 1,
     "desc": null,
-    "tLimit": 25,
+    "tLimit": 1,
     "tParam": 3,
     "nParam": 1
   }
